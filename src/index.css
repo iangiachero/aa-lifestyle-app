@@ -1,0 +1,402 @@
+/* iOS Safe Area Background - Must be BEFORE @tailwind */
+@supports (padding: max(0px)) {
+  :root {
+    background: #000000 !important;
+  }
+}
+
+/* iOS Capacitor / Native optimizations */
+@supports (-webkit-touch-callout: none) {
+  /* Disable rubber-band bounce on iOS */
+  html, body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Fix iOS input zoom (prevents zoom on focus for inputs < 16px) */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  input[type="date"],
+  input[type="time"],
+  input[type="number"] {
+    font-size: 16px !important;
+  }
+
+  /* Fix iOS momentum scrolling for all overflow containers */
+  .overflow-y-auto,
+  .overflow-y-scroll,
+  .overflow-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Disable long-press context menu on images/links */
+  img, a, button {
+    -webkit-touch-callout: none;
+  }
+
+  /* Safe area padding for Capacitor status bar */
+  .capacitor-ios {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.birthday-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 114, 182, 0.3) rgba(255, 255, 255, 0.05);
+}
+.birthday-list::-webkit-scrollbar {
+  width: 4px;
+}
+.birthday-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+}
+.birthday-list::-webkit-scrollbar-thumb {
+  background: rgba(244, 114, 182, 0.3);
+  border-radius: 2px;
+}
+.birthday-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 114, 182, 0.5);
+}
+
+@layer base {
+  :root {
+    /* === THEME CONFIGURATION - ADJUST THESE VALUES === */
+    /* Brand Gold Color - Main accent color throughout the app */
+    --brand-accent: #e2ba8b;
+    --brand-accent-light: #edc9a0;
+    --brand-accent-dark: #d4ab77;
+
+    /* Background Colors */
+    --bg: #000000;
+    --bg-gradient: #000000;
+    --card-bg: #000000;
+
+    /* Text Colors */
+    --text-primary: #F5F1E8;
+    --text-secondary: #B8B8B8;
+    --text-muted: #6B6B6B;
+
+    /* Glow Intensity - Control shadow spread and opacity */
+    --glow-spread-sm: 20px;    /* Small glow radius */
+    --glow-spread-md: 40px;    /* Medium glow radius */
+    --glow-opacity: 0.3;       /* Primary glow opacity */
+    --glow-opacity-soft: 0.1;  /* Soft glow opacity */
+    /* === END THEME CONFIGURATION === */
+
+    /* shadcn / design tokens (HSL) */
+    --background: 0 0% 6%;
+    --foreground: 36 18% 95%;
+    --card: 0 0% 15%;
+    --card-foreground: 36 18% 95%;
+    --primary: 36 45% 70%;
+    --primary-foreground: 0 0% 6%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 36 18% 95%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 50%;
+
+    /* IMPORTANT: keep this as HSL token for shadcn */
+    --accent: 36 45% 70%;
+    --accent-foreground: 0 0% 6%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 36 18% 95%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 36 45% 70%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    border-color: hsl(0 0% 25%);
+    outline-color: hsl(36 45% 70% / 0.5);
+  }
+
+  html {
+    background: #000000 !important;
+    min-height: 100vh;
+    height: 100%;
+    overscroll-behavior: none;
+    touch-action: pan-y;
+  }
+
+  body {
+    background: #000000 !important;
+    @apply text-[#F5F1E8];
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100%;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overscroll-behavior: none;
+    touch-action: pan-y;
+  }
+
+  body.app-mode {
+    overflow: hidden;
+  }
+
+  #root {
+    background: #000000 !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100%;
+    position: relative;
+    overscroll-behavior: none;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Subtle gold gradient overlay - ADJUST OPACITY HERE */
+    background:
+      radial-gradient(ellipse at top, rgba(226,186,139,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at center, rgba(226,186,139,0.03) 0%, transparent 70%),
+      radial-gradient(ellipse at bottom, rgba(226,186,139,0.02) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulance type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  body > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: Georgia, serif;
+  }
+
+  /* Force dark backgrounds on all elements */
+  * {
+    box-sizing: border-box;
+  }
+
+  div, section, article, aside, nav, header, footer, main {
+    background-color: transparent;
+  }
+
+  /* Prevent any white backgrounds */
+  input, textarea, select {
+    background-color: rgba(37,37,37,0.5);
+  }
+
+  button {
+    background-color: transparent;
+  }
+}
+
+@layer components {
+  .card-luxury {
+    background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.9) 100%) !important;
+    background-color: #000000 !important;
+    border-radius: 1rem;
+    border: 1px solid rgba(226, 186, 139, 0.4);
+    box-shadow:
+      0 0 20px rgba(226, 186, 139, 0.2),
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .card-luxury:hover {
+    border-color: rgba(226, 186, 139, 0.6);
+    box-shadow:
+      0 0 30px rgba(226, 186, 139, 0.3),
+      0 4px 16px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .accent-text {
+    color: var(--brand-accent);
+  }
+
+  .accent-border {
+    border-color: rgba(226, 186, 139, 0.4);
+  }
+
+  .accent-bg {
+    background-color: var(--brand-accent);
+  }
+
+  .text-shadow-gold {
+    text-shadow: 0 0 15px rgba(226, 186, 139, 0.3);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(226, 186, 139, 0.3), 0 0 40px rgba(226, 186, 139, 0.1);
+  }
+
+  .glow-gold-strong {
+    box-shadow: 0 0 30px rgba(226, 186, 139, 0.4), 0 0 60px rgba(226, 186, 139, 0.15);
+  }
+}
+
+/* =========================
+   Scrollbar utilities
+   - Hide visually BUT keep scrolling enabled
+   ========================= */
+@layer utilities {
+  .page-safe-x {
+    padding-left: max(1.25rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.25rem, env(safe-area-inset-right, 0px));
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Option A: invisible scrollbar */
+  .scrollbar-none {
+    -ms-overflow-style: none; /* IE/Edge legacy */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+  .scrollbar-none::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  .scrollbar-none::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Option B: soft premium thin scrollbar */
+  .scrollbar-soft {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(226,186,139,0.22) transparent;
+  }
+  .scrollbar-soft::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scrollbar-soft::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-soft::-webkit-scrollbar-thumb {
+    background: rgba(226,186,139,0.18);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  .scrollbar-soft::-webkit-scrollbar-thumb:hover {
+    background: rgba(226,186,139,0.28);
+    background-clip: content-box;
+  }
+
+  /* Hide scrollbar completely while maintaining scroll functionality */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+/* =========================
+   Skeleton loader animations
+   ========================= */
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+/* Touch-friendly close buttons in modals (32px → 44px hit area) */
+@media (pointer: coarse) {
+  .fixed button[class*="w-8"][class*="h-8"][class*="rounded-full"] {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+/* Hide rogue select dropdown - temporary fix */
+[class*="Select"]:not([class*="CustomSelect"]) {
+  display: none !important;
+}
+
+/* Alternative - if the above doesn't work, try this */
+.fixed.bottom-4 > div > div:has(> [placeholder*="Select"]) {
+  display: none !important;
+}

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>AA Lifestyle</title>
+    <meta name="description" content="Your all-in-one lifestyle management app for habits, fitness, nutrition, goals, and more." />
+
+    <!-- PWA Theme -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="background-color" content="#000000" />
+
+    <!-- iOS PWA Standalone Mode -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="AA Lifestyle" />
+    <link rel="apple-touch-icon" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+    <link rel="apple-touch-startup-image" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+    <link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+    <link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+    <link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+
+    <!-- Android PWA -->
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- iOS Capacitor / Native -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="date=no" />
+    <meta name="format-detection" content="address=no" />
+    <meta name="format-detection" content="email=no" />
+
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Google Fonts: Cormorant Garamond -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&display=swap" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="AA Lifestyle" />
+    <meta property="og:description" content="Your all-in-one lifestyle management app for habits, fitness, nutrition, goals, and more." />
+    <meta property="og:image" content="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AA Lifestyle" />
+    <meta name="twitter:description" content="Your all-in-one lifestyle management app for habits, fitness, nutrition, goals, and more." />
+    <meta name="twitter:image" content="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" />
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #000000;
+        overscroll-behavior: none;
+      }
+      #root {
+        height: 100%;
+        overscroll-behavior: none;
+      }
+
+      #pre-splash {
+        position: fixed;
+        inset: 0;
+        background: #000000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        flex-direction: column;
+        gap: 24px;
+        animation: pre-splash-in 0.4s ease-out both;
+      }
+      #pre-splash.fade-out {
+        animation: pre-splash-out 0.4s ease-in forwards;
+        pointer-events: none;
+      }
+      #pre-splash-logo {
+        width: 112px;
+        height: 112px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #C9A962;
+        box-shadow: 0 0 30px rgba(201,169,98,0.25);
+        animation: pre-splash-pulse 2.5s ease-in-out infinite;
+      }
+      #pre-splash-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #pre-splash-title {
+        color: #C9A962;
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 22px;
+        font-weight: 300;
+        letter-spacing: 0.15em;
+        margin: 0;
+      }
+      #pre-splash-dots {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .pre-splash-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #C9A962;
+      }
+      .pre-splash-dot:nth-child(1) { animation: pre-splash-bounce 1.2s ease-in-out infinite 0ms; }
+      .pre-splash-dot:nth-child(2) { animation: pre-splash-bounce 1.2s ease-in-out infinite 150ms; }
+      .pre-splash-dot:nth-child(3) { animation: pre-splash-bounce 1.2s ease-in-out infinite 300ms; }
+      @keyframes pre-splash-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes pre-splash-out {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+      @keyframes pre-splash-pulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(201,169,98,0.2); }
+        50% { box-shadow: 0 0 40px rgba(201,169,98,0.4); }
+      }
+      @keyframes pre-splash-bounce {
+        0%, 100% { transform: translateY(0); opacity: 0.6; }
+        50% { transform: translateY(-6px); opacity: 1; }
+      }
+      body.app-mode,
+      body.app-mode #root {
+        height: 100%;
+        overflow: hidden;
+        overscroll-behavior: none;
+      }
+      body.scroll-mode {
+        height: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+      }
+      body.scroll-mode #root {
+        height: auto;
+        min-height: 100%;
+        overflow: visible;
+        overscroll-behavior: none;
+      }
+      * {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        touch-action: manipulation;
+      }
+      input, textarea, select {
+        touch-action: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="pre-splash">
+      <div id="pre-splash-logo">
+        <img src="https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/logo-icon/logo_transparent.png" alt="AA Lifestyle" />
+      </div>
+      <h1 id="pre-splash-title">AA LIFESTYLE</h1>
+      <div id="pre-splash-dots">
+        <div class="pre-splash-dot"></div>
+        <div class="pre-splash-dot"></div>
+        <div class="pre-splash-dot"></div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script>
+      (function() {
+        var splash = document.getElementById('pre-splash');
+        if (!splash) return;
+        var removed = false;
+        function removeSplash() {
+          if (removed) return;
+          removed = true;
+          splash.classList.add('fade-out');
+          setTimeout(function() {
+            if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+          }, 420);
+        }
+        var observer = new MutationObserver(function(mutations) {
+          var root = document.getElementById('root');
+          if (root && root.childElementCount > 0) {
+            observer.disconnect();
+            setTimeout(removeSplash, 100);
+          }
+        });
+        observer.observe(document.getElementById('root'), { childList: true });
+        setTimeout(removeSplash, 5000);
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
