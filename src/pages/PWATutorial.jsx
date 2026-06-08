@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { detectPlatform } from '../hooks/usePWAInstallBanner';
@@ -61,7 +61,7 @@ export default function PWATutorial() {
       <div className="page-safe-x py-6 max-w-lg mx-auto">
         <div
           className="flex rounded-xl p-1 mb-6"
-          style={{ background: 'rgba(37,37,37,0.8)', border: '1px solid rgba(201,169,98,0.2)' }}
+          style={{ background: 'rgba(0,0,0,0.8)', border: '1px solid rgba(201,169,98,0.2)' }}
         >
           {['ios', 'android'].map((tab) => (
             <button
@@ -85,7 +85,7 @@ export default function PWATutorial() {
 
         <div
           className="rounded-2xl overflow-hidden mb-6"
-          style={{ border: '1px solid rgba(201,169,98,0.2)', background: 'rgba(37,37,37,0.6)' }}
+          style={{ border: '1px solid rgba(201,169,98,0.2)', background: 'rgba(0,0,0,0.6)' }}
         >
           <video
             ref={videoRef}
@@ -104,7 +104,7 @@ export default function PWATutorial() {
 
         <div
           className="rounded-2xl p-5"
-          style={{ background: 'rgba(37,37,37,0.6)', border: '1px solid rgba(201,169,98,0.2)' }}
+          style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(201,169,98,0.2)' }}
         >
           <h2
             className="text-xs uppercase tracking-widest mb-4"

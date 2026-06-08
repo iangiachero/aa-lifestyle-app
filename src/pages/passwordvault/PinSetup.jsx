@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, ChevronLeft } from 'lucide-react';
 import { hashPin } from '../../utils/pinHash';
@@ -170,7 +170,7 @@ export default function PinSetup({ onComplete }) {
             }}
             className="w-full px-4 py-3.5 rounded-xl text-center text-xl tracking-[0.5em] focus:outline-none mb-5"
             style={{
-              backgroundColor: 'rgba(37,37,37,0.8)',
+              backgroundColor: 'rgba(0,0,0,0.8)',
               border: error
                 ? '1px solid rgba(239,68,68,0.6)'
                 : '1px solid rgba(201,169,98,0.3)',
@@ -187,7 +187,7 @@ export default function PinSetup({ onComplete }) {
             className="w-full py-4 rounded-2xl text-base font-medium transition-all disabled:opacity-40"
             style={{
               background: 'linear-gradient(135deg, #B8955A 0%, #C9A962 100%)',
-              color: '#0F0F0F',
+              color: '#000000',
               fontFamily: "'Cormorant Garamond', serif",
               fontSize: '17px',
               boxShadow: canProceed ? '0 4px 16px rgba(184,149,90,0.3)' : 'none',

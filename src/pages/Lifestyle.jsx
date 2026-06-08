@@ -10,11 +10,11 @@ import AddModuleModal from './lifestyle/components/AddModuleModal';
 import DeleteModuleModal from './lifestyle/components/DeleteModuleModal';
 
 const CARD_GRADIENTS = [
-  'linear-gradient(135deg, #2a2520 0%, #1a1510 100%)',
-  'linear-gradient(135deg, #252028 0%, #15101a 100%)',
+  'linear-gradient(135deg, #000000 0%, #000000 100%)',
+  'linear-gradient(135deg, #000000 0%, #000000 100%)',
   'linear-gradient(135deg, #202520 0%, #101a10 100%)',
-  'linear-gradient(135deg, #252520 0%, #1a1a10 100%)',
-  'linear-gradient(135deg, #28201a 0%, #1a1008 100%)',
+  'linear-gradient(135deg, #000000 0%, #000000 100%)',
+  'linear-gradient(135deg, #000000 0%, #000000 100%)',
   'linear-gradient(135deg, #202028 0%, #101018 100%)',
 ];
 
@@ -290,7 +290,7 @@ export default function Lifestyle() {
             transition={{ duration: 0.25 }}
             className="page-safe-x pb-24"
           >
-            <div className="mt-4 mb-5 flex items-center gap-3 p-3 rounded-2xl border border-[rgba(201,169,98,0.2)] bg-gradient-to-r from-[rgba(37,37,37,0.6)] to-[rgba(26,26,26,0.4)]">
+            <div className="mt-4 mb-5 flex items-center gap-3 p-3 rounded-2xl border border-[rgba(201,169,98,0.2)] bg-gradient-to-r from-[rgba(0,0,0,0.6)] to-[rgba(0,0,0,0.4)]">
               <ModuleThumb module={selectedModule} size="lg" />
               <div className="flex-1 min-w-0">
                 <p className="text-[#F5F1E8] text-base font-light">{selectedModule.name}</p>
@@ -322,7 +322,7 @@ export default function Lifestyle() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="bg-gradient-to-br from-[rgba(37,37,37,0.9)] to-[rgba(26,26,26,0.7)] rounded-2xl border border-[rgba(201,169,98,0.25)] overflow-hidden"
+                    className="bg-gradient-to-br from-[rgba(0,0,0,0.9)] to-[rgba(0,0,0,0.7)] rounded-2xl border border-[rgba(201,169,98,0.25)] overflow-hidden"
                   >
                     <div className="px-4 pt-4 pb-3">
                       <div className="flex items-start gap-3 mb-2">

@@ -123,7 +123,7 @@ export default function Fitness() {
         <div className="w-full flex gap-2">
           {[{ id: 'library', label: 'Library' }, { id: 'myworkouts', label: 'My Workouts' }].map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-2.5 px-2 rounded-xl text-xs font-light tracking-wide transition-all ${activeTab === tab.id ? 'bg-[#C9A962] text-[#0F0F0F]' : 'text-[#C9A962] border border-[rgba(201,169,98,0.3)]'}`}>
+              className={`flex-1 py-2.5 px-2 rounded-xl text-xs font-light tracking-wide transition-all ${activeTab === tab.id ? 'bg-[#C9A962] text-[#000000]' : 'text-[#C9A962] border border-[rgba(201,169,98,0.3)]'}`}>
               {tab.label}
             </button>
           ))}
@@ -183,7 +183,7 @@ export default function Fitness() {
                 <Dumbbell className="w-16 h-16 text-[#C9A962] opacity-20 mx-auto mb-4" strokeWidth={1} />
                 <h3 className="text-lg text-[#F5F1E8] font-light mb-2">No workouts yet</h3>
                 <p className="text-sm text-[#B8B8B8] mb-6 max-w-sm mx-auto">Start building your perfect workout routine with custom exercises</p>
-                <button onClick={handleCreateWorkout} className="px-6 py-3 bg-[#C9A962] text-[#0F0F0F] rounded-full text-sm font-light flex items-center gap-2 mx-auto hover:bg-[#D4B574] transition-colors">
+                <button onClick={handleCreateWorkout} className="px-6 py-3 bg-[#C9A962] text-[#000000] rounded-full text-sm font-light flex items-center gap-2 mx-auto hover:bg-[#D4B574] transition-colors">
                   <Plus className="w-4 h-4" />Create Your First Workout
                 </button>
               </div>
@@ -243,7 +243,7 @@ export default function Fitness() {
 
       {activeTab === 'myworkouts' && workouts.length > 0 && (
         <button onClick={handleCreateWorkout} className="fixed right-6 w-14 h-14 bg-[#C9A962] rounded-full shadow-lg shadow-[rgba(201,169,98,0.4)] flex items-center justify-center hover:bg-[#D4B574] transition-all z-[55]" style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}>
-          <Plus className="w-6 h-6 text-[#0F0F0F]" strokeWidth={2} />
+          <Plus className="w-6 h-6 text-[#000000]" strokeWidth={2} />
         </button>
       )}
 

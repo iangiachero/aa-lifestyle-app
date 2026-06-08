@@ -232,7 +232,7 @@ export default function GroceryList() {
                         className={`flex items-start gap-3 px-3 py-3 transition-all ${idx < items.length - 1 ? 'border-b border-[rgba(226,186,139,0.1)]' : ''} ${item.is_completed ? 'opacity-50' : 'hover:bg-[rgba(226,186,139,0.05)]'}`}>
                         <button onClick={() => toggleItem(item)}
                           className={`w-5 h-5 rounded-md flex items-center justify-center border-2 transition-all flex-shrink-0 mt-0.5 ${item.is_completed ? 'bg-[#e2ba8b] border-[#e2ba8b]' : 'border-[rgba(226,186,139,0.5)] hover:border-[#e2ba8b]'}`}>
-                          {item.is_completed && <Check className="w-3.5 h-3.5 text-[#0F0F0F]" strokeWidth={2.5} />}
+                          {item.is_completed && <Check className="w-3.5 h-3.5 text-[#000000]" strokeWidth={2.5} />}
                         </button>
                         <div className="flex-1 min-w-0">
                           <span className={`text-sm block font-light ${item.is_completed ? 'line-through text-[#6B6B6B]' : 'text-[#F5F1E8]'}`}>
@@ -291,7 +291,7 @@ export default function GroceryList() {
                 <Input placeholder="e.g., Organic Spinach"
                   value={newItem.name}
                   onChange={e => setNewItem({ ...newItem, name: e.target.value })}
-                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl bg-[rgba(37,37,37,0.5)] text-[#F5F1E8]" />
+                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl bg-[rgba(0,0,0,0.5)] text-[#F5F1E8]" />
               </div>
 
               <div>
@@ -315,7 +315,7 @@ export default function GroceryList() {
                 <Textarea placeholder="Quantity, brand, or other details..."
                   value={newItem.notes}
                   onChange={e => setNewItem({ ...newItem, notes: e.target.value })}
-                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl min-h-[80px] bg-[rgba(37,37,37,0.5)] text-[#F5F1E8]" />
+                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl min-h-[80px] bg-[rgba(0,0,0,0.5)] text-[#F5F1E8]" />
               </div>
 
               <button onClick={addItem}

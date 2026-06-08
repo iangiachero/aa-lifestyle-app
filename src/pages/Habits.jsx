@@ -107,7 +107,7 @@ export default function Habits() {
       <div className="page-safe-x pt-5">
         {/* Progress bar */}
         {habits.length > 0 && (
-          <div className="mb-5 bg-gradient-to-br from-[rgba(37,37,37,0.9)] to-[rgba(26,26,26,0.7)] border border-[rgba(201,169,98,0.25)] rounded-2xl px-5 py-4">
+          <div className="mb-5 bg-gradient-to-br from-[rgba(0,0,0,0.9)] to-[rgba(0,0,0,0.7)] border border-[rgba(201,169,98,0.25)] rounded-2xl px-5 py-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-light text-[#F5F1E8]">Today's Progress</span>
               <span className="text-sm text-[#C9A962]">{completedCount}/{habits.length}</span>
@@ -149,7 +149,7 @@ export default function Habits() {
                     className={`relative overflow-hidden rounded-2xl border cursor-pointer transition-all duration-200 ${
                       isCompleted
                         ? 'border-[#C9A962] bg-[rgba(201,169,98,0.08)]'
-                        : 'border-[rgba(201,169,98,0.2)] bg-gradient-to-br from-[rgba(37,37,37,0.9)] to-[rgba(26,26,26,0.7)]'
+                        : 'border-[rgba(201,169,98,0.2)] bg-gradient-to-br from-[rgba(0,0,0,0.9)] to-[rgba(0,0,0,0.7)]'
                     }`}
                     onClick={() => toggleMutation.mutate(habit)}
                   >

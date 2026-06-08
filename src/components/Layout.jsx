@@ -1,4 +1,4 @@
-//src/components/Layout.jsx
+﻿//src/components/Layout.jsx
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '../utils';
@@ -52,7 +52,7 @@ export default function Layout({ children, currentPageName }) {
       accentVeryLight: 'rgba(184, 149, 90, 0.06)',
       bg: '#F3E8D8',
       bgGradient: '#E8D8C2',
-      text: '#2A2520',
+      text: '#000000',
       textLight: '#5D5449',
       card: '#FFFFFF',
       border: 'rgba(184, 149, 90, 0.20)',
@@ -64,7 +64,7 @@ export default function Layout({ children, currentPageName }) {
       accentVeryLight: 'rgba(201, 160, 82, 0.06)',
       bg: '#FFFCF7',
       bgGradient: '#FFF9F0',
-      text: '#2A2520',
+      text: '#000000',
       textLight: '#5D5449',
       card: '#FFFFFF',
       border: 'rgba(201, 160, 82, 0.20)',
@@ -76,7 +76,7 @@ export default function Layout({ children, currentPageName }) {
       accentVeryLight: 'rgba(212, 159, 164, 0.06)',
       bg: '#FFFAFB',
       bgGradient: '#FFF5F7',
-      text: '#2A2520',
+      text: '#000000',
       textLight: '#5D5449',
       card: '#FFFFFF',
       border: 'rgba(212, 159, 164, 0.20)',
@@ -100,7 +100,7 @@ export default function Layout({ children, currentPageName }) {
       accentVeryLight: 'rgba(122, 109, 94, 0.06)',
       bg: '#FAFAF8',
       bgGradient: '#F6F5F2',
-      text: '#2A2520',
+      text: '#000000',
       textLight: '#5D5449',
       card: '#FFFFFF',
       border: 'rgba(122, 109, 94, 0.20)',

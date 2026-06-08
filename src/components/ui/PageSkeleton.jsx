@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 
 function SkeletonBox({ className = '', style = {} }) {
   return <div className={`skeleton-pulse ${className}`} style={style} />;
@@ -8,7 +8,7 @@ function CardRow({ lines = 2, hasIcon = true, hasRight = true }) {
   return (
     <div
       className="rounded-2xl p-4 flex items-center gap-3"
-      style={{ backgroundColor: 'rgba(37,37,37,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}
+      style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}
     >
       {hasIcon && <SkeletonBox className="w-10 h-10 rounded-xl flex-shrink-0" />}
       <div className="flex-1 space-y-2 min-w-0">
@@ -33,7 +33,7 @@ function SectionHeader() {
 export function TasksSkeleton() {
   return (
     <div className="page-safe-x pt-4 space-y-5 pb-32">
-      <div className="rounded-2xl p-4 space-y-2" style={{ backgroundColor: 'rgba(37,37,37,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}>
+      <div className="rounded-2xl p-4 space-y-2" style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}>
         <SkeletonBox className="h-12 rounded-xl" />
       </div>
       <div className="space-y-2">
@@ -57,7 +57,7 @@ export function NotesSkeleton() {
           <div
             key={i}
             className="rounded-2xl p-4 space-y-2"
-            style={{ backgroundColor: 'rgba(37,37,37,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}
+            style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}
           >
             <SkeletonBox className="h-4 rounded" style={{ width: `${50 + (i % 3) * 15}%` }} />
             <SkeletonBox className="h-3 rounded" style={{ width: '90%' }} />
@@ -99,7 +99,7 @@ export function MealPlanningSkeleton() {
           <div
             key={i}
             className="rounded-2xl p-5 space-y-3"
-            style={{ backgroundColor: 'rgba(37,37,37,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}
+            style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}
           >
             <div className="flex items-center gap-3">
               <SkeletonBox className="w-10 h-10 rounded-xl flex-shrink-0" />
@@ -141,7 +141,7 @@ export function CalendarSkeleton() {
 export function HomeSkeleton() {
   return (
     <div className="page-safe-x pt-4 space-y-4 pb-32">
-      <div className="rounded-2xl p-5 space-y-3" style={{ backgroundColor: 'rgba(37,37,37,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}>
+      <div className="rounded-2xl p-5 space-y-3" style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}>
         <SkeletonBox className="h-5 rounded" style={{ width: '50%' }} />
         <div className="space-y-2">
           {[...Array(3)].map((_, i) => (
@@ -155,7 +155,7 @@ export function HomeSkeleton() {
           ))}
         </div>
       </div>
-      <div className="rounded-2xl p-5 space-y-3" style={{ backgroundColor: 'rgba(37,37,37,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}>
+      <div className="rounded-2xl p-5 space-y-3" style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}>
         <SkeletonBox className="h-5 rounded" style={{ width: '40%' }} />
         <div className="space-y-2">
           {[...Array(2)].map((_, i) => (
@@ -168,7 +168,7 @@ export function HomeSkeleton() {
       </div>
       <div className="grid grid-cols-2 gap-3">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="rounded-2xl p-4 space-y-2" style={{ backgroundColor: 'rgba(37,37,37,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}>
+          <div key={i} className="rounded-2xl p-4 space-y-2" style={{ backgroundColor: 'rgba(0,0,0,0.6)', border: '1px solid rgba(226,186,139,0.08)' }}>
             <SkeletonBox className="w-9 h-9 rounded-xl" />
             <SkeletonBox className="h-5 rounded" style={{ width: '50%' }} />
             <SkeletonBox className="h-3 rounded" style={{ width: '80%' }} />

@@ -33,7 +33,7 @@ export function SelectTrigger({ onClick, isOpen, children, className = "" }) {
     <button
       type="button"
       onClick={onClick}
-      className={`w-full pl-4 pr-10 py-2 bg-[rgba(37,37,37,0.5)] border border-[#e2ba8b]/20 rounded-lg text-[#F5F1E8] focus:outline-none focus:ring-2 focus:ring-[#e2ba8b]/50 focus:border-[#e2ba8b] transition-colors flex items-center justify-between ${className}`}
+      className={`w-full pl-4 pr-10 py-2 bg-[rgba(0,0,0,0.5)] border border-[#e2ba8b]/20 rounded-lg text-[#F5F1E8] focus:outline-none focus:ring-2 focus:ring-[#e2ba8b]/50 focus:border-[#e2ba8b] transition-colors flex items-center justify-between ${className}`}
     >
       {children}
       <ChevronDown className={`w-4 h-4 text-[#e2ba8b] transition-transform flex-shrink-0 ml-2 ${isOpen ? 'rotate-180' : ''}`} />

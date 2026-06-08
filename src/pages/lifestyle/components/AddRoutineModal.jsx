@@ -320,10 +320,10 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
               <button
                 onClick={handleSubmit}
                 disabled={!form.name.trim() || saving}
-                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[#6B6B6B] text-[#0F0F0F] font-medium py-4 rounded-xl transition-all text-sm flex items-center justify-center gap-2"
+                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[#6B6B6B] text-[#000000] font-medium py-4 rounded-xl transition-all text-sm flex items-center justify-center gap-2"
               >
                 {saving ? (
-                  <div className="w-4 h-4 border-2 border-[#0F0F0F] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-[#000000] border-t-transparent rounded-full animate-spin" />
                 ) : (
                   isEditing ? 'Save Changes' : 'Add Routine'
                 )}

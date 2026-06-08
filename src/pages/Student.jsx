@@ -479,7 +479,7 @@ export default function Student() {
                       classForm.is_online ? 'bg-[#C9A962] border-[#C9A962]' : 'bg-transparent border-[rgba(201,169,98,0.5)]'
                     }`}>
                       {classForm.is_online && (
-                        <svg className="w-2.5 h-2.5 text-[#0F0F0F]" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={2.5}>
+                        <svg className="w-2.5 h-2.5 text-[#000000]" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M2 6l3 3 5-5" />
                         </svg>
                       )}
@@ -502,7 +502,7 @@ export default function Student() {
                         <div className="flex gap-2 mt-2">
                           {DAYS.map(day => (
                             <button key={day} onClick={() => toggleDay(day)}
-                              className={`flex-1 py-2 rounded-lg text-sm border transition-colors ${classForm.meeting_days.includes(day) ? 'bg-[#C9A962] text-[#0F0F0F] border-[#C9A962]' : 'bg-[#000000] border-[rgba(201,169,98,0.3)] text-[#F5F1E8] hover:border-[#C9A962]'}`}>
+                              className={`flex-1 py-2 rounded-lg text-sm border transition-colors ${classForm.meeting_days.includes(day) ? 'bg-[#C9A962] text-[#000000] border-[#C9A962]' : 'bg-[#000000] border-[rgba(201,169,98,0.3)] text-[#F5F1E8] hover:border-[#C9A962]'}`}>
                               {day}
                             </button>
                           ))}
@@ -703,7 +703,7 @@ function AssignmentRow({ assignment, onToggle }) {
             : 'border-white/25 hover:border-[#C9A962]'
         }`}
       >
-        {assignment.completed && <Check className="w-3 h-3 text-[#0F0F0F]" strokeWidth={3} />}
+        {assignment.completed && <Check className="w-3 h-3 text-[#000000]" strokeWidth={3} />}
       </button>
       <div className="flex-1 min-w-0">
         <p className={`text-xs text-[#F5F1E8] font-medium truncate ${assignment.completed ? 'line-through opacity-50' : ''}`}>
@@ -768,7 +768,7 @@ function ModalButtons({ onCancel, onSave, saving, disabled = false, label = 'Add
         Cancel
       </button>
       <button onClick={onSave} disabled={saving || disabled}
-        className="flex-1 py-3 bg-[#C9A962] rounded-full text-sm text-[#0F0F0F] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50">
+        className="flex-1 py-3 bg-[#C9A962] rounded-full text-sm text-[#000000] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50">
         {saving ? 'Saving...' : label}
       </button>
     </div>

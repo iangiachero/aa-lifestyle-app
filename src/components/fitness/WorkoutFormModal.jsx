@@ -136,7 +136,7 @@ export default function WorkoutFormModal({
                   <button key={group.id} onClick={() => toggleMuscleGroup(group.id)}
                     className={`px-4 py-2 rounded-xl text-sm border transition-all ${
                       formData.muscle_groups.includes(group.id)
-                        ? 'bg-[#C9A962] text-[#0F0F0F] border-[#C9A962]'
+                        ? 'bg-[#C9A962] text-[#000000] border-[#C9A962]'
                         : 'bg-[#000000] text-[#B8B8B8] border-[rgba(201,169,98,0.3)] hover:border-[#C9A962]'
                     }`}>
                     {group.label}
@@ -160,7 +160,7 @@ export default function WorkoutFormModal({
               <div className="flex items-center justify-between mb-3">
                 <label className="text-sm text-[#C9A962]">Exercises ({formData.exercises.length})</label>
                 <button onClick={handleAddExercise}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#C9A962] text-[#0F0F0F] rounded-xl text-sm hover:bg-[#D4B574] transition-colors">
+                  className="flex items-center gap-2 px-4 py-2 bg-[#C9A962] text-[#000000] rounded-xl text-sm hover:bg-[#D4B574] transition-colors">
                   <Plus className="w-4 h-4" strokeWidth={2} />Add Exercise
                 </button>
               </div>
@@ -226,7 +226,7 @@ export default function WorkoutFormModal({
                 Cancel
               </button>
               <button onClick={handleSubmit} disabled={isLoading}
-                className="flex-1 px-6 py-3 bg-[#C9A962] text-[#0F0F0F] rounded-xl hover:bg-[#D4B574] transition-colors disabled:opacity-50">
+                className="flex-1 px-6 py-3 bg-[#C9A962] text-[#000000] rounded-xl hover:bg-[#D4B574] transition-colors disabled:opacity-50">
                 {isLoading ? 'Saving...' : 'Save Workout'}
               </button>
             </div>

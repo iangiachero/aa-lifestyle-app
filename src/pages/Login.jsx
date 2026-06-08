@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -48,7 +48,7 @@ export default function Login() {
 
   const inputBase = `w-full px-4 py-3.5 rounded-xl border text-sm outline-none transition-all duration-200`;
   const inputStyle = {
-    background: 'rgba(37,37,37,0.8)',
+    background: 'rgba(0,0,0,0.8)',
     border: '1.5px solid rgba(201,169,98,0.25)',
     color: '#F5F1E8',
     fontFamily: "'Inter', sans-serif",
@@ -84,7 +84,7 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(37,37,37,0.5)', border: '1px solid rgba(201,169,98,0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+        <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(201,169,98,0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
               <div>

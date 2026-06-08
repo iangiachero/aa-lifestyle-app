@@ -246,7 +246,7 @@ function VaultContent() {
               onClick={() => setActiveCategory(cat.id)}
               className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all ${
                 activeCategory === cat.id
-                  ? 'bg-[#C9A962] text-[#0F0F0F]'
+                  ? 'bg-[#C9A962] text-[#000000]'
                   : 'bg-[#000000] border border-[rgba(201,169,98,0.2)] text-[#B8B8B8] hover:border-[#C9A962] hover:text-[#C9A962]'
               }`}
             >
@@ -301,7 +301,7 @@ function VaultContent() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.96 }}
                     transition={{ duration: 0.15 }}
-                    className="bg-gradient-to-br from-[rgba(37,37,37,0.9)] to-[rgba(26,26,26,0.7)] rounded-2xl border border-[rgba(201,169,98,0.2)] p-4 hover:border-[rgba(201,169,98,0.4)] transition-all"
+                    className="bg-gradient-to-br from-[rgba(0,0,0,0.9)] to-[rgba(0,0,0,0.7)] rounded-2xl border border-[rgba(201,169,98,0.2)] p-4 hover:border-[rgba(201,169,98,0.4)] transition-all"
                   >
                     <div className="flex items-start gap-3">
                       <div
@@ -370,7 +370,7 @@ function VaultContent() {
         style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}
         aria-label="Add password"
       >
-        <Plus className="w-7 h-7 text-[#0F0F0F]" strokeWidth={2} />
+        <Plus className="w-7 h-7 text-[#000000]" strokeWidth={2} />
       </button>
 
       <AnimatePresence>
@@ -559,7 +559,7 @@ function VaultContent() {
                   <button
                     onClick={handleSave}
                     disabled={!isFormValid || loading}
-                    className="flex-1 py-3 bg-[#C9A962] rounded-full text-sm text-[#0F0F0F] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50"
+                    className="flex-1 py-3 bg-[#C9A962] rounded-full text-sm text-[#000000] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50"
                   >
                     {loading ? 'Saving...' : editingEntry ? 'Update' : 'Save'}
                   </button>

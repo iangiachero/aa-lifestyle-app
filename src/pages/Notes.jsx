@@ -154,7 +154,7 @@ export default function Notes() {
                   selectedNote.pinned ? 'bg-[#C9A962] border-[#C9A962]' : 'bg-[#000000] border-[rgba(201,169,98,0.3)]'
                 } hover:scale-105`}
               >
-                <Pin className={`w-5 h-5 ${selectedNote.pinned ? 'text-[#0F0F0F]' : 'text-[#C9A962]'}`} strokeWidth={1.5} />
+                <Pin className={`w-5 h-5 ${selectedNote.pinned ? 'text-[#000000]' : 'text-[#C9A962]'}`} strokeWidth={1.5} />
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(true)}
@@ -221,7 +221,7 @@ export default function Notes() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <button onClick={handlePasswordsVault} className="w-full bg-[#000000] rounded-2xl p-4 border border-[rgba(201,169,98,0.3)] hover:border-[#C9A962] transition-all flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-[#C9A962] flex items-center justify-center flex-shrink-0">
-              <Shield className="w-6 h-6 text-[#0F0F0F]" strokeWidth={1.5} />
+              <Shield className="w-6 h-6 text-[#000000]" strokeWidth={1.5} />
             </div>
             <div className="flex-1 text-left">
               <h3 className="text-base text-[#F5F1E8] font-light">Passwords Vault</h3>
@@ -279,7 +279,7 @@ export default function Notes() {
       </div>}
 
       <button onClick={handleCreateNote} className="fixed right-6 w-14 h-14 rounded-full bg-[#C9A962] flex items-center justify-center shadow-xl hover:bg-[#D4B574] hover:scale-110 transition-all z-[55]" style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}>
-        <Plus className="w-7 h-7 text-[#0F0F0F]" strokeWidth={2} />
+        <Plus className="w-7 h-7 text-[#000000]" strokeWidth={2} />
       </button>
 
       {showPinModal && (
@@ -304,7 +304,7 @@ export default function Notes() {
                 <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Confirm PIN</label>
                 <input type="password" value={confirmPin} onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, '').slice(0, 6))} placeholder="••••\" className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-center text-2xl tracking-widest\" maxLength={6} />
               </div>
-              <button onClick={handleCreatePin} disabled={pin.length < 4 || pin !== confirmPin} className="w-full py-3 bg-[#C9A962] rounded-full text-sm text-[#0F0F0F] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              <button onClick={handleCreatePin} disabled={pin.length < 4 || pin !== confirmPin} className="w-full py-3 bg-[#C9A962] rounded-full text-sm text-[#000000] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 Create PIN & Unlock
               </button>
               <div className="bg-[#000000] border border-[rgba(201,169,98,0.2)] rounded-xl p-3">

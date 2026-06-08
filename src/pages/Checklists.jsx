@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+﻿import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ListChecks, Circle, CheckCircle2, ChevronDown, ChevronRight, Plus,
@@ -121,7 +121,7 @@ function ChecklistModal({
                 {templateItems.map((item, idx) => {
                   const isChecked = checkedItems[`${checklist.id}-${idx}`] || false;
                   return (
-                    <div key={idx} className={`flex items-center gap-3 p-3 rounded-xl bg-[rgba(37,37,37,0.5)] border border-[rgba(201,169,98,0.15)] transition-opacity ${isChecked ? 'opacity-50' : ''}`}>
+                    <div key={idx} className={`flex items-center gap-3 p-3 rounded-xl bg-[rgba(0,0,0,0.5)] border border-[rgba(201,169,98,0.15)] transition-opacity ${isChecked ? 'opacity-50' : ''}`}>
                       <button onClick={() => onToggleItem(checklist.id, idx)} className="flex-shrink-0">
                         {isChecked
                           ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
@@ -143,7 +143,7 @@ function ChecklistModal({
                   return (
                     <div key={itemKey}>
                       {editingItem === itemKey ? (
-                        <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(37,37,37,0.5)] border border-[rgba(201,169,98,0.3)]">
+                        <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(0,0,0,0.5)] border border-[rgba(201,169,98,0.3)]">
                           <input value={editText} onChange={e => setEditText(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') onEditItem(checklist.id, idx); if (e.key === 'Escape') setEditingItem(null); }}
                             className="flex-1 text-sm bg-transparent border-none outline-none text-[#F5F1E8]" autoFocus />
@@ -151,7 +151,7 @@ function ChecklistModal({
                           <button onClick={() => setEditingItem(null)} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
                         </div>
                       ) : (
-                        <div className={`flex items-center gap-3 p-3 rounded-xl bg-[rgba(37,37,37,0.5)] border border-[rgba(201,169,98,0.15)] ${isChecked ? 'opacity-50' : ''}`}>
+                        <div className={`flex items-center gap-3 p-3 rounded-xl bg-[rgba(0,0,0,0.5)] border border-[rgba(201,169,98,0.15)] ${isChecked ? 'opacity-50' : ''}`}>
                           <button onClick={() => onToggleCustom(checklist.id, idx)} className="flex-shrink-0">
                             {isChecked
                               ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
@@ -169,7 +169,7 @@ function ChecklistModal({
             )}
 
             {addingToTopic === checklist.id ? (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(37,37,37,0.5)] border border-[rgba(201,169,98,0.3)]">
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(0,0,0,0.5)] border border-[rgba(201,169,98,0.3)]">
                 <input value={newItemText} onChange={e => setNewItemText(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') onAddItem(checklist.id); if (e.key === 'Escape') { setAddingToTopic(null); setNewItemText(''); } }}
                   placeholder="New item..." className="flex-1 text-sm bg-transparent border-none outline-none text-[#F5F1E8] placeholder-[#6B6B6B]" autoFocus />
@@ -467,7 +467,7 @@ export default function Checklists() {
                 onClick={() => setActiveCategory(tab)}
                 className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-light transition-all duration-200 ${
                   isActive
-                    ? 'text-[#0F0F0F] shadow-sm'
+                    ? 'text-[#000000] shadow-sm'
                     : 'text-[#B8B8B8] hover:text-[#F5F1E8] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.07)]'
                 }`}
                 style={isActive ? { backgroundColor: color } : {}}
@@ -504,7 +504,7 @@ export default function Checklists() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.03 }}
-                  className="rounded-2xl border border-[rgba(201,169,98,0.3)] shadow-[0_0_8px_rgba(201,169,98,0.1)] backdrop-blur-sm hover:border-[rgba(201,169,98,0.5)] transition-all duration-300 overflow-hidden bg-gradient-to-br from-[rgba(37,37,37,0.8)] to-[rgba(26,26,26,0.6)]"
+                  className="rounded-2xl border border-[rgba(201,169,98,0.3)] shadow-[0_0_8px_rgba(201,169,98,0.1)] backdrop-blur-sm hover:border-[rgba(201,169,98,0.5)] transition-all duration-300 overflow-hidden bg-gradient-to-br from-[rgba(0,0,0,0.8)] to-[rgba(0,0,0,0.6)]"
                 >
                   <button
                     onClick={() => setActiveChecklist(checklist.id)}
@@ -565,7 +565,7 @@ export default function Checklists() {
         className="fixed right-6 w-14 h-14 bg-[#C9A962] rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all z-[55]"
         style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}
       >
-        <Plus className="w-6 h-6 text-[#0F0F0F]" strokeWidth={2} />
+        <Plus className="w-6 h-6 text-[#000000]" strokeWidth={2} />
       </button>
 
       {/* Checklist Modal */}
@@ -619,7 +619,7 @@ export default function Checklists() {
                         onClick={() => setNewChecklistCategory(cat)}
                         className="px-3 py-1.5 rounded-full text-xs font-light transition-all"
                         style={isActive
-                          ? { backgroundColor: color, color: '#0F0F0F' }
+                          ? { backgroundColor: color, color: '#000000' }
                           : { backgroundColor: `${color}18`, color: color, border: `1px solid ${color}40` }
                         }
                       >
@@ -637,7 +637,7 @@ export default function Checklists() {
                 <div className="flex items-center gap-2">
                   <Input value={newChecklistItemInput} onChange={e => setNewChecklistItemInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleAddChecklistItem(); }} placeholder="Enter item..." className="flex-1 border-[#C9A962]/20 bg-white/5 text-[#F5F1E8]" />
                   <button onClick={handleAddChecklistItem} className="w-10 h-10 bg-[#C9A962] rounded-lg flex items-center justify-center hover:bg-[#D4B978]">
-                    <Plus className="w-5 h-5 text-[#0F0F0F]" strokeWidth={2} />
+                    <Plus className="w-5 h-5 text-[#000000]" strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -646,7 +646,7 @@ export default function Checklists() {
                   <label className="block text-sm font-light text-[#B8B8B8] mb-2">Items ({newChecklistItems.length})</label>
                   <div className="space-y-2">
                     {newChecklistItems.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2 p-3 rounded-lg bg-[rgba(37,37,37,0.4)] border border-[rgba(201,169,98,0.15)]">
+                      <div key={idx} className="flex items-center gap-2 p-3 rounded-lg bg-[rgba(0,0,0,0.4)] border border-[rgba(201,169,98,0.15)]">
                         <div className="flex-1 text-sm font-light text-[#F5F1E8]">{item}</div>
                         <button onClick={() => setNewChecklistItems(newChecklistItems.filter((_, i) => i !== idx))} className="p-1 text-red-400">
                           <X className="w-4 h-4" strokeWidth={1.5} />
@@ -656,7 +656,7 @@ export default function Checklists() {
                   </div>
                 </div>
               )}
-              <button onClick={handleCreateChecklist} className="w-full py-3 bg-gradient-to-r from-[#D4B978] to-[#C9A962] text-[#0F0F0F] rounded-xl font-light">
+              <button onClick={handleCreateChecklist} className="w-full py-3 bg-gradient-to-r from-[#D4B978] to-[#C9A962] text-[#000000] rounded-xl font-light">
                 Create Checklist
               </button>
             </div>

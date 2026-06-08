@@ -350,7 +350,7 @@ export default function TodayTasks({ tasks }) {
                         <button
                           onClick={handleSaveTask}
                           disabled={!taskData.title?.trim() || loading}
-                          className="flex-1 py-3 bg-[#C9A962] rounded-full text-sm text-[#0F0F0F] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50"
+                          className="flex-1 py-3 bg-[#C9A962] rounded-full text-sm text-[#000000] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50"
                         >
                           {loading ? 'Saving...' : 'Update Task'}
                         </button>

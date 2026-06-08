@@ -114,7 +114,7 @@ export default function WorkoutViewModal({
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[#C9A962] flex items-center justify-center text-[#0F0F0F] text-sm font-medium">
+                        <div className="w-8 h-8 rounded-full bg-[#C9A962] flex items-center justify-center text-[#000000] text-sm font-medium">
                           {index + 1}
                         </div>
                         <h5 className="text-[#F5F1E8] font-light">{exercise.name}</h5>
@@ -162,7 +162,7 @@ export default function WorkoutViewModal({
                 </button>
                 <button
                   onClick={() => onDuplicate(workout)}
-                  className="flex-1 px-6 py-3 bg-[#C9A962] text-[#0F0F0F] rounded-xl hover:bg-[#D4B574] transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 px-6 py-3 bg-[#C9A962] text-[#000000] rounded-xl hover:bg-[#D4B574] transition-colors flex items-center justify-center gap-2"
                 >
                   <Copy className="w-4 h-4" strokeWidth={2} />
                   Duplicate to My Workouts
@@ -171,7 +171,7 @@ export default function WorkoutViewModal({
             ) : (
               <div className="space-y-3">
                 <button
-                  className="w-full px-6 py-3 bg-[#C9A962] text-[#0F0F0F] rounded-xl hover:bg-[#D4B574] transition-colors flex items-center justify-center gap-2"
+                  className="w-full px-6 py-3 bg-[#C9A962] text-[#000000] rounded-xl hover:bg-[#D4B574] transition-colors flex items-center justify-center gap-2"
                 >
                   <Play className="w-4 h-4" strokeWidth={2} />
                   Start Workout

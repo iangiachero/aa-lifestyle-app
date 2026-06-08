@@ -15,11 +15,11 @@ const MODAL_STYLE = {
 };
 
 const CARD_GRADIENTS = [
-  'linear-gradient(135deg, #2a2520 0%, #1a1510 100%)',
-  'linear-gradient(135deg, #252028 0%, #15101a 100%)',
+  'linear-gradient(135deg, #000000 0%, #000000 100%)',
+  'linear-gradient(135deg, #000000 0%, #000000 100%)',
   'linear-gradient(135deg, #202520 0%, #101a10 100%)',
-  'linear-gradient(135deg, #252520 0%, #1a1a10 100%)',
-  'linear-gradient(135deg, #28201a 0%, #1a1008 100%)',
+  'linear-gradient(135deg, #000000 0%, #000000 100%)',
+  'linear-gradient(135deg, #000000 0%, #000000 100%)',
   'linear-gradient(135deg, #202028 0%, #101018 100%)',
 ];
 
@@ -188,10 +188,10 @@ export default function AddModuleModal({ visible, onClose, onAdd }) {
               <button
                 onClick={handleSave}
                 disabled={!name.trim() || saving || uploading}
-                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[#6B6B6B] text-[#0F0F0F] font-medium py-4 rounded-xl transition-all text-sm flex items-center justify-center gap-2"
+                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[#6B6B6B] text-[#000000] font-medium py-4 rounded-xl transition-all text-sm flex items-center justify-center gap-2"
               >
                 {saving ? (
-                  <div className="w-4 h-4 border-2 border-[#0F0F0F] border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-[#000000] border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <>
                     <Plus className="w-4 h-4" strokeWidth={2} />

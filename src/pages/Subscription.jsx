@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, Check, Lock, Crown, Loader2, AlertCircle, CheckCircle2, Star } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -232,7 +232,7 @@ export default function Subscription() {
         {!isPro ? (
           <>
             <div className="flex flex-col gap-3">
-              <div className="rounded-2xl p-4" style={{ background: 'rgba(37,37,37,0.6)', border: '1px solid rgba(201,169,98,0.2)' }}>
+              <div className="rounded-2xl p-4" style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(201,169,98,0.2)' }}>
                 <p className="text-base text-[#F5F1E8] font-light mb-0.5" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Free</p>
                 <p className="text-xs text-[#8A7E72] mb-3">Basic features</p>
                 <p className="text-2xl text-[#C9A962] mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>$0</p>
@@ -258,7 +258,7 @@ export default function Subscription() {
                     onClick={() => setSelectedPlan(plan.id)}
                     className="rounded-2xl p-4 cursor-pointer transition-all relative"
                     style={{
-                      background: selectedPlan === plan.id ? 'rgba(37,37,37,0.9)' : 'rgba(37,37,37,0.5)',
+                      background: selectedPlan === plan.id ? 'rgba(0,0,0,0.9)' : 'rgba(0,0,0,0.5)',
                       border: selectedPlan === plan.id ? '1.5px solid rgba(201,169,98,0.6)' : '1px solid rgba(201,169,98,0.18)',
                       boxShadow: selectedPlan === plan.id ? '0 0 18px rgba(201,169,98,0.1)' : 'none',
                     }}
@@ -331,7 +331,7 @@ export default function Subscription() {
           </>
         ) : (
           <div className="flex flex-col gap-3">
-            <div className="rounded-2xl p-4 relative" style={{ background: 'rgba(37,37,37,0.8)', border: '1.5px solid rgba(201,169,98,0.5)' }}>
+            <div className="rounded-2xl p-4 relative" style={{ background: 'rgba(0,0,0,0.8)', border: '1.5px solid rgba(201,169,98,0.5)' }}>
               <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full flex items-center gap-1" style={{ background: 'rgba(201,169,98,0.2)', border: '1px solid rgba(201,169,98,0.4)' }}>
                 <Check className="w-3 h-3 text-[#C9A962]" strokeWidth={2.5} />
                 <span className="text-[10px] text-[#C9A962]">Active</span>
@@ -364,13 +364,13 @@ export default function Subscription() {
         )}
 
         <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,169,98,0.2)' }}>
-          <div className="px-4 py-3" style={{ background: 'rgba(37,37,37,0.8)', borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
+          <div className="px-4 py-3" style={{ background: 'rgba(0,0,0,0.8)', borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
             <p className="text-center text-sm text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.1em' }}>
               Feature Comparison
             </p>
           </div>
 
-          <div className="grid grid-cols-3 px-4 py-2" style={{ background: 'rgba(37,37,37,0.6)', borderBottom: '1px solid rgba(201,169,98,0.1)' }}>
+          <div className="grid grid-cols-3 px-4 py-2" style={{ background: 'rgba(0,0,0,0.6)', borderBottom: '1px solid rgba(201,169,98,0.1)' }}>
             <span className="text-xs text-[#8A7E72]">Features</span>
             <span className="text-xs text-[#8A7E72] text-center">Free</span>
             <span className="text-xs text-[#C9A962] text-center">Pro</span>
@@ -381,7 +381,7 @@ export default function Subscription() {
               key={f.label}
               className="grid grid-cols-3 px-4 py-3 items-center"
               style={{
-                background: i % 2 === 0 ? 'rgba(37,37,37,0.4)' : 'rgba(26,26,26,0.4)',
+                background: i % 2 === 0 ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.4)',
                 borderBottom: i < ALL_FEATURES.length - 1 ? '1px solid rgba(201,169,98,0.08)' : 'none'
               }}
             >

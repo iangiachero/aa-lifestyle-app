@@ -15,7 +15,7 @@ export default function LuxuryBackground() {
               #1f1f1f 0%,
               #000000 15%,
               #151515 30%,
-              #0f0f0f 50%,
+              #000000 50%,
               #151515 70%,
               #000000 85%,
               #1f1f1f 100%

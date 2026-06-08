@@ -543,7 +543,7 @@ export default function MealPlanning() {
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                    style={{ backgroundColor: 'rgba(37,37,37,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -586,7 +586,7 @@ export default function MealPlanning() {
                     onChange={e => setFormData({ ...formData, notes: e.target.value })}
                     rows={3}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none text-sm font-light"
-                    style={{ backgroundColor: 'rgba(37,37,37,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
                 </div>
 
                 <div>
@@ -597,7 +597,7 @@ export default function MealPlanning() {
                     onChange={e => setFormData({ ...formData, ingredients: e.target.value })}
                     rows={5}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none text-xs font-mono"
-                    style={{ backgroundColor: 'rgba(37,37,37,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
                 </div>
 
                 <div className="pt-2">
@@ -633,7 +633,7 @@ export default function MealPlanning() {
                     value={recipeForm.title}
                     onChange={e => setRecipeForm({ ...recipeForm, title: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                    style={{ backgroundColor: 'rgba(37,37,37,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
                 </div>
 
                 <div>
@@ -653,7 +653,7 @@ export default function MealPlanning() {
                       value={recipeForm.time}
                       onChange={e => setRecipeForm({ ...recipeForm, time: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                      style={{ backgroundColor: 'rgba(37,37,37,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                      style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
                   </div>
                   <div>
                     <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Calories</label>
@@ -664,7 +664,7 @@ export default function MealPlanning() {
                       value={recipeForm.calories}
                       onChange={e => setRecipeForm({ ...recipeForm, calories: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                      style={{ backgroundColor: 'rgba(37,37,37,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                      style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
                   </div>
                 </div>
 
@@ -678,7 +678,7 @@ export default function MealPlanning() {
                       value={recipeForm.servings}
                       onChange={e => setRecipeForm({ ...recipeForm, servings: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                      style={{ backgroundColor: 'rgba(37,37,37,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                      style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
                   </div>
                   <div>
                     <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Difficulty</label>
@@ -701,7 +701,7 @@ export default function MealPlanning() {
                     onChange={e => setRecipeForm({ ...recipeForm, ingredients: e.target.value })}
                     rows={5}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none text-xs font-mono"
-                    style={{ backgroundColor: 'rgba(37,37,37,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
                 </div>
 
                 <div className="pt-2">
