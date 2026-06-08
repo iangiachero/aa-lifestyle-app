@@ -16,6 +16,7 @@ import { Input } from '../components/ui/input';
 import { supabase } from '../lib/supabase';
 import { useModal } from '../context/ModalContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { seedChecklists } from '../lib/seedChecklists';
 import ColorPicker from '../components/ui/ColorPicker';
 import { getChecklistImage } from '../data/checklistImages';
 
@@ -219,7 +220,9 @@ export default function Checklists() {
   const [newChecklistColor, setNewChecklistColor] = useState('#6B7280');
   const [newChecklistCategory, setNewChecklistCategory] = useState('Productivity');
 
-  const { data: userChecklists = [] } = useQuery({
+  const checklistSeeded = useRef(false);
+
+  const { data: userChecklists = [], isLoading: checklistsLoading } = useQuery({
     queryKey: ['userChecklists'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -233,6 +236,20 @@ export default function Checklists() {
       return data || [];
     },
   });
+
+  useEffect(() => {
+    if (checklistSeeded.current || checklistsLoading) return;
+    if (userChecklists.length < 5) {
+      checklistSeeded.current = true;
+      (async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await seedChecklists(user.id);
+          queryClient.invalidateQueries({ queryKey: ['userChecklists'] });
+        }
+      })();
+    }
+  }, [userChecklists, checklistsLoading, queryClient]);
 
   const { data: checklistProgress = {} } = useQuery({
     queryKey: ['checklistProgress'],

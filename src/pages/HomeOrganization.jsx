@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import CreateModal from './homeorganization/components/Create';
 import ViewCategoryModal from './homeorganization/components/ViewCategoryModal';
 import { homeOrgImages, homeOrgImagesById } from '../data/homeOrgImages';
+import { seedHomeOrg } from '../lib/seedHomeOrg';
 
 const CATEGORY_META = {
   'daily-reset-adhd':          { name: 'Daily Reset (ADHD Quick Wins)',  color: '#F59E0B' },
@@ -41,7 +42,9 @@ export default function HomeOrganization() {
   const [viewingCategory, setViewingCategory] = useState(null);
   const queryClient = useQueryClient();
 
-  const { data: orgTasks = [] } = useQuery({
+  const seeded = useRef(false);
+
+  const { data: orgTasks = [], isLoading } = useQuery({
     queryKey: ['organizationTasks'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -55,6 +58,21 @@ export default function HomeOrganization() {
       return data || [];
     },
   });
+
+  useEffect(() => {
+    if (seeded.current || isLoading) return;
+    const uniqueSections = new Set(orgTasks.map(t => t.section));
+    if (uniqueSections.size < 10 && orgTasks.length < 100) {
+      seeded.current = true;
+      (async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await seedHomeOrg(user.id);
+          queryClient.invalidateQueries({ queryKey: ['organizationTasks'] });
+        }
+      })();
+    }
+  }, [orgTasks, isLoading, queryClient]);
 
   const createTaskMutation = useMutation({
     mutationFn: async (taskData) => {
