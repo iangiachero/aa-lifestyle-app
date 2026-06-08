@@ -6,7 +6,7 @@ import { Plus, ChevronLeft, ChevronRight, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
 import CreateModal from './homeorganization/components/Create';
 import ViewCategoryModal from './homeorganization/components/ViewCategoryModal';
-import { homeOrgImages } from '../data/homeOrgImages';
+import { homeOrgImages, homeOrgImagesById } from '../data/homeOrgImages';
 
 const CATEGORY_META = {
   'daily-reset-adhd':          { name: 'Daily Reset (ADHD Quick Wins)',  color: '#F59E0B' },
@@ -157,7 +157,7 @@ export default function HomeOrganization() {
         id: sectionId,
         title,
         color_tag: meta ? meta.color : '#C9A962',
-        image_url: homeOrgImages[title] || null,
+        image_url: homeOrgImagesById[sectionId] || homeOrgImages[title] || null,
       };
     });
   }, [tasksBySection]);
