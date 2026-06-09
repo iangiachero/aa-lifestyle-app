@@ -224,7 +224,9 @@ export function getHolidaysForYear(year) {
     { name: 'Martin Luther King Jr. Day', date: getNthWeekdayOfMonth(year, 0, 1, 3), emoji: '✊', holidayCategory: 'usa' },
     { name: "Presidents' Day", date: getNthWeekdayOfMonth(year, 1, 1, 3), emoji: '🎩', holidayCategory: 'usa' },
     { name: 'Memorial Day', date: getLastWeekdayOfMonth(year, 4, 1), emoji: '🇺🇸', holidayCategory: 'usa' },
-    { name: 'Labor Day', date: getNthWeekdayOfMonth(year, 8, 1, 1), emoji: '⚒️', holidayCategory: 'usa' },
+    { name: 'Labor Day', date: getNthWeekdayOfMonth(year, 8, 1, 1), emoji: '🇺🇸', holidayCategory: 'usa' },
+    { name: "Mother's Day", date: getNthWeekdayOfMonth(year, 4, 0, 2), emoji: '💐', holidayCategory: 'usa' },
+    { name: "Father's Day", date: getNthWeekdayOfMonth(year, 5, 0, 3), emoji: '👔', holidayCategory: 'usa' },
     { name: 'Thanksgiving', date: getNthWeekdayOfMonth(year, 10, 4, 4), emoji: '🦃', holidayCategory: 'usa' },
 
     { name: 'Epiphany', date: `${year}-01-06`, emoji: '⭐', holidayCategory: 'christian' },
