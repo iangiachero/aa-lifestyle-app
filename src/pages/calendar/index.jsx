@@ -406,12 +406,36 @@ export default function CalendarIndex() {
     setShowEventModal(true);
   };
 
-  const handleSaveEvent = () => {
+  const handleSaveEvent = async () => {
     if (!eventData.title.trim()) return;
     if (editingEvent) {
-      const payload = { ...eventData };
-      if (!payload.recurrence_end_date) delete payload.recurrence_end_date;
-      updateEventMutation.mutate({ id: editingEvent.id, data: payload });
+      // "Edit this event only" for a recurring instance:
+      // 1. Add exception to base event for the original date
+      // 2. Create a new standalone event with the edited data
+      if (editingEvent.isRecurringInstance && editingEvent.baseEventId) {
+        const baseEventId = editingEvent.baseEventId;
+        const originalDate = editingEvent.originalDate || editingEvent.date;
+        // Add exception to base event
+        const baseEvent = events.find(e => e.id === baseEventId);
+        if (baseEvent) {
+          const currentExceptions = baseEvent.recurrence_exceptions || [];
+          if (!currentExceptions.includes(originalDate)) {
+            await supabase
+              .from('events')
+              .update({ recurrence_exceptions: [...currentExceptions, originalDate] })
+              .eq('id', baseEventId);
+          }
+        }
+        // Create new standalone event for this occurrence
+        const newPayload = { ...eventData, repeat: 'none', recurrence_end_date: null, recurrence_exceptions: [] };
+        delete newPayload.recurrence_end_date;
+        createEventMutation.mutate(newPayload);
+      } else {
+        // Normal edit (edit all in series, or non-recurring event)
+        const payload = { ...eventData };
+        if (!payload.recurrence_end_date) delete payload.recurrence_end_date;
+        updateEventMutation.mutate({ id: editingEvent.id, data: payload });
+      }
     } else {
       createEventMutation.mutate(eventData);
     }
@@ -446,7 +470,7 @@ export default function CalendarIndex() {
 
     if (type === 'edit') {
       if (choice === 'this') {
-        openEditModal(event);
+        openEditModal({ ...event, isRecurringInstance: true, originalDate: event.date });
       } else {
         const baseEvent = events.find(e => e.id === event.baseEventId) || event;
         openEditModal({ ...baseEvent, isRecurringInstance: false });
