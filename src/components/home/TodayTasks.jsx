@@ -134,7 +134,10 @@ export default function TodayTasks({ tasks }) {
 
             <div className="flex items-center gap-1.5 flex-1 min-w-0">
               <ColorDot color={task.color_tag || priorityColors[task.priority] || '#C9A962'} size="sm" />
-              <span className={`text-xs font-light leading-snug truncate ${task.completed ? 'line-through text-[#6B6B6B]' : 'text-[#F5F1E8]'}`}>
+              <span
+                className={`text-sm leading-snug truncate ${task.completed ? 'line-through text-[#6B6B6B]' : 'text-[#F5F1E8]'}`}
+                style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, letterSpacing: '0.01em' }}
+              >
                 {task.title}
               </span>
               {!task.due_date && !task.completed && (

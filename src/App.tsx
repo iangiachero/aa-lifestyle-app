@@ -1,6 +1,7 @@
 //src/App.tsx
 import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import Layout from './components/Layout';
 import PwaUpdateBanner from './components/PwaUpdateBanner';
 import SplashScreen from './components/SplashScreen';
@@ -43,6 +44,32 @@ const Checklists = lazy(() => import('./pages/Checklists'));
 const HomeOrganization = lazy(() => import('./pages/HomeOrganization'));
 const PWATutorial = lazy(() => import('./pages/PWATutorial'));
 const PasswordVault = lazy(() => import('./pages/PasswordVault'));
+
+const pageVariants = {
+  initial: { opacity: 0, y: 6 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -4 },
+};
+
+const pageTransition = {
+  duration: 0.22,
+  ease: [0.25, 0.46, 0.45, 0.94],
+};
+
+function PageTransition({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={pageTransition}
+      style={{ minHeight: '100%', display: 'flex', flexDirection: 'column' }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { session, loading, userProfile } = useAuth();
@@ -88,6 +115,53 @@ function RequirePro({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/login" element={<GuestOnly><Layout currentPageName="Login"><PageTransition><Login /></PageTransition></Layout></GuestOnly>} />
+        <Route path="/splash" element={<Layout currentPageName="Splash"><PageTransition><Splash /></PageTransition></Layout>} />
+        <Route path="/welcome" element={<RequireAuth><WelcomeScreen /></RequireAuth>} />
+        <Route path="/onboarding" element={<RequireAuth><Layout currentPageName="Onboarding"><PageTransition><OnboardingFlow /></PageTransition></Layout></RequireAuth>} />
+
+        <Route path="/" element={<RequireAuth><Layout currentPageName="Home"><PageTransition><Home /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/calendar" element={<RequireAuth><Layout currentPageName="CalendarPage"><PageTransition><CalendarPage /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/tasks" element={<RequireAuth><Layout currentPageName="Tasks"><PageTransition><Tasks /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/lifestyle" element={<RequireAuth><RequirePro><Layout currentPageName="Lifestyle"><PageTransition><Lifestyle /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/profile" element={<RequireAuth><Layout currentPageName="Profile"><PageTransition><Profile /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/settings" element={<RequireAuth><Layout currentPageName="Settings"><PageTransition><Settings /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/subscription" element={<RequireAuth><Layout currentPageName="Subscription"><PageTransition><Subscription /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/habits" element={<RequireAuth><Layout currentPageName="Habits"><PageTransition><Habits /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/sleep" element={<RequireAuth><Layout currentPageName="Sleep"><PageTransition><Sleep /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/birthdays" element={<RequireAuth><Layout currentPageName="Birthdays"><PageTransition><Birthdays /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/goals" element={<RequireAuth><Layout currentPageName="Goals"><PageTransition><Goals /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/journal" element={<RequireAuth><Layout currentPageName="Journal"><PageTransition><Journal /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/finance" element={<RequireAuth><Layout currentPageName="Finance"><PageTransition><Finance /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/workout" element={<RequireAuth><RequirePro><Layout currentPageName="Fitness"><PageTransition><Fitness /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/nutrition" element={<RequireAuth><Layout currentPageName="Nutrition"><PageTransition><Nutrition /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/reading" element={<RequireAuth><Layout currentPageName="Reading"><PageTransition><Reading /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/travel" element={<RequireAuth><Layout currentPageName="Travel"><PageTransition><Travel /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/projects" element={<RequireAuth><Layout currentPageName="Projects"><PageTransition><Projects /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/notes" element={<RequireAuth><Layout currentPageName="Notes"><PageTransition><Notes /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/contacts" element={<RequireAuth><Layout currentPageName="Contacts"><PageTransition><Contacts /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/reminders" element={<RequireAuth><Layout currentPageName="Reminders"><PageTransition><Reminders /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/shopping" element={<RequireAuth><Layout currentPageName="Shopping"><PageTransition><Shopping /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/shop" element={<RequireAuth><Layout currentPageName="Shop"><PageTransition><Shop /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/grocery" element={<RequireAuth><Layout currentPageName="GroceryList"><PageTransition><GroceryList /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/routines" element={<RequireAuth><Layout currentPageName="Routines"><PageTransition><Routines /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/student" element={<RequireAuth><RequirePro><Layout currentPageName="Student"><PageTransition><Student /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/meals" element={<RequireAuth><RequirePro><Layout currentPageName="MealPlanning"><PageTransition><MealPlanning /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/checklists" element={<RequireAuth><Layout currentPageName="Checklists"><PageTransition><Checklists /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/home-organization" element={<RequireAuth><RequirePro><Layout currentPageName="HomeOrganization"><PageTransition><HomeOrganization /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/pwa-tutorial" element={<RequireAuth><Layout currentPageName="PWATutorial"><PageTransition><PWATutorial /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/vault" element={<RequireAuth><Layout currentPageName="PasswordVault"><PageTransition><PasswordVault /></PageTransition></Layout></RequireAuth>} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 function App() {
   useCapacitor();
   const { updateAvailable, applyUpdate } = usePwaUpdate();
@@ -97,44 +171,7 @@ function App() {
       {updateAvailable && <PwaUpdateBanner onUpdate={applyUpdate} />}
       <Router>
         <Suspense fallback={<SplashScreen />}>
-          <Routes>
-            <Route path="/login" element={<GuestOnly><Layout currentPageName="Login"><Login /></Layout></GuestOnly>} />
-            <Route path="/splash" element={<Layout currentPageName="Splash"><Splash /></Layout>} />
-            <Route path="/welcome" element={<RequireAuth><WelcomeScreen /></RequireAuth>} />
-            <Route path="/onboarding" element={<RequireAuth><Layout currentPageName="Onboarding"><OnboardingFlow /></Layout></RequireAuth>} />
-
-            <Route path="/" element={<RequireAuth><Layout currentPageName="Home"><Home /></Layout></RequireAuth>} />
-            <Route path="/calendar" element={<RequireAuth><Layout currentPageName="CalendarPage"><CalendarPage /></Layout></RequireAuth>} />
-            <Route path="/tasks" element={<RequireAuth><Layout currentPageName="Tasks"><Tasks /></Layout></RequireAuth>} />
-            <Route path="/lifestyle" element={<RequireAuth><RequirePro><Layout currentPageName="Lifestyle"><Lifestyle /></Layout></RequirePro></RequireAuth>} />
-            <Route path="/profile" element={<RequireAuth><Layout currentPageName="Profile"><Profile /></Layout></RequireAuth>} />
-            <Route path="/settings" element={<RequireAuth><Layout currentPageName="Settings"><Settings /></Layout></RequireAuth>} />
-            <Route path="/subscription" element={<RequireAuth><Layout currentPageName="Subscription"><Subscription /></Layout></RequireAuth>} />
-            <Route path="/habits" element={<RequireAuth><Layout currentPageName="Habits"><Habits /></Layout></RequireAuth>} />
-            <Route path="/sleep" element={<RequireAuth><Layout currentPageName="Sleep"><Sleep /></Layout></RequireAuth>} />
-            <Route path="/birthdays" element={<RequireAuth><Layout currentPageName="Birthdays"><Birthdays /></Layout></RequireAuth>} />
-            <Route path="/goals" element={<RequireAuth><Layout currentPageName="Goals"><Goals /></Layout></RequireAuth>} />
-            <Route path="/journal" element={<RequireAuth><Layout currentPageName="Journal"><Journal /></Layout></RequireAuth>} />
-            <Route path="/finance" element={<RequireAuth><Layout currentPageName="Finance"><Finance /></Layout></RequireAuth>} />
-            <Route path="/workout" element={<RequireAuth><RequirePro><Layout currentPageName="Fitness"><Fitness /></Layout></RequirePro></RequireAuth>} />
-            <Route path="/nutrition" element={<RequireAuth><Layout currentPageName="Nutrition"><Nutrition /></Layout></RequireAuth>} />
-            <Route path="/reading" element={<RequireAuth><Layout currentPageName="Reading"><Reading /></Layout></RequireAuth>} />
-            <Route path="/travel" element={<RequireAuth><Layout currentPageName="Travel"><Travel /></Layout></RequireAuth>} />
-            <Route path="/projects" element={<RequireAuth><Layout currentPageName="Projects"><Projects /></Layout></RequireAuth>} />
-            <Route path="/notes" element={<RequireAuth><Layout currentPageName="Notes"><Notes /></Layout></RequireAuth>} />
-            <Route path="/contacts" element={<RequireAuth><Layout currentPageName="Contacts"><Contacts /></Layout></RequireAuth>} />
-            <Route path="/reminders" element={<RequireAuth><Layout currentPageName="Reminders"><Reminders /></Layout></RequireAuth>} />
-            <Route path="/shopping" element={<RequireAuth><Layout currentPageName="Shopping"><Shopping /></Layout></RequireAuth>} />
-            <Route path="/shop" element={<RequireAuth><Layout currentPageName="Shop"><Shop /></Layout></RequireAuth>} />
-            <Route path="/grocery" element={<RequireAuth><Layout currentPageName="GroceryList"><GroceryList /></Layout></RequireAuth>} />
-            <Route path="/routines" element={<RequireAuth><Layout currentPageName="Routines"><Routines /></Layout></RequireAuth>} />
-            <Route path="/student" element={<RequireAuth><RequirePro><Layout currentPageName="Student"><Student /></Layout></RequirePro></RequireAuth>} />
-            <Route path="/meals" element={<RequireAuth><RequirePro><Layout currentPageName="MealPlanning"><MealPlanning /></Layout></RequirePro></RequireAuth>} />
-            <Route path="/checklists" element={<RequireAuth><Layout currentPageName="Checklists"><Checklists /></Layout></RequireAuth>} />
-            <Route path="/home-organization" element={<RequireAuth><RequirePro><Layout currentPageName="HomeOrganization"><HomeOrganization /></Layout></RequirePro></RequireAuth>} />
-            <Route path="/pwa-tutorial" element={<RequireAuth><Layout currentPageName="PWATutorial"><PWATutorial /></Layout></RequireAuth>} />
-            <Route path="/vault" element={<RequireAuth><Layout currentPageName="PasswordVault"><PasswordVault /></Layout></RequireAuth>} />
-          </Routes>
+          <AnimatedRoutes />
         </Suspense>
       </Router>
     </>

@@ -7,10 +7,11 @@ import { useModal } from '../context/ModalContext';
 import { encryptPassword, decryptPassword } from '../utils/crypto';
 import PinSetup from './passwordvault/PinSetup';
 import PinVerify from './passwordvault/PinVerify';
+import ChangePinModal from './passwordvault/ChangePinModal';
 import {
   Plus, ChevronLeft, X, Eye, EyeOff, Copy, Pencil, Trash2,
   Shield, Globe, CreditCard, ShoppingBag, Briefcase, Users, Lock,
-  Check,
+  Check, KeyRound,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -49,6 +50,8 @@ function VaultContent() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
+  const [showChangePinModal, setShowChangePinModal] = useState(false);
+  const [currentPinHash, setCurrentPinHash] = useState(null);
 
   useEffect(() => {
     if (showModal) {
@@ -56,6 +59,12 @@ function VaultContent() {
       return () => unregisterModal();
     }
   }, [showModal, registerModal, unregisterModal]);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    supabase.from('users').select('vault_pin_hash').eq('user_id', user.id).maybeSingle()
+      .then(({ data }) => setCurrentPinHash(data?.vault_pin_hash || null));
+  }, [user?.id]);
 
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [showFormPassword, setShowFormPassword] = useState(false);
@@ -225,6 +234,13 @@ function VaultContent() {
             <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Password Vault</h1>
           </div>
         </div>
+        <button
+          onClick={() => setShowChangePinModal(true)}
+          className="absolute right-4 hover:opacity-70 transition-opacity"
+          title="Change PIN"
+        >
+          <KeyRound className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+        </button>
       </div>
 
       <div className="page-safe-x pt-4 space-y-4">
@@ -569,6 +585,20 @@ function VaultContent() {
           </>
         )}
       </AnimatePresence>
+
+      {/* Change PIN modal */}
+      <AnimatePresence>
+        {showChangePinModal && currentPinHash && (
+          <ChangePinModal
+            pinHash={currentPinHash}
+            onClose={() => setShowChangePinModal(false)}
+            onChanged={(newHash) => {
+              setCurrentPinHash(newHash);
+              setShowChangePinModal(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -623,7 +653,13 @@ export default function PasswordVault() {
   }
 
   if (pinStatus === 'locked') {
-    return <PinVerify pinHash={pinHash} onUnlock={() => setPinStatus('unlocked')} />;
+    return (
+      <PinVerify
+        pinHash={pinHash}
+        onUnlock={() => setPinStatus('unlocked')}
+        onReset={() => { setPinHash(null); setPinStatus('setup'); }}
+      />
+    );
   }
 
   return <VaultContent />;

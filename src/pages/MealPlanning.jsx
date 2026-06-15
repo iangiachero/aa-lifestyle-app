@@ -81,6 +81,38 @@ export default function MealPlanning() {
 
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
 
+  /* ── Auto-reset logic ── */
+  useEffect(() => {
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const todayDay = format(new Date(), 'EEEE').toLowerCase();
+    const weekStartStr = format(weekStart, 'yyyy-MM-dd');
+
+    const lastDailyDate = localStorage.getItem('mealLastDailyDate');
+    const lastWeeklyDate = localStorage.getItem('mealLastWeeklyDate');
+
+    const doWeeklyReset = lastWeeklyDate !== weekStartStr;
+    const doDailyReset = !doWeeklyReset && lastDailyDate !== today;
+
+    if (!doWeeklyReset && !doDailyReset) return;
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      if (doWeeklyReset) {
+        supabase.from('meals').delete().eq('user_id', user.id).then(() => {
+          queryClient.invalidateQueries({ queryKey: ['meals'] });
+          localStorage.setItem('mealLastWeeklyDate', weekStartStr);
+          localStorage.setItem('mealLastDailyDate', today);
+        });
+      } else if (doDailyReset) {
+        supabase.from('meals').delete().eq('user_id', user.id).eq('day', todayDay).then(() => {
+          queryClient.invalidateQueries({ queryKey: ['meals'] });
+          localStorage.setItem('mealLastDailyDate', today);
+        });
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const showNotification = (message) => {
     setNotification(message);
     setTimeout(() => setNotification(null), 3000);

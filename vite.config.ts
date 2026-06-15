@@ -99,7 +99,17 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  optimizeDeps: {
-    exclude: ['lucide-react'],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-motion': ['framer-motion'],
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-supabase': ['@supabase/supabase-js'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
   },
 });

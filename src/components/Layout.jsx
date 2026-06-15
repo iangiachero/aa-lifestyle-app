@@ -154,19 +154,15 @@ export default function Layout({ children, currentPageName }) {
     <div
       className={isAuthPage ? "min-h-screen flex flex-col overflow-x-hidden" : "fixed inset-0 overflow-hidden"}
       style={{
-        background: isAuthPage
-          ? `radial-gradient(ellipse at 50% 20%, rgba(255, 255, 255, 0.35) 0%, transparent 50%), linear-gradient(to bottom, #FDFBF6, ${effectiveTheme.bg}, ${effectiveTheme.bgGradient})`
-          : '#000000',
-        color: isAuthPage ? effectiveTheme.text : '#F5F1E8',
+        background: '#000000',
+        color: '#F5F1E8',
         '--accent-color': effectiveTheme.accent,
-        '--bg-color': effectiveTheme.bg,
-        '--text-color': effectiveTheme.text,
+        '--bg-color': '#000000',
+        '--text-color': '#F5F1E8',
         maxWidth: '100vw',
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-
         :root {
           --accent: ${effectiveTheme.accent};
           --accent-light: ${effectiveTheme.accentLight};
@@ -189,11 +185,13 @@ export default function Layout({ children, currentPageName }) {
         }
 
         .font-sans {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+          letter-spacing: 0.01em;
+          -webkit-font-smoothing: antialiased;
           background: ${isAuthPage ? 'var(--bg)' : '#000000'};
         }
 

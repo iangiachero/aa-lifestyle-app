@@ -61,10 +61,7 @@ export default function Login() {
       className="min-h-screen flex flex-col items-center justify-center px-6 py-12"
       style={{ background: '#000000', fontFamily: "'Inter', sans-serif" }}
     >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-        .login-input::placeholder { color: rgba(138,126,114,0.6); }
-      `}</style>
+      <style>{`.login-input::placeholder { color: rgba(138,126,114,0.6); }`}</style>
 
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">

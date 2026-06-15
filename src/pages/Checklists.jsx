@@ -122,7 +122,7 @@ function ChecklistModal({
                 {templateItems.map((item, idx) => {
                   const isChecked = checkedItems[`${checklist.id}-${idx}`] || false;
                   return (
-                    <div key={idx} className={`flex items-center gap-3 p-3 rounded-xl bg-[rgba(0,0,0,0.5)] border border-[rgba(201,169,98,0.15)] transition-opacity ${isChecked ? 'opacity-50' : ''}`}>
+                    <div key={idx} className={`flex items-center gap-3 p-3 rounded-xl bg-[#000000] border border-[rgba(201,169,98,0.15)] transition-opacity ${isChecked ? 'opacity-50' : ''}`}>
                       <button onClick={() => onToggleItem(checklist.id, idx)} className="flex-shrink-0">
                         {isChecked
                           ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
@@ -144,7 +144,7 @@ function ChecklistModal({
                   return (
                     <div key={itemKey}>
                       {editingItem === itemKey ? (
-                        <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(0,0,0,0.5)] border border-[rgba(201,169,98,0.3)]">
+                        <div className="flex items-center gap-2 p-3 rounded-xl bg-[#000000] border border-[rgba(201,169,98,0.3)]">
                           <input value={editText} onChange={e => setEditText(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') onEditItem(checklist.id, idx); if (e.key === 'Escape') setEditingItem(null); }}
                             className="flex-1 text-sm bg-transparent border-none outline-none text-[#F5F1E8]" autoFocus />
@@ -152,7 +152,7 @@ function ChecklistModal({
                           <button onClick={() => setEditingItem(null)} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
                         </div>
                       ) : (
-                        <div className={`flex items-center gap-3 p-3 rounded-xl bg-[rgba(0,0,0,0.5)] border border-[rgba(201,169,98,0.15)] ${isChecked ? 'opacity-50' : ''}`}>
+                        <div className={`flex items-center gap-3 p-3 rounded-xl bg-[#000000] border border-[rgba(201,169,98,0.15)] ${isChecked ? 'opacity-50' : ''}`}>
                           <button onClick={() => onToggleCustom(checklist.id, idx)} className="flex-shrink-0">
                             {isChecked
                               ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
@@ -170,7 +170,7 @@ function ChecklistModal({
             )}
 
             {addingToTopic === checklist.id ? (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[rgba(0,0,0,0.5)] border border-[rgba(201,169,98,0.3)]">
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-[#000000] border border-[rgba(201,169,98,0.3)]">
                 <input value={newItemText} onChange={e => setNewItemText(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') onAddItem(checklist.id); if (e.key === 'Escape') { setAddingToTopic(null); setNewItemText(''); } }}
                   placeholder="New item..." className="flex-1 text-sm bg-transparent border-none outline-none text-[#F5F1E8] placeholder-[#6B6B6B]" autoFocus />
@@ -521,7 +521,7 @@ export default function Checklists() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.03 }}
-                  className="rounded-2xl border border-[rgba(201,169,98,0.3)] shadow-[0_0_8px_rgba(201,169,98,0.1)] backdrop-blur-sm hover:border-[rgba(201,169,98,0.5)] transition-all duration-300 overflow-hidden bg-gradient-to-br from-[rgba(0,0,0,0.8)] to-[rgba(0,0,0,0.6)]"
+                  className="rounded-2xl border border-[rgba(201,169,98,0.3)] shadow-[0_0_8px_rgba(201,169,98,0.1)] backdrop-blur-sm hover:border-[rgba(201,169,98,0.5)] transition-all duration-300 overflow-hidden bg-[#000000]"
                 >
                   <button
                     onClick={() => setActiveChecklist(checklist.id)}
@@ -663,7 +663,7 @@ export default function Checklists() {
                   <label className="block text-sm font-light text-[#B8B8B8] mb-2">Items ({newChecklistItems.length})</label>
                   <div className="space-y-2">
                     {newChecklistItems.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2 p-3 rounded-lg bg-[rgba(0,0,0,0.4)] border border-[rgba(201,169,98,0.15)]">
+                      <div key={idx} className="flex items-center gap-2 p-3 rounded-lg bg-[#000000] border border-[rgba(201,169,98,0.15)]">
                         <div className="flex-1 text-sm font-light text-[#F5F1E8]">{item}</div>
                         <button onClick={() => setNewChecklistItems(newChecklistItems.filter((_, i) => i !== idx))} className="p-1 text-red-400">
                           <X className="w-4 h-4" strokeWidth={1.5} />

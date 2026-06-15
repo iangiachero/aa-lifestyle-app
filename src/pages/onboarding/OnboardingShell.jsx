@@ -16,10 +16,6 @@ export function OnboardingShell({ children, step, totalSteps, footer }) {
         WebkitOverflowScrolling: 'touch',
       }}
     >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-      `}</style>
-
       <div
         style={{
           width: '100%',

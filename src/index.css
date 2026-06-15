@@ -158,7 +158,10 @@
   body {
     background: #000000 !important;
     @apply text-[#F5F1E8];
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
     min-height: 100dvh;
     height: 100%;
@@ -216,7 +219,9 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: Georgia, serif;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: 0.02em;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* Force dark backgrounds on all elements */

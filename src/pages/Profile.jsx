@@ -188,7 +188,7 @@ export default function Profile() {
   };
 
   const pfpUrl = userProfile?.pfp_url;
-  const inputClass = "w-full px-4 py-3 bg-[rgba(0,0,0,0.8)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#555] focus:outline-none focus:border-[#C9A962] transition-colors text-sm";
+  const inputClass = "w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#555] focus:outline-none focus:border-[#C9A962] transition-colors text-sm";
   const labelClass = "block text-xs uppercase tracking-widest text-[#8A7E72] mb-1.5";
 
   return (
@@ -208,10 +208,10 @@ export default function Profile() {
           <div className="relative mb-3">
             <button onClick={() => !uploading && fileInputRef.current?.click()} disabled={uploading}
               className="relative w-28 h-28 rounded-full border-2 border-[#C9A962] overflow-hidden flex items-center justify-center group transition-all duration-200"
-              style={{ background: 'rgba(0,0,0,0.8)', cursor: uploading ? 'not-allowed' : 'pointer' }}>
+              style={{ background: '#000000', cursor: uploading ? 'not-allowed' : 'pointer' }}>
               {pfpUrl ? (
                 <>
-                  <img src={pfpUrl} alt="Profile" className="w-full h-full object-cover" />
+                  <img src={pfpUrl} alt="Profile" loading="lazy" decoding="async" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-200 flex items-center justify-center">
                     <Camera className="w-7 h-7 text-white opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
                   </div>
@@ -251,7 +251,7 @@ export default function Profile() {
         </div>
 
         {/* Personal */}
-        <div className="rounded-2xl p-5 mb-4 space-y-4" style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(201,169,98,0.2)' }}>
+        <div className="rounded-2xl p-5 mb-4 space-y-4" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.2)' }}>
           <h3 className="text-xs uppercase tracking-widest mb-3" style={{ color: '#8A7E72' }}>Personal</h3>
           <div>
             <label className={labelClass}>Full Name</label>
@@ -269,7 +269,7 @@ export default function Profile() {
                   className="flex-1 py-2.5 rounded-xl text-sm capitalize transition-all duration-200"
                   style={{
                     border: formData.gender === g ? '1.5px solid rgba(201,169,98,0.6)' : '1.5px solid rgba(201,169,98,0.2)',
-                    background: formData.gender === g ? 'rgba(201,169,98,0.12)' : 'rgba(0,0,0,0.4)',
+                    background: formData.gender === g ? 'rgba(201,169,98,0.12)' : '#000000',
                     color: formData.gender === g ? '#C9A962' : '#8A7E72',
                   }}>
                   {g.charAt(0).toUpperCase() + g.slice(1)}
@@ -285,7 +285,7 @@ export default function Profile() {
                   className="flex-1 py-2.5 rounded-xl text-sm transition-all duration-200"
                   style={{
                     border: formData.is_student === val ? '1.5px solid rgba(201,169,98,0.6)' : '1.5px solid rgba(201,169,98,0.2)',
-                    background: formData.is_student === val ? 'rgba(201,169,98,0.12)' : 'rgba(0,0,0,0.4)',
+                    background: formData.is_student === val ? 'rgba(201,169,98,0.12)' : '#000000',
                     color: formData.is_student === val ? '#C9A962' : '#8A7E72',
                   }}>
                   {label}
@@ -296,7 +296,7 @@ export default function Profile() {
         </div>
 
         {/* Preferences */}
-        <div className="rounded-2xl p-5 mb-4 space-y-4" style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(201,169,98,0.2)' }}>
+        <div className="rounded-2xl p-5 mb-4 space-y-4" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.2)' }}>
           <h3 className="text-xs uppercase tracking-widest mb-3" style={{ color: '#8A7E72' }}>Preferences</h3>
           <div>
             <label className={labelClass}>Focus</label>
@@ -306,7 +306,7 @@ export default function Profile() {
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 text-left"
                   style={{
                     border: formData.focus === key ? '1.5px solid rgba(201,169,98,0.6)' : '1.5px solid rgba(201,169,98,0.15)',
-                    background: formData.focus === key ? 'rgba(201,169,98,0.1)' : 'rgba(0,0,0,0.4)',
+                    background: formData.focus === key ? 'rgba(201,169,98,0.1)' : '#000000',
                     color: formData.focus === key ? '#C9A962' : '#8A7E72',
                   }}>
                   <Icon size={15} />
@@ -324,7 +324,7 @@ export default function Profile() {
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 text-left"
                   style={{
                     border: formData.schedule_type === key ? '1.5px solid rgba(201,169,98,0.6)' : '1.5px solid rgba(201,169,98,0.15)',
-                    background: formData.schedule_type === key ? 'rgba(201,169,98,0.1)' : 'rgba(0,0,0,0.4)',
+                    background: formData.schedule_type === key ? 'rgba(201,169,98,0.1)' : '#000000',
                     color: formData.schedule_type === key ? '#C9A962' : '#8A7E72',
                   }}>
                   <Icon size={15} />

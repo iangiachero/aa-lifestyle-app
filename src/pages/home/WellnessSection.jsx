@@ -71,9 +71,11 @@ export default function WellnessSection() {
           {items.map((item) => (
             <Link key={item.label} to={item.path}>
               <div className={`${STYLE.itemCard.background} ${STYLE.itemCard.height} backdrop-blur-sm ${STYLE.itemCard.radius} ${STYLE.itemCard.padding} cursor-pointer transition-all duration-200 ${STYLE.itemCard.border} ${STYLE.itemCard.glow} ${STYLE.itemCard.hoverBorder} ${STYLE.itemCard.hoverGlow} ${STYLE.itemCard.hoverBg} flex flex-col items-center justify-between`}>
-                <img 
-                  src={item.icon} 
+                <img
+                  src={item.icon}
                   alt={item.label}
+                  loading="lazy"
+                  decoding="async"
                   className="w-[90px] h-[90px] object-cover flex-shrink-0"
                 />
                 <div className={`text-[9px] font-serif font-medium ${STYLE.colors.title} text-center leading-tight px-1`}>{item.label}</div>

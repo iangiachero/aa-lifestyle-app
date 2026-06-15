@@ -1,7 +1,9 @@
 ﻿import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Lock } from 'lucide-react';
 import { verifyPin } from '../../utils/pinHash';
+import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 
 const PIN_LENGTH = 6;
 const MAX_ATTEMPTS = 3;
@@ -28,13 +30,16 @@ function PinDots({ value, error }) {
   );
 }
 
-export default function PinVerify({ pinHash, onUnlock }) {
+export default function PinVerify({ pinHash, onUnlock, onReset }) {
+  const { user } = useAuth();
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [attempts, setAttempts] = useState(0);
   const [locked, setLocked] = useState(false);
   const [shake, setShake] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -84,6 +89,19 @@ export default function PinVerify({ pinHash, onUnlock }) {
   };
 
   const canUnlock = pin.length >= 4 && !locked && !checking;
+
+  const handleReset = async () => {
+    if (!user?.id) return;
+    setResetting(true);
+    try {
+      await supabase.from('password_vault').delete().eq('user_id', user.id);
+      await supabase.from('users').update({ vault_pin_hash: null }).eq('user_id', user.id);
+      sessionStorage.removeItem('vault_unlocked');
+      onReset();
+    } finally {
+      setResetting(false);
+    }
+  };
 
   return (
     <div className="min-h-full pb-32 flex flex-col">
@@ -178,8 +196,66 @@ export default function PinVerify({ pinHash, onUnlock }) {
           >
             {checking ? 'Verifying…' : locked ? 'Locked' : 'Unlock Vault'}
           </button>
+
+          <button
+            onClick={() => setShowResetConfirm(true)}
+            className="w-full mt-4 text-sm py-2 transition-opacity hover:opacity-70"
+            style={{ color: 'rgba(255,255,255,0.3)', fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            Forgot PIN?
+          </button>
         </div>
       </div>
+
+      {/* Reset confirmation */}
+      <AnimatePresence>
+        {showResetConfirm && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/70 z-[100]"
+              onClick={() => setShowResetConfirm(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+              transition={{ duration: 0.18 }}
+              className="fixed inset-x-4 z-[200]"
+              style={{ top: '50%', transform: 'translateY(-50%)' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="rounded-2xl p-6" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.25)' }}>
+                <h3 className="text-base text-[#F5F1E8] font-light mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                  Reset Vault?
+                </h3>
+                <p className="text-sm text-[#6B6B6B] mb-5 leading-relaxed">
+                  This will permanently delete <span className="text-[#F5F1E8]">all saved passwords</span> and reset your PIN. This action cannot be undone.
+                </p>
+                <div className="space-y-2.5">
+                  <button
+                    onClick={handleReset}
+                    disabled={resetting}
+                    className="w-full py-3 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+                    style={{ background: 'rgba(239,68,68,0.85)', color: '#FFFFFF' }}
+                  >
+                    {resetting ? 'Resetting…' : 'Yes, Reset Vault'}
+                  </button>
+                  <button
+                    onClick={() => setShowResetConfirm(false)}
+                    className="w-full py-3 rounded-xl text-sm text-[#B8B8B8] transition-colors"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(201,169,98,0.15)' }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

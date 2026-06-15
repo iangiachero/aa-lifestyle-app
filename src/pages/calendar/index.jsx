@@ -88,10 +88,21 @@ export default function CalendarIndex() {
     return stored === null ? true : stored === 'true';
   });
 
+  const [holidayCategories, setHolidayCategories] = useState(() => {
+    try {
+      const stored = localStorage.getItem('holidayCategories');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return ['usa', 'christian', 'cultural', 'seasonal'];
+  });
+
   useEffect(() => {
     const onStorage = (e) => {
       if (e.key === 'showHolidays') {
         setShowHolidays(e.newValue === null ? true : e.newValue === 'true');
+      }
+      if (e.key === 'holidayCategories') {
+        try { setHolidayCategories(JSON.parse(e.newValue) || []); } catch {}
       }
     };
     window.addEventListener('storage', onStorage);
@@ -170,9 +181,10 @@ export default function CalendarIndex() {
     const { rangeStart, rangeEnd } = getRecurrenceRangeForCalendar();
     const recurring = events.length ? expandRecurringEvents(events, rangeStart, rangeEnd) : [];
     const expanded = expandMultiDayEvents(recurring);
-    if (!showHolidays) return expanded;
-    return [...expanded, ...holidays];
-  }, [events, holidays, showHolidays]);
+    if (!showHolidays || holidayCategories.length === 0) return expanded;
+    const filtered = holidays.filter((h) => holidayCategories.includes(h.holidayCategory));
+    return [...expanded, ...filtered];
+  }, [events, holidays, showHolidays, holidayCategories]);
 
   const createEventMutation = useMutation({
     mutationFn: async (payload) => {
@@ -370,10 +382,11 @@ export default function CalendarIndex() {
 
   const handleEditEvent = (event) => {
     if (event.isHoliday) return;
-    if (event.isRecurringInstance) {
+    const isRecurring = event.isRecurringInstance || (event.repeat && event.repeat !== 'none');
+    if (isRecurring) {
       setRecurrenceDialog({
         type: 'edit',
-        event,
+        event: event.isRecurringInstance ? event : { ...event, baseEventId: event.id },
       });
       return;
     }
@@ -390,7 +403,17 @@ export default function CalendarIndex() {
       ? events.find(e => e.id === event.baseEventId) || event
       : event;
 
-    setEditingEvent(baseEvent);
+    if (event.isRecurringInstance) {
+      setEditingEvent({
+        ...baseEvent,
+        isRecurringInstance: true,
+        baseEventId: event.baseEventId || event.id,
+        originalDate: event.originalDate || event.date,
+      });
+    } else {
+      setEditingEvent(baseEvent);
+    }
+
     setEventData({
       title: baseEvent.title,
       date: event.isRecurringInstance ? event.date : baseEvent.date,
@@ -400,8 +423,8 @@ export default function CalendarIndex() {
       category: baseEvent.category,
       color: baseEvent.color,
       notes: baseEvent.notes || '',
-      repeat: baseEvent.repeat || 'none',
-      recurrence_end_date: baseEvent.recurrence_end_date || '',
+      repeat: event.isRecurringInstance ? 'none' : (baseEvent.repeat || 'none'),
+      recurrence_end_date: event.isRecurringInstance ? '' : (baseEvent.recurrence_end_date || ''),
     });
     setShowEventModal(true);
   };
