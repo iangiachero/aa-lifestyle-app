@@ -170,7 +170,7 @@ function App() {
     <>
       {updateAvailable && <PwaUpdateBanner onUpdate={applyUpdate} />}
       <Router>
-        <Suspense fallback={<SplashScreen />}>
+        <Suspense fallback={null}>
           <AnimatedRoutes />
         </Suspense>
       </Router>

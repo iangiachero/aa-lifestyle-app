@@ -61,6 +61,13 @@ function VaultContent() {
   }, [showModal, registerModal, unregisterModal]);
 
   useEffect(() => {
+    if (showChangePinModal) {
+      registerModal();
+      return () => unregisterModal();
+    }
+  }, [showChangePinModal, registerModal, unregisterModal]);
+
+  useEffect(() => {
     if (!user?.id) return;
     supabase.from('users').select('vault_pin_hash').eq('user_id', user.id).maybeSingle()
       .then(({ data }) => setCurrentPinHash(data?.vault_pin_hash || null));

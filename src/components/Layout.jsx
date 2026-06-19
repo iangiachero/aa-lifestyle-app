@@ -16,7 +16,9 @@ export default function Layout({ children, currentPageName }) {
   const mainRef = useRef(null);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (mainRef.current) {
+      mainRef.current.scrollTop = 0;
+    }
   }, [currentPageName]);
 
   const clampScroll = useCallback((e) => {
@@ -189,13 +191,20 @@ export default function Layout({ children, currentPageName }) {
         }
 
         body {
-          font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family: 'Cormorant Garamond', Georgia, serif;
+          font-weight: 400;
           letter-spacing: 0.01em;
           -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
           background: ${isAuthPage ? 'var(--bg)' : '#000000'};
         }
 
-        h1, h2, h3 {
+        input, textarea, select {
+          font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+          letter-spacing: 0;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
           font-family: 'Cormorant Garamond', Georgia, serif;
         }
 

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Lock } from 'lucide-react';
 import { hashPin, verifyPin } from '../../utils/pinHash';
@@ -85,8 +86,8 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
     confirm: { title: 'Confirm PIN', subtitle: 'Re-enter your new PIN to confirm' },
   };
 
-  return (
-    <div className="fixed inset-0 z-[200] flex items-end justify-center">
+  const modal = (
+    <div className="fixed inset-0 z-[9999] flex items-end justify-center">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -155,6 +156,7 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
                   border: error ? '1px solid rgba(239,68,68,0.6)' : '1px solid rgba(201,169,98,0.3)',
                   color: '#F5F1E8',
                   caretColor: '#C9A962',
+                  fontFamily: "'DM Sans', sans-serif",
                 }}
                 placeholder="• • • •"
                 autoComplete="off"
@@ -179,4 +181,6 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
       </motion.div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }
