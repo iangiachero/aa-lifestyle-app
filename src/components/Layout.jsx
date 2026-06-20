@@ -196,7 +196,7 @@ export default function Layout({ children, currentPageName }) {
           letter-spacing: 0.01em;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
-          background: ${isAuthPage ? 'var(--bg)' : '#000000'};
+          background: #000000 !important;
         }
 
         input, textarea, select {
