@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo, useCallback } from 'react';
+﻿import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Notification from '../components/Notification';
 import { MealPlanningSkeleton } from '../components/ui/PageSkeleton';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useModal } from '../context/ModalContext';
 import { format, startOfWeek, addDays } from 'date-fns';
-import { Utensils, Plus, Calendar, Clock, CreditCard as Edit2, Trash2, X, Coffee, UtensilsCrossed, Moon, Apple, Flame, Search, SlidersHorizontal, ChevronLeft, ChevronDown, Users, ShoppingCart } from 'lucide-react';
+import { Utensils, Plus, Calendar, Clock, CreditCard as Edit2, Trash2, X, Coffee, UtensilsCrossed, Moon, Apple, Flame, Search, SlidersHorizontal, ChevronLeft, ChevronDown, Users, ShoppingCart, Camera } from 'lucide-react';
 import { CURATED_RECIPES, RECIPE_CATEGORIES } from '../data/curatedRecipes';
 import CustomSelect from '../components/ui/CustomSelect';
 import { getIconifyIconUrl } from '../services/iconifyService';
@@ -32,7 +32,7 @@ const RECIPE_CATEGORY_ICONS = {
 const SUPABASE_MEAL_BASE = 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos';
 const getWeeklyMealImage = (day, mealType) => `${SUPABASE_MEAL_BASE}/week-${day}-${mealType}.jpg`;
 const EMPTY_FORM = { name: '', time: '', notes: '', ingredients: '' };
-const EMPTY_RECIPE_FORM = { title: '', category: 'Breakfast', time: '', calories: '', servings: '1', difficulty: 'easy', ingredients: '' };
+const EMPTY_RECIPE_FORM = { title: '', category: 'Breakfast', time: '', calories: '', servings: '1', difficulty: 'easy', ingredients: '', image_url: '' };
 
 function todayDayName() {
   return format(new Date(), 'EEEE').toLowerCase();
@@ -70,6 +70,8 @@ export default function MealPlanning() {
 
   const [showCreateRecipe, setShowCreateRecipe] = useState(false);
   const [recipeForm, setRecipeForm] = useState(EMPTY_RECIPE_FORM);
+  const [uploadingRecipeImage, setUploadingRecipeImage] = useState(false);
+  const recipeImageRef = useRef(null);
 
   const isModalOpen = showAddMeal || showCreateRecipe;
   useEffect(() => {
@@ -267,6 +269,25 @@ export default function MealPlanning() {
     });
   }, [formData, selectedCategory, selectedDay, saveMutation]);
 
+  const handleRecipeImagePick = useCallback(async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingRecipeImage(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const ext = file.name.split('.').pop() || 'jpg';
+      const path = `custom/${user.id}/${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from('meal-photos').upload(path, file, { upsert: true });
+      if (error) throw error;
+      setRecipeForm(prev => ({ ...prev, image_url: `${SUPABASE_MEAL_BASE}/${path}` }));
+    } catch {
+      // upload failed silently — recipe can still be saved without image
+    } finally {
+      setUploadingRecipeImage(false);
+      if (recipeImageRef.current) recipeImageRef.current.value = '';
+    }
+  }, []);
+
   const handleSaveRecipe = useCallback(() => {
     if (!recipeForm.title.trim()) return;
     saveRecipeMutation.mutate({
@@ -277,6 +298,7 @@ export default function MealPlanning() {
       servings: parseInt(recipeForm.servings, 10) || 1,
       difficulty: recipeForm.difficulty,
       ingredients: parseIngredients(recipeForm.ingredients),
+      image_url: recipeForm.image_url || null,
     });
   }, [recipeForm, saveRecipeMutation]);
 
@@ -658,6 +680,54 @@ export default function MealPlanning() {
               <p className="text-xs text-[#B8B8B8] font-light mb-6 tracking-widest uppercase">Save your favourite dishes</p>
 
               <div className="space-y-4">
+                {/* Photo upload */}
+                <div>
+                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Photo (Optional)</label>
+                  <input
+                    ref={recipeImageRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleRecipeImagePick}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => recipeImageRef.current?.click()}
+                    disabled={uploadingRecipeImage}
+                    className="w-full rounded-xl overflow-hidden transition-opacity active:opacity-70 disabled:opacity-50"
+                    style={{ border: '1px dashed rgba(226,186,139,0.35)', minHeight: 96 }}
+                  >
+                    {recipeForm.image_url ? (
+                      <div className="relative w-full h-24">
+                        <img src={recipeForm.image_url} alt="Recipe" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <Camera className="w-5 h-5 text-white" strokeWidth={1.5} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center gap-2 py-6">
+                        {uploadingRecipeImage ? (
+                          <span className="w-5 h-5 border-2 border-[#C9A962]/40 border-t-[#C9A962] rounded-full animate-spin" />
+                        ) : (
+                          <Camera className="w-6 h-6 text-[#e2ba8b]/50" strokeWidth={1.5} />
+                        )}
+                        <span className="text-xs text-[#e2ba8b]/50 font-light">
+                          {uploadingRecipeImage ? 'Uploading…' : 'Tap to add a photo'}
+                        </span>
+                      </div>
+                    )}
+                  </button>
+                  {recipeForm.image_url && (
+                    <button
+                      type="button"
+                      onClick={() => setRecipeForm(prev => ({ ...prev, image_url: '' }))}
+                      className="mt-1.5 text-xs text-red-400/70 hover:text-red-400 transition-colors"
+                    >
+                      Remove photo
+                    </button>
+                  )}
+                </div>
+
                 <div>
                   <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Recipe Name</label>
                   <input
@@ -760,10 +830,16 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, difficu
   const extra = recipe.ingredients.length - 4;
   const hasInstructions = recipe.instructions && recipe.instructions.length > 0;
   const categoryIcon = RECIPE_CATEGORY_ICONS[recipe.category] || 'mdi:silverware-variant';
-  // Check if recipe has a matching photo on Supabase (cr-1 through cr-192)
+  // Curated recipes have ids like cr-1 through cr-192
   const recipeNum = recipe.id?.startsWith('cr-') ? recipe.id.replace('cr-', '') : null;
-  const hasPhoto = recipeNum && parseInt(recipeNum) <= 192;
-  const photoUrl = hasPhoto ? `https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos/cr-${recipeNum}.jpg` : null;
+  const hasCuratedPhoto = recipeNum && parseInt(recipeNum) <= 192;
+  const curatedPhotoUrl = hasCuratedPhoto ? `https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos/cr-${recipeNum}.jpg` : null;
+  // Custom recipes may have an uploaded image_url
+  const customPhotoUrl = recipe.is_custom && recipe.image_url ? recipe.image_url : null;
+  const photoUrl = customPhotoUrl || curatedPhotoUrl;
+  const showPhoto = photoUrl && !imgError;
+  const showCreatedByYou = recipe.is_custom && !customPhotoUrl;
+
   return (
     <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#000000', border: '1px solid rgba(201,169,98,0.25)' }}>
       <div className="flex items-stretch">
@@ -773,7 +849,7 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, difficu
             width: 'clamp(76px, 22vw, 96px)',
             background: 'linear-gradient(135deg, rgba(201,169,98,0.15) 0%, rgba(201,169,98,0.05) 100%)',
           }}>
-          {hasPhoto && !imgError ? (
+          {showPhoto ? (
             <img
               src={photoUrl}
               alt={recipe.title}
@@ -782,6 +858,13 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, difficu
               decoding="async"
               onError={() => setImgError(true)}
             />
+          ) : showCreatedByYou ? (
+            <div className="flex flex-col items-center justify-center gap-1.5 px-2 py-3 text-center">
+              <Camera className="w-5 h-5 text-[#C9A962]/60" strokeWidth={1.5} />
+              <span className="text-[9px] text-[#C9A962]/50 font-light leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                Created<br />by You
+              </span>
+            </div>
           ) : (
             <img
               src={getIconifyIconUrl(categoryIcon, 'c9a962')}
