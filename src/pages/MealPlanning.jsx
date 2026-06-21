@@ -204,7 +204,20 @@ export default function MealPlanning() {
         .insert({ ...payload, user_id: user.id })
         .select()
         .single();
-      if (error) throw error;
+      if (error) {
+        // If image_url column doesn't exist yet in DB, retry without it
+        if (payload.image_url && (error.message?.includes('image_url') || error.code === 'PGRST204')) {
+          const { image_url: _dropped, ...rest } = payload;
+          const { data: data2, error: error2 } = await supabase
+            .from('custom_recipes')
+            .insert({ ...rest, user_id: user.id })
+            .select()
+            .single();
+          if (error2) throw error2;
+          return data2;
+        }
+        throw error;
+      }
       return data;
     },
     onSuccess: () => {
