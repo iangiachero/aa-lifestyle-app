@@ -276,11 +276,12 @@ export default function MealPlanning() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       const ext = file.name.split('.').pop() || 'jpg';
-      const path = `recipes/${user.id}/${Date.now()}.${ext}`;
-      // Use public_user_pfp bucket — already has authenticated INSERT policy
-      const { error } = await supabase.storage.from('public_user_pfp').upload(path, file, { upsert: true });
+      // Path must start with user.id to match bucket RLS policy (same as profile pictures)
+      const path = `${user.id}/recipe_${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from('public_user_pfp').upload(path, file, { upsert: false });
       if (error) throw error;
-      const url = `https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/public_user_pfp/${path}`;
+      const { data: { publicUrl } } = supabase.storage.from('public_user_pfp').getPublicUrl(path);
+      const url = publicUrl;
       setRecipeForm(prev => ({ ...prev, image_url: url }));
     } catch {
       // upload failed silently — recipe can still be saved without image
