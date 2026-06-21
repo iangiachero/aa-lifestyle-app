@@ -71,6 +71,7 @@ export default function MealPlanning() {
   const [showCreateRecipe, setShowCreateRecipe] = useState(false);
   const [recipeForm, setRecipeForm] = useState(EMPTY_RECIPE_FORM);
   const [uploadingRecipeImage, setUploadingRecipeImage] = useState(false);
+  const [recipeImagePreview, setRecipeImagePreview] = useState(null);
   const recipeImageRef = useRef(null);
 
   const isModalOpen = showAddMeal || showCreateRecipe;
@@ -224,6 +225,7 @@ export default function MealPlanning() {
       queryClient.invalidateQueries({ queryKey: ['custom_recipes'] });
       setShowCreateRecipe(false);
       setRecipeForm(EMPTY_RECIPE_FORM);
+      setRecipeImagePreview(null);
       showNotification('Recipe saved');
     },
   });
@@ -285,19 +287,28 @@ export default function MealPlanning() {
   const handleRecipeImagePick = useCallback(async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Show instant local preview — doesn't wait for upload
+    const localUrl = URL.createObjectURL(file);
+    setRecipeImagePreview(localUrl);
     setUploadingRecipeImage(true);
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      const ext = file.name.split('.').pop() || 'jpg';
-      // Path must start with user.id to match bucket RLS policy (same as profile pictures)
+      // Convert HEIC/HEIF (iPhone) to a supported extension fallback
+      const rawExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const ext = ['heic', 'heif'].includes(rawExt) ? 'jpg' : rawExt;
       const path = `${user.id}/recipe_${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from('public_user_pfp').upload(path, file, { upsert: false });
+      const { error } = await supabase.storage
+        .from('public_user_pfp')
+        .upload(path, file, { upsert: false, contentType: file.type || 'image/jpeg' });
       if (error) throw error;
       const { data: { publicUrl } } = supabase.storage.from('public_user_pfp').getPublicUrl(path);
-      const url = publicUrl;
-      setRecipeForm(prev => ({ ...prev, image_url: url }));
-    } catch {
-      // upload failed silently — recipe can still be saved without image
+      setRecipeForm(prev => ({ ...prev, image_url: publicUrl }));
+    } catch (err) {
+      setNotification({ message: 'Photo upload failed — recipe will be saved without image.', type: 'error' });
+      // Keep local preview so user sees their selection, but clear the URL so save works without it
+      setRecipeForm(prev => ({ ...prev, image_url: '' }));
     } finally {
       setUploadingRecipeImage(false);
       if (recipeImageRef.current) recipeImageRef.current.value = '';
@@ -542,7 +553,7 @@ export default function MealPlanning() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-serif text-2xl font-light text-[#e2ba8b] tracking-tight">Recipes</h3>
               <button
-                onClick={() => { setRecipeForm(EMPTY_RECIPE_FORM); setShowCreateRecipe(true); }}
+                onClick={() => { setRecipeForm(EMPTY_RECIPE_FORM); setRecipeImagePreview(null); setShowCreateRecipe(true); }}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-light text-[#C9A962] border border-[rgba(201,169,98,0.4)] hover:bg-[#C9A962]/10 transition-all active:scale-95">
                 <Plus className="w-3.5 h-3.5" strokeWidth={2} />Create Recipe
               </button>
@@ -686,10 +697,10 @@ export default function MealPlanning() {
       {/* Create Recipe Drawer */}
       {showCreateRecipe && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowCreateRecipe(false)} />
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); }} />
           <div className="fixed bottom-0 left-0 right-0 bg-[#000000] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide">
             <div className="p-6" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
-              <button onClick={() => setShowCreateRecipe(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#e2ba8b]/10 transition-colors">
+              <button onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); }} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#e2ba8b]/10 transition-colors">
                 <X className="w-5 h-5 text-[#e2ba8b]" strokeWidth={1.5} />
               </button>
               <h2 className="font-serif text-2xl font-light text-[#e2ba8b] mb-1">Create Recipe</h2>
@@ -713,11 +724,15 @@ export default function MealPlanning() {
                     className="w-full rounded-xl overflow-hidden transition-opacity active:opacity-70 disabled:opacity-50"
                     style={{ border: '1px dashed rgba(226,186,139,0.35)', minHeight: 96 }}
                   >
-                    {recipeForm.image_url ? (
+                    {(recipeImagePreview || recipeForm.image_url) ? (
                       <div className="relative w-full h-24">
-                        <img src={recipeForm.image_url} alt="Recipe" className="w-full h-full object-cover" />
+                        <img src={recipeImagePreview || recipeForm.image_url} alt="Recipe" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                          <Camera className="w-5 h-5 text-white" strokeWidth={1.5} />
+                          {uploadingRecipeImage ? (
+                            <span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                          ) : (
+                            <Camera className="w-5 h-5 text-white" strokeWidth={1.5} />
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -733,10 +748,10 @@ export default function MealPlanning() {
                       </div>
                     )}
                   </button>
-                  {recipeForm.image_url && (
+                  {(recipeImagePreview || recipeForm.image_url) && (
                     <button
                       type="button"
-                      onClick={() => setRecipeForm(prev => ({ ...prev, image_url: '' }))}
+                      onClick={() => { setRecipeForm(prev => ({ ...prev, image_url: '' })); setRecipeImagePreview(null); }}
                       className="mt-1.5 text-xs text-red-400/70 hover:text-red-400 transition-colors"
                     >
                       Remove photo
