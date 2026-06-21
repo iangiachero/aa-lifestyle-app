@@ -46,14 +46,14 @@ const PWATutorial = lazy(() => import('./pages/PWATutorial'));
 const PasswordVault = lazy(() => import('./pages/PasswordVault'));
 
 const pageVariants = {
-  initial: { opacity: 0, y: 6 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -4 },
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
 };
 
 const pageTransition = {
-  duration: 0.22,
-  ease: [0.25, 0.46, 0.45, 0.94],
+  duration: 0.18,
+  ease: 'easeInOut',
 };
 
 function PageTransition({ children }: { children: React.ReactNode }) {
