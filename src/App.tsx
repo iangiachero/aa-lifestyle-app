@@ -3,9 +3,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Layout from './components/Layout';
-import PwaUpdateBanner from './components/PwaUpdateBanner';
 import SplashScreen from './components/SplashScreen';
-import { usePwaUpdate } from './hooks/usePwaUpdate';
 import { useCapacitor } from './hooks/useCapacitor';
 import { useAuth } from './context/AuthContext';
 
@@ -164,11 +162,9 @@ function AnimatedRoutes() {
 
 function App() {
   useCapacitor();
-  const { updateAvailable, applyUpdate } = usePwaUpdate();
 
   return (
     <>
-      {updateAvailable && <PwaUpdateBanner onUpdate={applyUpdate} />}
       <Router>
         <Suspense fallback={null}>
           <AnimatedRoutes />
