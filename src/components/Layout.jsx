@@ -12,7 +12,9 @@ export default function Layout({ children, currentPageName }) {
   const { userProfile } = useAuth();
   const { isAnyModalOpen } = useModal();
   const { showBanner } = usePWAInstallBanner();
-  const [isStandalone, setIsStandalone] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(() =>
+    window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+  );
   const mainRef = useRef(null);
 
   useEffect(() => {
@@ -41,8 +43,7 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     const mq = window.matchMedia('(display-mode: standalone)');
-    setIsStandalone(mq.matches || window.navigator.standalone === true);
-    const handler = (e) => setIsStandalone(e.matches);
+    const handler = (e) => setIsStandalone(e.matches || window.navigator.standalone === true);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);

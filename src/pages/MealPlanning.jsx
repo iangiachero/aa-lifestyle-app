@@ -6,7 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useModal } from '../context/ModalContext';
 import { format, startOfWeek, addDays } from 'date-fns';
-import { Utensils, Plus, Calendar, Clock, CreditCard as Edit2, Trash2, X, Coffee, UtensilsCrossed, Moon, Apple, Flame, Search, SlidersHorizontal, ChevronLeft, ChevronDown, Users, ShoppingCart, Camera } from 'lucide-react';
+import { Utensils, Plus, Calendar, Clock, Pencil, Trash2, X, Coffee, UtensilsCrossed, Moon, Apple, Flame, Search, SlidersHorizontal, ChevronLeft, ChevronDown, Users, ShoppingCart, Camera } from 'lucide-react';
 import { CURATED_RECIPES, RECIPE_CATEGORIES } from '../data/curatedRecipes';
 import CustomSelect from '../components/ui/CustomSelect';
 import { getIconifyIconUrl } from '../services/iconifyService';
@@ -69,6 +69,7 @@ export default function MealPlanning() {
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
 
   const [showCreateRecipe, setShowCreateRecipe] = useState(false);
+  const [editingRecipe, setEditingRecipe] = useState(null);
   const [recipeForm, setRecipeForm] = useState(EMPTY_RECIPE_FORM);
   const [uploadingRecipeImage, setUploadingRecipeImage] = useState(false);
   const [recipeImagePreview, setRecipeImagePreview] = useState(null);
@@ -226,6 +227,7 @@ export default function MealPlanning() {
       setShowCreateRecipe(false);
       setRecipeForm(EMPTY_RECIPE_FORM);
       setRecipeImagePreview(null);
+      setEditingRecipe(null);
       showNotification('Recipe saved');
     },
   });
@@ -239,6 +241,27 @@ export default function MealPlanning() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['custom_recipes'] });
       showNotification('Recipe removed');
+    },
+  });
+
+  const updateRecipeMutation = useMutation({
+    mutationFn: async ({ id, payload }) => {
+      const { data, error } = await supabase
+        .from('custom_recipes')
+        .update(payload)
+        .eq('id', id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['custom_recipes'] });
+      setShowCreateRecipe(false);
+      setRecipeForm(EMPTY_RECIPE_FORM);
+      setRecipeImagePreview(null);
+      setEditingRecipe(null);
+      showNotification('Recipe updated');
     },
   });
 
@@ -315,9 +338,25 @@ export default function MealPlanning() {
     }
   }, []);
 
+  const openEditRecipe = useCallback((recipe) => {
+    setEditingRecipe(recipe);
+    setRecipeForm({
+      title: recipe.title || '',
+      category: recipe.category || 'Breakfast',
+      time: recipe.time || '',
+      calories: recipe.calories?.toString() || '',
+      servings: recipe.servings?.toString() || '1',
+      difficulty: recipe.difficulty || 'easy',
+      ingredients: ingredientsToText(recipe.ingredients),
+      image_url: recipe.image_url || '',
+    });
+    setRecipeImagePreview(recipe.image_url || null);
+    setShowCreateRecipe(true);
+  }, []);
+
   const handleSaveRecipe = useCallback(() => {
     if (!recipeForm.title.trim()) return;
-    saveRecipeMutation.mutate({
+    const payload = {
       title: recipeForm.title.trim(),
       category: recipeForm.category,
       time: recipeForm.time.trim(),
@@ -326,8 +365,13 @@ export default function MealPlanning() {
       difficulty: recipeForm.difficulty,
       ingredients: parseIngredients(recipeForm.ingredients),
       image_url: recipeForm.image_url || null,
-    });
-  }, [recipeForm, saveRecipeMutation]);
+    };
+    if (editingRecipe) {
+      updateRecipeMutation.mutate({ id: editingRecipe.id, payload });
+    } else {
+      saveRecipeMutation.mutate(payload);
+    }
+  }, [recipeForm, editingRecipe, saveRecipeMutation, updateRecipeMutation]);
 
   const handleAddRecipeToMealPlan = useCallback((recipe) => {
     const categoryMap = { Breakfast: 'breakfast', Lunch: 'lunch', Dinner: 'dinner', Snacks: 'snack' };
@@ -553,7 +597,7 @@ export default function MealPlanning() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-serif text-2xl font-light text-[#e2ba8b] tracking-tight">Recipes</h3>
               <button
-                onClick={() => { setRecipeForm(EMPTY_RECIPE_FORM); setRecipeImagePreview(null); setShowCreateRecipe(true); }}
+                onClick={() => { setRecipeForm(EMPTY_RECIPE_FORM); setRecipeImagePreview(null); setEditingRecipe(null); setShowCreateRecipe(true); }}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-light text-[#C9A962] border border-[rgba(201,169,98,0.4)] hover:bg-[#C9A962]/10 transition-all active:scale-95">
                 <Plus className="w-3.5 h-3.5" strokeWidth={2} />Create Recipe
               </button>
@@ -597,6 +641,7 @@ export default function MealPlanning() {
                     onAddToMealPlan={handleAddRecipeToMealPlan}
                     onAddToGrocery={handleAddRecipeToGrocery}
                     onDelete={recipe.is_custom ? () => deleteRecipeMutation.mutate(recipe.id) : undefined}
+                    onEdit={recipe.is_custom ? () => openEditRecipe(recipe) : undefined}
                     difficultyColors={DIFFICULTY_COLORS} />
                 ))
               )}
@@ -697,14 +742,14 @@ export default function MealPlanning() {
       {/* Create Recipe Drawer */}
       {showCreateRecipe && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); }} />
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); setEditingRecipe(null); }} />
           <div className="fixed bottom-0 left-0 right-0 bg-[#000000] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide">
             <div className="p-6" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
-              <button onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); }} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#e2ba8b]/10 transition-colors">
+              <button onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); setEditingRecipe(null); }} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#e2ba8b]/10 transition-colors">
                 <X className="w-5 h-5 text-[#e2ba8b]" strokeWidth={1.5} />
               </button>
-              <h2 className="font-serif text-2xl font-light text-[#e2ba8b] mb-1">Create Recipe</h2>
-              <p className="text-xs text-[#B8B8B8] font-light mb-6 tracking-widest uppercase">Save your favourite dishes</p>
+              <h2 className="font-serif text-2xl font-light text-[#e2ba8b] mb-1">{editingRecipe ? 'Edit Recipe' : 'Create Recipe'}</h2>
+              <p className="text-xs text-[#B8B8B8] font-light mb-6 tracking-widest uppercase">{editingRecipe ? 'Update your recipe details' : 'Save your favourite dishes'}</p>
 
               <div className="space-y-4">
                 {/* Photo upload */}
@@ -840,9 +885,9 @@ export default function MealPlanning() {
                 <div className="pt-2">
                   <button
                     onClick={handleSaveRecipe}
-                    disabled={!recipeForm.title.trim() || saveRecipeMutation.isPending}
+                    disabled={!recipeForm.title.trim() || saveRecipeMutation.isPending || updateRecipeMutation.isPending}
                     className="w-full px-6 py-3 rounded-xl bg-gradient-to-br from-[#e2ba8b] to-[#C9A962] text-white font-light shadow-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {saveRecipeMutation.isPending ? 'Saving...' : 'Save Recipe'}
+                    {(saveRecipeMutation.isPending || updateRecipeMutation.isPending) ? 'Saving...' : editingRecipe ? 'Update Recipe' : 'Save Recipe'}
                   </button>
                 </div>
               </div>
@@ -854,7 +899,7 @@ export default function MealPlanning() {
   );
 }
 
-function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, difficultyColors }) {
+function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit, difficultyColors }) {
   const [expanded, setExpanded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const visible = recipe.ingredients.slice(0, 4);
@@ -917,6 +962,11 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, difficu
           <h4 className="font-light text-[#F5F1E8] text-sm leading-snug flex-1">{recipe.title}</h4>
           <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
             <span className={`text-[10px] font-light capitalize ${difficultyColors[recipe.difficulty] || 'text-[#B8B8B8]'}`}>{recipe.difficulty}</span>
+            {onEdit && (
+              <button onClick={e => { e.stopPropagation(); onEdit(); }} className="p-1 rounded-lg hover:bg-[#C9A962]/10 transition-colors">
+                <Pencil className="w-3.5 h-3.5 text-[#C9A962]/70" strokeWidth={1.5} />
+              </button>
+            )}
             {onDelete && (
               <button onClick={e => { e.stopPropagation(); onDelete(); }} className="p-1 rounded-lg hover:bg-red-500/10 transition-colors">
                 <Trash2 className="w-3.5 h-3.5 text-red-400" strokeWidth={1.5} />
