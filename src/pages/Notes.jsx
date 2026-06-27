@@ -138,7 +138,7 @@ export default function Notes() {
 
   if (selectedNote && editingNote) {
     return (
-      <div className="min-h-full pb-8 bg-[#000000]">
+      <div className="bg-[#000000]">
         <div className="px-6 pt-6 pb-4 border-b-2 border-[rgba(201,169,98,0.25)]">
           <div className="flex items-center justify-between mb-4">
             <button
@@ -172,7 +172,7 @@ export default function Notes() {
           </div>
         </div>
 
-        <div className="px-6 pt-6 space-y-4">
+        <div className="px-6 pt-6 pb-24 space-y-4">
           <input
             value={editingNote.title}
             onChange={(e) => handleAutoSave('title', e.target.value)}
@@ -207,7 +207,7 @@ export default function Notes() {
   }
 
   return (
-    <div className="min-h-full pb-8 bg-[#000000]">
+    <div className="bg-[#000000] pb-4">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />

@@ -627,10 +627,14 @@ export default function PasswordVault() {
       setPinHash(hash);
       if (!hash) {
         setPinStatus('setup');
-      } else if (sessionStorage.getItem('vault_unlocked') === 'true') {
-        setPinStatus('unlocked');
       } else {
-        setPinStatus('locked');
+        const expiry = parseInt(localStorage.getItem('vault_unlock_expiry') || '0');
+        if (Date.now() < expiry) {
+          setPinStatus('unlocked');
+        } else {
+          localStorage.removeItem('vault_unlock_expiry');
+          setPinStatus('locked');
+        }
       }
     })();
   }, [user?.id]);

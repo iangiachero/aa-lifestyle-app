@@ -224,7 +224,7 @@ export default function HomeOrganization() {
                   >
                     <div
                       className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0"
-                      style={{ backgroundColor: section.image_url ? 'transparent' : `${section.color_tag}33` }}
+                      style={{ backgroundColor: '#000000', border: '1px solid rgba(201,169,98,0.15)' }}
                     >
                       {section.image_url ? (
                         <img
@@ -237,7 +237,7 @@ export default function HomeOrganization() {
                       ) : (
                         <div
                           className="w-full h-full"
-                          style={{ background: `linear-gradient(135deg, ${section.color_tag}55 0%, ${section.color_tag}22 100%)` }}
+                          style={{ background: '#000000' }}
                         />
                       )}
                     </div>

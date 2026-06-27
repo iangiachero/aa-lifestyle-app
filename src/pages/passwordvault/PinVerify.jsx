@@ -63,7 +63,8 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
     try {
       const valid = await verifyPin(pin, pinHash);
       if (valid) {
-        sessionStorage.setItem('vault_unlocked', 'true');
+        // Keep vault unlocked for 24 hours so user doesn't re-enter PIN every session
+        localStorage.setItem('vault_unlock_expiry', (Date.now() + 24 * 60 * 60 * 1000).toString());
         onUnlock();
       } else {
         const next = attempts + 1;
@@ -96,7 +97,7 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
     try {
       await supabase.from('password_vault').delete().eq('user_id', user.id);
       await supabase.from('users').update({ vault_pin_hash: null }).eq('user_id', user.id);
-      sessionStorage.removeItem('vault_unlocked');
+      localStorage.removeItem('vault_unlock_expiry');
       onReset();
     } finally {
       setResetting(false);

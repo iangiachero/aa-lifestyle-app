@@ -31,7 +31,7 @@ function QuickAddModal({ sectionId, onClose, onAdd }) {
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 35, stiffness: 300 }}
-        className="w-full bg-gradient-to-b from-[#1E1E1E] to-[#161616] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.3)] shadow-[0_-8px_40px_rgba(201,169,98,0.15)] p-6 pb-10"
+        className="w-full bg-[#000000] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.3)] shadow-[0_-8px_40px_rgba(201,169,98,0.15)] p-6 pb-10"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
@@ -120,7 +120,7 @@ export default function ViewCategoryModal({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 35, stiffness: 300 }}
-            className="w-full bg-[#141414] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.3)] max-h-[88vh] flex flex-col shadow-[0_-8px_40px_rgba(201,169,98,0.12)]"
+            className="w-full bg-[#000000] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.3)] max-h-[88vh] flex flex-col shadow-[0_-8px_40px_rgba(201,169,98,0.12)]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

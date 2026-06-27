@@ -63,7 +63,7 @@ export default function WeekView({ weekDates, events, tasks, birthdays, onEditEv
 
   return (
     <div className="flex flex-col flex-1 min-h-0 overflow-y-auto scrollbar-hide" style={{ background: 'transparent' }}>
-      <div className="flex flex-col gap-3 p-4 pb-6">
+      <div className="flex flex-col gap-3 p-4" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}>
         {weekDates.map((date, dateIndex) => {
           const isCurrentDay = isToday(date);
           const dayEvents = getEventsForDate(date);

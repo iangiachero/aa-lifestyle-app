@@ -102,7 +102,7 @@ function ChecklistModal({
             <div className="w-10 h-1 rounded-full bg-[rgba(201,169,98,0.3)]" />
           </div>
 
-          <div className="page-safe-x" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
+          <div className="page-safe-x" style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}>
             <div className="flex items-center justify-between py-4 border-b border-[rgba(201,169,98,0.2)] mb-4">
               <div className="flex items-center gap-3">
                 <ChecklistIcon iconName={checklist.icon_name} color={iconColor} size="w-8 h-8" />
