@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Plus, ChevronDown, ChevronUp, ChevronLeft, Trash2, Pencil, Check } from 'lucide-react';
+import { X, Plus, ChevronDown, ChevronUp, ChevronLeft, Trash2, Pencil, Check, BookOpen, ClipboardList, FileText, Clock, Layers, SlidersHorizontal } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import CustomSelect from '../components/ui/CustomSelect';
@@ -261,16 +261,16 @@ export default function Student() {
   }
 
   const academicBlocks = [
-    { id: 'class', label: 'Class' },
-    { id: 'assignment', label: 'Assignment' },
-    { id: 'exam', label: 'Exam' },
-    { id: 'study', label: 'Session' },
-    { id: 'project', label: 'Project' },
-    { id: 'custom', label: 'Custom' }
+    { id: 'class', label: 'Class', icon: <BookOpen className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
+    { id: 'assignment', label: 'Assignment', icon: <ClipboardList className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
+    { id: 'exam', label: 'Exam', icon: <FileText className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
+    { id: 'study', label: 'Session', icon: <Clock className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
+    { id: 'project', label: 'Project', icon: <Layers className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
+    { id: 'custom', label: 'Custom', icon: <SlidersHorizontal className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
   ];
 
   return (
-    <div className="min-h-full pb-8 overflow-x-hidden bg-[#000000]">
+    <div className="min-h-full bg-[#000000]" style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}>
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
@@ -280,112 +280,122 @@ export default function Student() {
         </div>
       </div>
 
-      <div className="page-safe-x pt-4 space-y-4">
-        <CustomSelect
-          value={semester}
-          onChange={(val) => setSemester(val)}
-          options={SEMESTERS.map(s => ({ value: s, label: s }))}
-        />
+      <div className="pt-5 space-y-6">
+        {/* Semester Selector */}
+        <div className="page-safe-x">
+          <CustomSelect
+            value={semester}
+            onChange={(val) => setSemester(val)}
+            options={SEMESTERS.map(s => ({ value: s, label: s }))}
+          />
+        </div>
 
-        <div className="flex gap-3 w-full overflow-hidden">
-          {/* Left Column — Academic Blocks */}
-          <div className="w-36 flex-shrink-0 bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.3)] p-4 flex flex-col">
-            <h3 className="text-xs text-[#C9A962] font-light mb-3 tracking-wide uppercase">Academic Blocks</h3>
-            <div className="space-y-2 flex-1">
-              {academicBlocks.map(block => (
-                <button
-                  key={block.id}
-                  onClick={() => openModal(block.id)}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[rgba(201,169,98,0.1)] hover:bg-[rgba(201,169,98,0.2)] transition-colors border border-[rgba(201,169,98,0.25)]"
-                >
-                  <span className="text-sm text-[#F5F1E8] font-light truncate">{block.label}</span>
-                  <Plus className="w-4 h-4 text-[#C9A962] flex-shrink-0" strokeWidth={1.5} />
-                </button>
+        {/* Academic Blocks — horizontal scroll */}
+        <div>
+          <div className="page-safe-x mb-3">
+            <p className="text-[10px] text-[#C9A962] font-light tracking-widest uppercase">Academic Blocks</p>
+          </div>
+          <div className="flex gap-2.5 overflow-x-auto scrollbar-hide px-4 pb-1">
+            {academicBlocks.map(block => (
+              <button
+                key={block.id}
+                onClick={() => openModal(block.id)}
+                className="flex-shrink-0 flex flex-col items-center gap-1.5 w-[4.5rem] pt-3.5 pb-3 px-1 rounded-2xl bg-[#000000] border border-[rgba(201,169,98,0.25)] hover:border-[rgba(201,169,98,0.5)] active:scale-95 transition-all"
+              >
+                <div className="w-9 h-9 rounded-xl bg-[rgba(201,169,98,0.1)] border border-[rgba(201,169,98,0.12)] flex items-center justify-center">
+                  {block.icon}
+                </div>
+                <span className="text-[11px] text-[#F5F1E8] font-light text-center leading-tight">{block.label}</span>
+                <div className="w-5 h-5 rounded-full bg-[rgba(201,169,98,0.12)] flex items-center justify-center">
+                  <Plus className="w-3 h-3 text-[#C9A962]" strokeWidth={2.5} />
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Classes — horizontal scroll cards */}
+        <div>
+          <div className="page-safe-x mb-3">
+            <p className="text-[10px] text-[#C9A962] font-light tracking-widest uppercase">Classes</p>
+          </div>
+          {loadingClasses ? (
+            <div className="page-safe-x"><p className="text-xs text-[#6B6B6B]">Loading...</p></div>
+          ) : classes.length === 0 ? (
+            <div className="page-safe-x py-2">
+              <p className="text-xs text-[#6B6B6B]">No classes yet — tap "Class" above to add one</p>
+            </div>
+          ) : (
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide px-4 pb-1">
+              {classes.map(cls => (
+                <div key={cls.id} className="flex-shrink-0 w-36 rounded-2xl bg-[#000000] border border-[rgba(201,169,98,0.2)] overflow-hidden">
+                  <div className="h-1" style={{ backgroundColor: cls.color || '#3B82F6' }} />
+                  <div className="p-3.5">
+                    <div className="flex items-start gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full mt-[5px] flex-shrink-0" style={{ backgroundColor: cls.color || '#3B82F6' }} />
+                      <p className="text-sm text-[#F5F1E8] font-medium leading-snug">{cls.class_name}</p>
+                    </div>
+                    {cls.is_online ? (
+                      <span className="inline-block text-[10px] px-1.5 py-0.5 rounded-full bg-[rgba(201,169,98,0.15)] text-[#C9A962] border border-[rgba(201,169,98,0.3)]">Online</span>
+                    ) : (cls.meeting_days?.length > 0 || cls.meeting_start_time) ? (
+                      <p className="text-[11px] text-[#6B6B6B] leading-tight">
+                        {cls.meeting_days?.join(' ')}
+                        {cls.meeting_start_time ? ` · ${fmtTime(cls.meeting_start_time)}` : ''}
+                      </p>
+                    ) : null}
+                    <div className="flex gap-1.5 mt-3">
+                      <button onClick={() => openEditClass(cls)} className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-[rgba(201,169,98,0.08)] hover:bg-[rgba(201,169,98,0.15)] transition-colors">
+                        <Pencil className="w-3 h-3 text-[#C9A962]" strokeWidth={1.5} />
+                      </button>
+                      <button onClick={() => deleteClass(cls.id)} className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-[rgba(255,60,60,0.06)] hover:bg-[rgba(255,60,60,0.15)] transition-colors">
+                        <Trash2 className="w-3 h-3 text-red-400" strokeWidth={1.5} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* Right Column — Panels */}
-          <div className="flex-1 min-w-0 flex flex-col gap-3">
-            {/* Assignments Panel */}
-            <div className="bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.3)] p-4 min-h-[140px]">
-              <h3 className="text-xs text-[#C9A962] font-light mb-2 tracking-wide uppercase">Assignments</h3>
-              {loadingAssignments ? (
-                <p className="text-xs text-[#6B6B6B] mt-4">Loading...</p>
-              ) : visibleAssignments.length === 0 && completedAssignments.length === 0 ? (
-                <div className="flex items-center justify-center h-16">
-                  <p className="text-xs text-[#6B6B6B]">No upcoming assignments</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {visibleAssignments.map(a => (
+        {/* Assignments — full-width rows */}
+        <div className="page-safe-x">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-[10px] text-[#C9A962] font-light tracking-widest uppercase">Upcoming Assignments</p>
+            {completedAssignments.length > 0 && (
+              <button
+                onClick={() => setShowCompleted(v => !v)}
+                className="flex items-center gap-1 text-[#6B6B6B] hover:text-[#9B9B9B] transition-colors"
+              >
+                {showCompleted
+                  ? <ChevronUp className="w-3 h-3" strokeWidth={2} />
+                  : <ChevronDown className="w-3 h-3" strokeWidth={2} />
+                }
+                <span className="text-[11px]">Completed ({completedAssignments.length})</span>
+              </button>
+            )}
+          </div>
+          {loadingAssignments ? (
+            <p className="text-xs text-[#6B6B6B]">Loading...</p>
+          ) : visibleAssignments.length === 0 && completedAssignments.length === 0 ? (
+            <div className="py-8 text-center">
+              <p className="text-sm text-[#6B6B6B] font-light">No upcoming assignments</p>
+              <p className="text-xs text-[#4B4B4B] mt-1">Tap "Assignment" above to add one</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {visibleAssignments.map(a => (
+                <AssignmentRow key={a.id} assignment={a} onToggle={toggleAssignment} />
+              ))}
+              {showCompleted && (
+                <div className="space-y-2 mt-1 opacity-50">
+                  {completedAssignments.map(a => (
                     <AssignmentRow key={a.id} assignment={a} onToggle={toggleAssignment} />
                   ))}
-
-                  {completedAssignments.length > 0 && (
-                    <div className="pt-1">
-                      <button
-                        onClick={() => setShowCompleted(v => !v)}
-                        className="flex items-center gap-1.5 py-1 text-[#6B6B6B] hover:text-[#9B9B9B] transition-colors"
-                      >
-                        {showCompleted
-                          ? <ChevronUp className="w-3 h-3" strokeWidth={2} />
-                          : <ChevronDown className="w-3 h-3" strokeWidth={2} />
-                        }
-                        <span className="text-xs">Completed ({completedAssignments.length})</span>
-                      </button>
-                      {showCompleted && (
-                        <div className="space-y-2 mt-1 opacity-50">
-                          {completedAssignments.map(a => (
-                            <AssignmentRow key={a.id} assignment={a} onToggle={toggleAssignment} />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               )}
             </div>
-
-            {/* Classes */}
-            <div className="bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.3)] p-4 flex-1 min-h-[200px]">
-              <h3 className="text-xs text-[#C9A962] font-light mb-2 tracking-wide uppercase">Classes</h3>
-              {loadingClasses ? (
-                <p className="text-xs text-[#6B6B6B] mt-4">Loading...</p>
-              ) : classes.length === 0 ? (
-                <div className="flex items-center justify-center h-16">
-                  <p className="text-xs text-[#6B6B6B]">No classes yet</p>
-                </div>
-              ) : (
-                <div className="space-y-2 overflow-y-auto max-h-[220px] scrollbar-hide">
-                  {classes.map(cls => (
-                    <div key={cls.id} className="flex items-start gap-2 p-2 bg-[#000000] rounded-xl border border-[rgba(201,169,98,0.12)]">
-                      <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: cls.color || '#3B82F6' }} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-[#F5F1E8] font-medium truncate">{cls.class_name}</p>
-                        {cls.is_online ? (
-                          <span className="inline-block mt-0.5 text-[10px] px-1.5 py-0.5 rounded-full bg-[rgba(201,169,98,0.15)] text-[#C9A962] border border-[rgba(201,169,98,0.3)]">Online</span>
-                        ) : (cls.meeting_days?.length > 0 || cls.meeting_start_time) ? (
-                          <p className="text-xs text-[#6B6B6B] truncate">
-                            {cls.meeting_days?.join(' ')}
-                            {cls.meeting_start_time ? ` · ${fmtTime(cls.meeting_start_time)}` : ''}
-                          </p>
-                        ) : null}
-                      </div>
-                      <div className="flex gap-0.5 flex-shrink-0">
-                        <button onClick={() => openEditClass(cls)} className="p-1 rounded hover:bg-[#000000] transition-colors">
-                          <Pencil className="w-3 h-3 text-[#C9A962]" strokeWidth={1.5} />
-                        </button>
-                        <button onClick={() => deleteClass(cls.id)} className="p-1 rounded hover:bg-[#000000] transition-colors">
-                          <Trash2 className="w-3 h-3 text-red-400" strokeWidth={1.5} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
