@@ -56,7 +56,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-full pb-8 bg-[#000000]">
+    <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
@@ -71,7 +71,7 @@ export default function Settings() {
           className="rounded-2xl overflow-hidden"
           style={{
             border: '1px solid rgba(201,169,98,0.18)',
-            backgroundColor: 'rgba(255,255,255,0.03)',
+            backgroundColor: 'var(--app-wash-soft)',
           }}
         >
           <div
@@ -91,10 +91,10 @@ export default function Settings() {
                 <CalendarDays className="w-4 h-4" style={{ color: '#C9A962' }} strokeWidth={1.5} />
               </div>
               <div className="min-w-0">
-                <div className="text-sm font-medium" style={{ color: '#F5F1E8' }}>
+                <div className="text-sm font-medium" style={{ color: 'var(--app-text)' }}>
                   Show Holidays
                 </div>
-                <div className="text-xs mt-0.5 font-light" style={{ color: '#6B6B6B' }}>
+                <div className="text-xs mt-0.5 font-light" style={{ color: 'var(--app-text-3)' }}>
                   Display holidays in your calendar
                 </div>
               </div>
@@ -107,8 +107,8 @@ export default function Settings() {
                 width: 48,
                 height: 28,
                 borderRadius: 14,
-                backgroundColor: showHolidays ? '#C9A962' : 'rgba(255,255,255,0.10)',
-                border: showHolidays ? '1px solid rgba(201,169,98,0.6)' : '1px solid rgba(255,255,255,0.12)',
+                backgroundColor: showHolidays ? '#C9A962' : 'var(--app-wash-2)',
+                border: showHolidays ? '1px solid rgba(201,169,98,0.6)' : '1px solid var(--app-wash-2)',
                 position: 'relative',
               }}
               aria-label="Toggle holidays"
@@ -142,10 +142,10 @@ export default function Settings() {
                       <Globe className="w-4 h-4" style={{ color: '#C9A962' }} strokeWidth={1.5} />
                     </div>
                     <div className="text-left">
-                      <div className="text-sm font-medium" style={{ color: '#F5F1E8' }}>
+                      <div className="text-sm font-medium" style={{ color: 'var(--app-text)' }}>
                         Holiday Regions
                       </div>
-                      <div className="text-xs mt-0.5 font-light" style={{ color: '#6B6B6B' }}>
+                      <div className="text-xs mt-0.5 font-light" style={{ color: 'var(--app-text-3)' }}>
                         {holidayCategories.length} {holidayCategories.length === 1 ? 'region' : 'regions'} selected
                       </div>
                     </div>
@@ -169,10 +169,10 @@ export default function Settings() {
                           onClick={() => toggleCategory(region.id)}
                           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200"
                           style={{
-                            backgroundColor: active ? 'rgba(201,169,98,0.18)' : 'rgba(255,255,255,0.05)',
+                            backgroundColor: active ? 'rgba(201,169,98,0.18)' : 'var(--app-wash)',
                             border: active
                               ? '1px solid rgba(201,169,98,0.45)'
-                              : '1px solid rgba(255,255,255,0.08)',
+                              : '1px solid var(--app-wash-2)',
                             color: active ? '#C9A962' : '#6B6B6B',
                           }}
                         >

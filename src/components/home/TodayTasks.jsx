@@ -108,7 +108,7 @@ export default function TodayTasks({ tasks }) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80px] py-3">
         <Target className="w-8 h-8 opacity-20 mb-2 text-[#C9A962]" strokeWidth={1.3} />
-        <div className="text-xs text-[#B8B8B8] font-light">No priorities</div>
+        <div className="text-xs text-[color:var(--app-text-2)] font-light">No priorities</div>
       </div>
     );
   }
@@ -119,7 +119,7 @@ export default function TodayTasks({ tasks }) {
         {sortedTasks.map((task) => (
           <div
             key={task.id}
-            className="flex items-center gap-2 bg-[#0A0A0A] rounded-xl p-2 border border-[rgba(201,169,98,0.2)] hover:border-[rgba(201,169,98,0.4)] transition-colors"
+            className="flex items-center gap-2 bg-[color:var(--app-bg)] rounded-xl p-2 border border-[rgba(201,169,98,0.2)] hover:border-[rgba(201,169,98,0.4)] transition-colors"
           >
             <button
               onClick={(e) => { e.stopPropagation(); toggleTask(task); }}
@@ -135,7 +135,7 @@ export default function TodayTasks({ tasks }) {
             <div className="flex items-center gap-1.5 flex-1 min-w-0">
               <ColorDot color={task.color_tag || priorityColors[task.priority] || '#C9A962'} size="sm" />
               <span
-                className={`text-sm leading-snug truncate ${task.completed ? 'line-through text-[#6B6B6B]' : 'text-[#F5F1E8]'}`}
+                className={`text-sm leading-snug truncate ${task.completed ? 'line-through text-[color:var(--app-text-3)]' : 'text-[color:var(--app-text)]'}`}
                 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, letterSpacing: '0.01em' }}
               >
                 {task.title}
@@ -152,14 +152,14 @@ export default function TodayTasks({ tasks }) {
               />
               <button
                 onClick={(e) => handleEditTask(e, task)}
-                className="p-1.5 rounded-lg transition-all text-[#6B6B6B] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.12)]"
+                className="p-1.5 rounded-lg transition-all text-[color:var(--app-text-3)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.12)]"
               >
                 <Edit2 className="w-3.5 h-3.5" strokeWidth={1.5} />
               </button>
               <button
                 type="button"
                 onClick={(e) => handleDeleteTask(e, task)}
-                className="p-1.5 rounded-lg transition-all text-[#6B6B6B] hover:text-red-400 hover:bg-red-500/10"
+                className="p-1.5 rounded-lg transition-all text-[color:var(--app-text-3)] hover:text-red-400 hover:bg-red-500/10"
               >
                 <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
               </button>
@@ -188,17 +188,17 @@ export default function TodayTasks({ tasks }) {
                 style={{ top: '50%', transform: 'translateY(-50%)' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="rounded-2xl p-6" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.25)' }}>
-                  <h3 className="text-base text-[#F5F1E8] font-light mb-1">Delete Task?</h3>
-                  <p className="text-sm text-[#6B6B6B] mb-5">
+                <div className="rounded-2xl p-6" style={{ background: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.25)' }}>
+                  <h3 className="text-base text-[color:var(--app-text)] font-light mb-1">Delete Task?</h3>
+                  <p className="text-sm text-[color:var(--app-text-3)] mb-5">
                     "{deleteTarget.title}" will be permanently deleted.
                   </p>
                   <div className="flex gap-3">
                     <button
                       type="button"
                       onClick={() => setDeleteTarget(null)}
-                      className="flex-1 py-3 rounded-xl text-sm text-[#B8B8B8] transition-colors"
-                      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(201,169,98,0.2)' }}
+                      className="flex-1 py-3 rounded-xl text-sm text-[color:var(--app-text-2)] transition-colors"
+                      style={{ background: 'var(--app-wash)', border: '1px solid rgba(201,169,98,0.2)' }}
                     >
                       Cancel
                     </button>
@@ -242,7 +242,7 @@ export default function TodayTasks({ tasks }) {
                 <div
                   className="relative overflow-y-auto"
                   style={{
-                    background: '#000000',
+                    background: 'var(--app-bg)',
                     borderTop: '2px solid rgba(201,169,98,0.3)',
                     borderTopLeftRadius: '24px',
                     borderTopRightRadius: '24px',
@@ -254,26 +254,26 @@ export default function TodayTasks({ tasks }) {
                   <div className="p-6">
                     <button
                       onClick={() => setEditingTask(null)}
-                      className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#000000] transition-colors"
+                      className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors"
                     >
                       <X className="w-5 h-5 text-[#C9A962]" />
                     </button>
-                    <h2 className="text-xl text-[#F5F1E8] font-light mb-6">Edit Task</h2>
+                    <h2 className="text-xl text-[color:var(--app-text)] font-light mb-6">Edit Task</h2>
                     <div className="space-y-4">
                       <div>
-                        <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Task Name</label>
+                        <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Task Name</label>
                         <input
                           type="text"
                           placeholder="What needs to be done?"
                           value={taskData.title || ''}
                           onChange={(e) => setTaskData({ ...taskData, title: e.target.value })}
-                          className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none"
+                          className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none"
                           autoFocus
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Category</label>
+                          <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Category</label>
                           <CustomSelect
                             value={taskData.category}
                             onChange={(val) => setTaskData({ ...taskData, category: val })}
@@ -287,7 +287,7 @@ export default function TodayTasks({ tasks }) {
                           />
                         </div>
                         <div>
-                          <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Priority</label>
+                          <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Priority</label>
                           <CustomSelect
                             value={taskData.priority}
                             onChange={(val) => setTaskData({ ...taskData, priority: val })}
@@ -302,7 +302,7 @@ export default function TodayTasks({ tasks }) {
                       </div>
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <label className="text-xs text-[#B8B8B8] uppercase">Due Date</label>
+                          <label className="text-xs text-[color:var(--app-text-2)] uppercase">Due Date</label>
                           <button
                             type="button"
                             onClick={() => {
@@ -334,7 +334,7 @@ export default function TodayTasks({ tasks }) {
                             {calendarOpen && <div style={{ height: '320px' }} />}
                           </>
                         ) : (
-                          <div className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.15)] rounded-xl text-[#6B6B6B] text-sm italic">
+                          <div className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.15)] rounded-xl text-[color:var(--app-text-3)] text-sm italic">
                             No due date — task stays visible until completed
                           </div>
                         )}
@@ -346,7 +346,7 @@ export default function TodayTasks({ tasks }) {
                       <div className="flex gap-3 pt-2 pb-8">
                         <button
                           onClick={() => setEditingTask(null)}
-                          className="flex-1 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[#B8B8B8] hover:bg-[rgba(201,169,98,0.1)] transition-colors"
+                          className="flex-1 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors"
                         >
                           Cancel
                         </button>

@@ -7,7 +7,7 @@ export default function BottomNav() {
   /* === BOTTOM NAV STYLING CONFIGURATION === */
   const NAV_STYLE = {
     // Container styling
-    background: 'bg-[#000000]',
+    background: 'bg-[color:var(--app-bg)]',
     blur: '',
     border: 'border border-[rgba(226,186,139,0.3)]',
     glow: 'shadow-sm',

@@ -31,14 +31,14 @@ function QuickAddModal({ sectionId, onClose, onAdd }) {
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 35, stiffness: 300 }}
-        className="w-full bg-[#000000] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.3)] shadow-[0_-8px_40px_rgba(201,169,98,0.15)] p-6 pb-10"
+        className="w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.3)] shadow-[0_-8px_40px_rgba(201,169,98,0.15)] p-6 pb-10"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-lg text-[#e2ba8b] font-light tracking-wide">Add Task</h3>
           <button
             onClick={onClose}
-            className="text-[#6B6B6B] hover:text-[#C9A962] transition-colors"
+            className="text-[color:var(--app-text-3)] hover:text-[#C9A962] transition-colors"
           >
             <X className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -46,14 +46,14 @@ function QuickAddModal({ sectionId, onClose, onAdd }) {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <label className="text-xs text-[#9B9B9B] font-light tracking-wider uppercase">Task Name</label>
+            <label className="text-xs text-[color:var(--app-text-3)] font-light tracking-wider uppercase">Task Name</label>
             <input
               autoFocus
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Clean countertops"
-              className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(201,169,98,0.25)] rounded-xl px-4 py-3 text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:outline-none focus:border-[rgba(201,169,98,0.5)] focus:bg-[rgba(255,255,255,0.07)] transition-all"
+              className="w-full bg-[color:var(--app-wash)] border border-[rgba(201,169,98,0.25)] rounded-xl px-4 py-3 text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:outline-none focus:border-[rgba(201,169,98,0.5)] focus:bg-[color:var(--app-wash)] transition-all"
             />
           </div>
 
@@ -120,7 +120,7 @@ export default function ViewCategoryModal({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 35, stiffness: 300 }}
-            className="w-full bg-[#000000] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.3)] max-h-[88vh] flex flex-col shadow-[0_-8px_40px_rgba(201,169,98,0.12)]"
+            className="w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.3)] max-h-[88vh] flex flex-col shadow-[0_-8px_40px_rgba(201,169,98,0.12)]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -149,7 +149,7 @@ export default function ViewCategoryModal({
                     >
                       {section.title}
                     </h2>
-                    <p className="text-sm text-white/40 mt-0.5">
+                    <p className="text-sm text-[color:var(--app-wash-3)] mt-0.5">
                       {completed} of {total} completed
                     </p>
                   </div>
@@ -189,7 +189,7 @@ export default function ViewCategoryModal({
                   transition={{ delay: idx * 0.02 }}
                   className="flex items-center gap-3 px-4 py-3.5 rounded-xl"
                   style={{
-                    backgroundColor: '#000000',
+                    backgroundColor: 'var(--app-bg)',
                     border: '1px solid rgba(201,169,98,0.15)',
                     opacity: task.completed ? 0.55 : 1,
                   }}
@@ -223,7 +223,7 @@ export default function ViewCategoryModal({
                   {!task.is_curated && (
                     <button
                       onClick={(e) => handleDelete(e, task)}
-                      className="flex-shrink-0 text-white/20 hover:text-red-400 transition-colors"
+                      className="flex-shrink-0 text-[color:var(--app-wash-3)] hover:text-red-400 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" strokeWidth={1.5} />
                     </button>
@@ -233,8 +233,8 @@ export default function ViewCategoryModal({
 
               {total === 0 && (
                 <div className="text-center py-12">
-                  <p className="text-sm text-[#B8B8B8] font-light">No tasks yet</p>
-                  <p className="text-xs text-[#6B6B6B] mt-1">Tap the + button to add your first task</p>
+                  <p className="text-sm text-[color:var(--app-text-2)] font-light">No tasks yet</p>
+                  <p className="text-xs text-[color:var(--app-text-3)] mt-1">Tap the + button to add your first task</p>
                 </div>
               )}
 

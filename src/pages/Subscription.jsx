@@ -232,15 +232,15 @@ export default function Subscription() {
         {!isPro ? (
           <>
             <div className="flex flex-col gap-3">
-              <div className="rounded-2xl p-4" style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(201,169,98,0.2)' }}>
-                <p className="text-base text-[#F5F1E8] font-light mb-0.5" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Free</p>
+              <div className="rounded-2xl p-4" style={{ background: 'var(--app-surface)', border: '1px solid rgba(201,169,98,0.2)' }}>
+                <p className="text-base text-[color:var(--app-text)] font-light mb-0.5" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Free</p>
                 <p className="text-xs text-[#8A7E72] mb-3">Basic features</p>
                 <p className="text-2xl text-[#C9A962] mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>$0</p>
                 <div className="space-y-2">
                   {FREE_FEATURES.map(f => (
                     <div key={f} className="flex items-start gap-2">
                       <Check className="w-3.5 h-3.5 text-[#C9A962] mt-0.5 flex-shrink-0" strokeWidth={2} />
-                      <span className="text-xs text-[#B8B8B8]">{f}</span>
+                      <span className="text-xs text-[color:var(--app-text-2)]">{f}</span>
                     </div>
                   ))}
                 </div>
@@ -276,7 +276,7 @@ export default function Subscription() {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-1.5">
                         <Crown className="w-3.5 h-3.5 text-[#C9A962]" strokeWidth={1.5} />
-                        <p className="text-sm text-[#F5F1E8] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{plan.name}</p>
+                        <p className="text-sm text-[color:var(--app-text)] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{plan.name}</p>
                       </div>
                       <div
                         className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
@@ -308,7 +308,7 @@ export default function Subscription() {
                       {plan.features.map((feature, i) => (
                         <div key={i} className="flex items-start gap-1.5">
                           <Check className="w-3 h-3 text-[#C9A962] mt-0.5 flex-shrink-0" strokeWidth={2.5} />
-                          <span className="text-[11px] text-[#B8B8B8] leading-snug">{feature}</span>
+                          <span className="text-[11px] text-[color:var(--app-text-2)] leading-snug">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -331,14 +331,14 @@ export default function Subscription() {
           </>
         ) : (
           <div className="flex flex-col gap-3">
-            <div className="rounded-2xl p-4 relative" style={{ background: 'rgba(0,0,0,0.8)', border: '1.5px solid rgba(201,169,98,0.5)' }}>
+            <div className="rounded-2xl p-4 relative" style={{ background: 'var(--app-surface)', border: '1.5px solid rgba(201,169,98,0.5)' }}>
               <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full flex items-center gap-1" style={{ background: 'rgba(201,169,98,0.2)', border: '1px solid rgba(201,169,98,0.4)' }}>
                 <Check className="w-3 h-3 text-[#C9A962]" strokeWidth={2.5} />
                 <span className="text-[10px] text-[#C9A962]">Active</span>
               </div>
               <div className="flex items-center gap-1.5 mb-0.5">
                 <Crown className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
-                <p className="text-base text-[#F5F1E8] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Pro</p>
+                <p className="text-base text-[color:var(--app-text)] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Pro</p>
               </div>
               <p className="text-xs text-[#8A7E72] mb-3">Everything unlocked</p>
               <p className="text-[10px] uppercase tracking-widest text-[#8A7E72] mb-3">What you have access to</p>
@@ -346,7 +346,7 @@ export default function Subscription() {
                 {PLANS[0].features.map(f => (
                   <div key={f} className="flex items-start gap-2">
                     <Check className="w-3.5 h-3.5 text-[#C9A962] mt-0.5 flex-shrink-0" strokeWidth={2} />
-                    <span className="text-xs text-[#B8B8B8]">{f}</span>
+                    <span className="text-xs text-[color:var(--app-text-2)]">{f}</span>
                   </div>
                 ))}
               </div>
@@ -364,13 +364,13 @@ export default function Subscription() {
         )}
 
         <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,169,98,0.2)' }}>
-          <div className="px-4 py-3" style={{ background: 'rgba(0,0,0,0.8)', borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
+          <div className="px-4 py-3" style={{ background: 'var(--app-surface)', borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
             <p className="text-center text-sm text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.1em' }}>
               Feature Comparison
             </p>
           </div>
 
-          <div className="grid grid-cols-3 px-4 py-2" style={{ background: 'rgba(0,0,0,0.6)', borderBottom: '1px solid rgba(201,169,98,0.1)' }}>
+          <div className="grid grid-cols-3 px-4 py-2" style={{ background: 'var(--app-surface)', borderBottom: '1px solid rgba(201,169,98,0.1)' }}>
             <span className="text-xs text-[#8A7E72]">Features</span>
             <span className="text-xs text-[#8A7E72] text-center">Free</span>
             <span className="text-xs text-[#C9A962] text-center">Pro</span>
@@ -385,7 +385,7 @@ export default function Subscription() {
                 borderBottom: i < ALL_FEATURES.length - 1 ? '1px solid rgba(201,169,98,0.08)' : 'none'
               }}
             >
-              <span className="text-xs text-[#B8B8B8] pr-2">{f.label}</span>
+              <span className="text-xs text-[color:var(--app-text-2)] pr-2">{f.label}</span>
               <div className="flex justify-center">
                 {f.free
                   ? <Check className="w-3.5 h-3.5 text-[#C9A962]" strokeWidth={2.5} />

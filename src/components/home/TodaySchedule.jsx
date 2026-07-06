@@ -246,7 +246,7 @@ export default function TodaySchedule({ events }) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80px] py-3">
         <Calendar className="w-8 h-8 opacity-20 mb-2 text-[#C9A962]" strokeWidth={1.3} />
-        <div className="text-xs text-[#B8B8B8] font-light">No events scheduled</div>
+        <div className="text-xs text-[color:var(--app-text-2)] font-light">No events scheduled</div>
       </div>
     );
   }
@@ -259,28 +259,28 @@ export default function TodaySchedule({ events }) {
             <div className="text-[10px] text-[#C9A962] font-light w-12 pt-0.5 flex-shrink-0">
               {formatTime(event.start_time) || 'All day'}
             </div>
-            <div className="flex-1 min-w-0 bg-[#0A0A0A] rounded-xl px-2.5 py-2 border-l-2 overflow-hidden" style={{ borderLeftColor: event.color || '#C9A962' }}>
+            <div className="flex-1 min-w-0 bg-[color:var(--app-bg)] rounded-xl px-2.5 py-2 border-l-2 overflow-hidden" style={{ borderLeftColor: event.color || '#C9A962' }}>
               <div className="flex items-center gap-1.5">
-                <div className="text-sm leading-snug text-[#F5F1E8] truncate flex-1" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, letterSpacing: '0.01em' }}>{event.title}</div>
+                <div className="text-sm leading-snug text-[color:var(--app-text)] truncate flex-1" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, letterSpacing: '0.01em' }}>{event.title}</div>
                 {(event.repeat && event.repeat !== 'none') && (
                   <Repeat className="w-2.5 h-2.5 flex-shrink-0 opacity-50 text-[#C9A962]" strokeWidth={1.5} />
                 )}
                 <button
                   onClick={(e) => handleEditEvent(e, event)}
-                  className="p-1 rounded-lg transition-all text-[#6B6B6B] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.12)]"
+                  className="p-1 rounded-lg transition-all text-[color:var(--app-text-3)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.12)]"
                 >
                   <Edit2 className="w-3 h-3" strokeWidth={1.5} />
                 </button>
                 <button
                   type="button"
                   onClick={(e) => handleDeleteEvent(e, event)}
-                  className="p-1 rounded-lg transition-all text-[#6B6B6B] hover:text-red-400 hover:bg-red-500/10"
+                  className="p-1 rounded-lg transition-all text-[color:var(--app-text-3)] hover:text-red-400 hover:bg-red-500/10"
                 >
                   <Trash2 className="w-3 h-3" strokeWidth={1.5} />
                 </button>
               </div>
               {event.end_time && (
-                <div className="text-[11px] text-[#B8B8B8] mt-0.5" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 300, letterSpacing: '0.02em' }}>
+                <div className="text-[11px] text-[color:var(--app-text-2)] mt-0.5" style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 300, letterSpacing: '0.02em' }}>
                   Until {formatTime(event.end_time)}
                 </div>
               )}
@@ -310,11 +310,11 @@ export default function TodaySchedule({ events }) {
                 style={{ top: '50%', transform: 'translateY(-50%)' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="rounded-2xl p-6" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.25)' }}>
-                  <h3 className="text-base text-[#F5F1E8] font-light mb-1">
+                <div className="rounded-2xl p-6" style={{ background: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.25)' }}>
+                  <h3 className="text-base text-[color:var(--app-text)] font-light mb-1">
                     {recurrenceDialog.type === 'edit' ? 'Edit Recurring Event' : 'Delete Recurring Event'}
                   </h3>
-                  <p className="text-sm text-[#6B6B6B] mb-5">
+                  <p className="text-sm text-[color:var(--app-text-3)] mb-5">
                     This is a recurring event. What would you like to {recurrenceDialog.type === 'edit' ? 'edit' : 'delete'}?
                   </p>
                   <div className="space-y-2.5">
@@ -341,8 +341,8 @@ export default function TodaySchedule({ events }) {
                     </button>
                     <button
                       onClick={() => setRecurrenceDialog(null)}
-                      className="w-full py-3 rounded-xl text-sm text-[#6B6B6B] transition-colors"
-                      style={{ background: 'rgba(255,255,255,0.04)' }}
+                      className="w-full py-3 rounded-xl text-sm text-[color:var(--app-text-3)] transition-colors"
+                      style={{ background: 'var(--app-wash-soft)' }}
                     >
                       Cancel
                     </button>
@@ -376,17 +376,17 @@ export default function TodaySchedule({ events }) {
                 style={{ top: '50%', transform: 'translateY(-50%)' }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="rounded-2xl p-6" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.25)' }}>
-                  <h3 className="text-base text-[#F5F1E8] font-light mb-1">Delete Event?</h3>
-                  <p className="text-sm text-[#6B6B6B] mb-5">
+                <div className="rounded-2xl p-6" style={{ background: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.25)' }}>
+                  <h3 className="text-base text-[color:var(--app-text)] font-light mb-1">Delete Event?</h3>
+                  <p className="text-sm text-[color:var(--app-text-3)] mb-5">
                     "{deleteTarget.title}" will be permanently deleted.
                   </p>
                   <div className="flex gap-3">
                     <button
                       type="button"
                       onClick={() => setDeleteTarget(null)}
-                      className="flex-1 py-3 rounded-xl text-sm text-[#B8B8B8] transition-colors"
-                      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(201,169,98,0.2)' }}
+                      className="flex-1 py-3 rounded-xl text-sm text-[color:var(--app-text-2)] transition-colors"
+                      style={{ background: 'var(--app-wash)', border: '1px solid rgba(201,169,98,0.2)' }}
                     >
                       Cancel
                     </button>
@@ -431,7 +431,7 @@ export default function TodaySchedule({ events }) {
                 <div
                   className="relative overflow-y-auto"
                   style={{
-                    background: '#000000',
+                    background: 'var(--app-bg)',
                     borderTop: '2px solid rgba(201,169,98,0.3)',
                     borderTopLeftRadius: '24px',
                     borderTopRightRadius: '24px',
@@ -443,40 +443,40 @@ export default function TodaySchedule({ events }) {
             <div className="p-6">
               <button
                 onClick={() => setEditingEvent(null)}
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#000000] transition-colors"
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors"
               >
                 <X className="w-5 h-5 text-[#C9A962]" />
               </button>
-              <h2 className="text-xl text-[#F5F1E8] font-light mb-6" style={{ fontFamily: 'Georgia, serif' }}>
+              <h2 className="text-xl text-[color:var(--app-text)] font-light mb-6" style={{ fontFamily: 'Georgia, serif' }}>
                 {editingEvent.isRecurringInstance ? 'Edit This Event' : 'Edit Event'}
               </h2>
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase mb-2 block tracking-wider">Event Title</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">Event Title</label>
                   <input
                     type="text"
                     placeholder="e.g., Team Meeting"
                     value={eventData.title || ''}
                     onChange={(e) => setEventData({ ...eventData, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none font-light"
+                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none font-light"
                     autoFocus
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase mb-2 block tracking-wider">Date</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">Date</label>
                   <input
                     type="date"
                     value={eventData.date || ''}
                     onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] focus:border-[#C9A962] focus:outline-none font-light"
+                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] focus:border-[#C9A962] focus:outline-none font-light"
                     style={{ colorScheme: 'dark' }}
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs text-[#B8B8B8] uppercase mb-2 block tracking-wider">Start Time</label>
+                    <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">Start Time</label>
                     <TimePicker
                       value={eventData.start_time}
                       onChange={(val) => setEventData({ ...eventData, start_time: val })}
@@ -484,7 +484,7 @@ export default function TodaySchedule({ events }) {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-[#B8B8B8] uppercase mb-2 block tracking-wider">End Time</label>
+                    <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">End Time</label>
                     <TimePicker
                       value={eventData.end_time}
                       onChange={(val) => setEventData({ ...eventData, end_time: val })}
@@ -494,7 +494,7 @@ export default function TodaySchedule({ events }) {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase mb-2 block tracking-wider">Category</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">Category</label>
                   <CustomSelect
                     value={eventData.category}
                     onChange={(val) => setEventData({ ...eventData, category: val })}
@@ -510,7 +510,7 @@ export default function TodaySchedule({ events }) {
 
                 {!editingEvent.isRecurringInstance && (
                   <div>
-                    <label className="text-xs text-[#B8B8B8] uppercase mb-2 block tracking-wider">Repeat</label>
+                    <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">Repeat</label>
                     <CustomSelect
                       value={eventData.repeat || 'none'}
                       onChange={(val) => setEventData({ ...eventData, repeat: val })}
@@ -521,21 +521,21 @@ export default function TodaySchedule({ events }) {
 
                 {hasRepeat && !editingEvent.isRecurringInstance && (
                   <div>
-                    <label className="text-xs text-[#B8B8B8] uppercase mb-2 block tracking-wider">
+                    <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">
                       End Repeat Date
-                      <span className="ml-1 normal-case text-[#6B6B6B]">(optional)</span>
+                      <span className="ml-1 normal-case text-[color:var(--app-text-3)]">(optional)</span>
                     </label>
                     <input
                       type="date"
                       value={eventData.recurrence_end_date || ''}
                       min={eventData.date}
                       onChange={(e) => setEventData({ ...eventData, recurrence_end_date: e.target.value })}
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] focus:border-[#C9A962] focus:outline-none font-light"
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] focus:border-[#C9A962] focus:outline-none font-light"
                       style={{ colorScheme: 'dark' }}
                     />
                     <div className="mt-1.5 flex items-center gap-1.5">
-                      <Repeat className="w-3 h-3 flex-shrink-0 text-[#6B6B6B]" strokeWidth={1.5} />
-                      <p className="text-xs font-light text-[#6B6B6B]">
+                      <Repeat className="w-3 h-3 flex-shrink-0 text-[color:var(--app-text-3)]" strokeWidth={1.5} />
+                      <p className="text-xs font-light text-[color:var(--app-text-3)]">
                         {eventData.recurrence_end_date
                           ? `Repeats ${eventData.repeat} until ${eventData.recurrence_end_date}`
                           : `Repeats ${eventData.repeat} indefinitely`}
@@ -545,12 +545,12 @@ export default function TodaySchedule({ events }) {
                 )}
 
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase mb-2 block tracking-wider">Notes</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">Notes</label>
                   <textarea
                     placeholder="Add notes..."
                     value={eventData.notes || ''}
                     onChange={(e) => setEventData({ ...eventData, notes: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none font-light resize-none"
+                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none font-light resize-none"
                     style={{ minHeight: '80px' }}
                   />
                 </div>
@@ -558,7 +558,7 @@ export default function TodaySchedule({ events }) {
                 <div className="flex gap-3 pt-2 pb-8">
                   <button
                     onClick={() => setEditingEvent(null)}
-                    className="flex-1 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[#B8B8B8] hover:bg-[rgba(201,169,98,0.1)] transition-colors"
+                    className="flex-1 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors"
                   >
                     Cancel
                   </button>

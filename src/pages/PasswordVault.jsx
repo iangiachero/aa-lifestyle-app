@@ -257,9 +257,9 @@ function VaultContent() {
             placeholder="Search by site or username..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-4 py-3 pl-10 bg-[#000000] border border-[rgba(201,169,98,0.2)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm"
+            className="w-full px-4 py-3 pl-10 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm"
           />
-          <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6B6B]" strokeWidth={1.5} />
+          <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--app-text-3)]" strokeWidth={1.5} />
         </div>
 
         <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
@@ -270,7 +270,7 @@ function VaultContent() {
               className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all ${
                 activeCategory === cat.id
                   ? 'bg-[#C9A962] text-[#000000]'
-                  : 'bg-[#000000] border border-[rgba(201,169,98,0.2)] text-[#B8B8B8] hover:border-[#C9A962] hover:text-[#C9A962]'
+                  : 'bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] text-[color:var(--app-text-2)] hover:border-[#C9A962] hover:text-[#C9A962]'
               }`}
             >
               {cat.label}
@@ -281,7 +281,7 @@ function VaultContent() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 bg-[#000000] rounded-2xl animate-pulse border border-[rgba(201,169,98,0.1)]" />
+              <div key={i} className="h-20 bg-[color:var(--app-bg)] rounded-2xl animate-pulse border border-[rgba(201,169,98,0.1)]" />
             ))}
           </div>
         ) : filteredEntries.length === 0 ? (
@@ -293,10 +293,10 @@ function VaultContent() {
             <div className="w-20 h-20 rounded-full bg-[rgba(201,169,98,0.08)] border border-[rgba(201,169,98,0.15)] flex items-center justify-center mb-4">
               <Lock className="w-9 h-9 text-[#C9A962]/40" strokeWidth={1.5} />
             </div>
-            <p className="text-[#B8B8B8] text-sm mb-1">
+            <p className="text-[color:var(--app-text-2)] text-sm mb-1">
               {searchQuery || activeCategory !== 'all' ? 'No passwords found' : 'Your vault is empty'}
             </p>
-            <p className="text-[#6B6B6B] text-xs">
+            <p className="text-[color:var(--app-text-3)] text-xs">
               {searchQuery || activeCategory !== 'all'
                 ? 'Try adjusting your filters'
                 : 'Tap + to securely store your first password'}
@@ -304,7 +304,7 @@ function VaultContent() {
           </motion.div>
         ) : (
           <div className="space-y-3">
-            <p className="text-xs text-[#6B6B6B] px-1">
+            <p className="text-xs text-[color:var(--app-text-3)] px-1">
               {filteredEntries.length} {filteredEntries.length === 1 ? 'entry' : 'entries'}
             </p>
             <AnimatePresence>
@@ -336,7 +336,7 @@ function VaultContent() {
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="text-[#F5F1E8] text-sm font-medium truncate">{entry.site_name}</p>
+                          <p className="text-[color:var(--app-text)] text-sm font-medium truncate">{entry.site_name}</p>
                           <span
                             className="text-xs px-2 py-0.5 rounded-full uppercase tracking-wider flex-shrink-0"
                             style={{ backgroundColor: `${meta.color}18`, color: meta.color }}
@@ -344,14 +344,14 @@ function VaultContent() {
                             {entry.category}
                           </span>
                         </div>
-                        <p className="text-[#B8B8B8] text-xs mt-0.5 truncate">{entry.username}</p>
-                        <p className="text-[#6B6B6B] text-xs mt-1 font-mono tracking-widest">{displayPassword}</p>
+                        <p className="text-[color:var(--app-text-2)] text-xs mt-0.5 truncate">{entry.username}</p>
+                        <p className="text-[color:var(--app-text-3)] text-xs mt-1 font-mono tracking-widest">{displayPassword}</p>
                       </div>
 
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <button
                           onClick={() => togglePasswordVisible(entry.id, entry.encrypted_password)}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[#B8B8B8] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
                         >
                           {isVisible
                             ? <EyeOff className="w-4 h-4" strokeWidth={1.5} />
@@ -359,7 +359,7 @@ function VaultContent() {
                         </button>
                         <button
                           onClick={() => handleCopy(entry)}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[#B8B8B8] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
                         >
                           {isCopied
                             ? <Check className="w-4 h-4 text-emerald-400" strokeWidth={2} />
@@ -367,7 +367,7 @@ function VaultContent() {
                         </button>
                         <button
                           onClick={() => openEdit(entry)}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[#B8B8B8] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
                         >
                           <Pencil className="w-4 h-4" strokeWidth={1.5} />
                         </button>
@@ -376,7 +376,7 @@ function VaultContent() {
 
                     {entry.url && (
                       <div className="mt-2 ml-13 pl-[52px]">
-                        <p className="text-xs text-[#6B6B6B] truncate">{entry.url}</p>
+                        <p className="text-xs text-[color:var(--app-text-3)] truncate">{entry.url}</p>
                       </div>
                     )}
                   </motion.div>
@@ -411,18 +411,18 @@ function VaultContent() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-[#000000] rounded-t-3xl border-t-2 border-[rgba(201,169,98,0.3)] overflow-y-auto scrollbar-hide"
+              className="fixed bottom-0 left-0 right-0 z-50 bg-[color:var(--app-bg)] rounded-t-3xl border-t-2 border-[rgba(201,169,98,0.3)] overflow-y-auto scrollbar-hide"
               style={{ maxHeight: '92dvh', paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 bg-[#000000] pt-4 pb-2 px-6 z-10 border-b border-[rgba(201,169,98,0.1)]">
+              <div className="sticky top-0 bg-[color:var(--app-bg)] pt-4 pb-2 px-6 z-10 border-b border-[rgba(201,169,98,0.1)]">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl text-[#C9A962] font-light">
                     {editingEntry ? 'Edit Entry' : 'New Entry'}
                   </h2>
                   <button
                     onClick={closeModal}
-                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#000000] transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors"
                   >
                     <X className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
                   </button>
@@ -431,30 +431,30 @@ function VaultContent() {
 
               <div className="px-6 py-4 space-y-4">
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase tracking-wider mb-2 block">Site Name *</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase tracking-wider mb-2 block">Site Name *</label>
                   <input
                     type="text"
                     placeholder="e.g. Google, Netflix"
                     value={formData.site_name}
                     onChange={(e) => setFormData({ ...formData, site_name: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase tracking-wider mb-2 block">Username / Email *</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase tracking-wider mb-2 block">Username / Email *</label>
                   <input
                     type="text"
                     placeholder="e.g. user@example.com"
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     autoComplete="off"
-                    className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase tracking-wider mb-2 block">Password *</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase tracking-wider mb-2 block">Password *</label>
                   <div className="relative">
                     <input
                       type={showFormPassword ? 'text' : 'password'}
@@ -462,12 +462,12 @@ function VaultContent() {
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       autoComplete="new-password"
-                      className="w-full px-4 py-3 pr-12 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm font-mono"
+                      className="w-full px-4 py-3 pr-12 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm font-mono"
                     />
                     <button
                       type="button"
                       onClick={() => setShowFormPassword(!showFormPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B6B6B] hover:text-[#C9A962] transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--app-text-3)] hover:text-[#C9A962] transition-colors"
                     >
                       {showFormPassword
                         ? <EyeOff className="w-4 h-4" strokeWidth={1.5} />
@@ -496,18 +496,18 @@ function VaultContent() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase tracking-wider mb-2 block">URL</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase tracking-wider mb-2 block">URL</label>
                   <input
                     type="url"
                     placeholder="https://example.com"
                     value={formData.url}
                     onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm"
+                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase tracking-wider mb-2 block">Category</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase tracking-wider mb-2 block">Category</label>
                   <div className="grid grid-cols-3 gap-2">
                     {CATEGORIES.filter((c) => c.id !== 'all').map((cat) => {
                       const CatIcon = cat.icon;
@@ -519,7 +519,7 @@ function VaultContent() {
                           className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-xs transition-all ${
                             formData.category === cat.id
                               ? 'border-[#C9A962] bg-[rgba(201,169,98,0.12)] text-[#C9A962]'
-                              : 'border-[rgba(201,169,98,0.2)] bg-[#000000] text-[#B8B8B8] hover:border-[rgba(201,169,98,0.4)]'
+                              : 'border-[rgba(201,169,98,0.2)] bg-[color:var(--app-bg)] text-[color:var(--app-text-2)] hover:border-[rgba(201,169,98,0.4)]'
                           }`}
                         >
                           <CatIcon className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.5} style={{ color: formData.category === cat.id ? '#C9A962' : cat.color }} />
@@ -531,13 +531,13 @@ function VaultContent() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase tracking-wider mb-2 block">Notes</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase tracking-wider mb-2 block">Notes</label>
                   <textarea
                     placeholder="Optional notes..."
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     rows={3}
-                    className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm resize-none"
+                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm resize-none"
                   />
                 </div>
 
@@ -557,7 +557,7 @@ function VaultContent() {
                     <div className="flex gap-3">
                       <button
                         onClick={() => setShowDeleteConfirm(false)}
-                        className="flex-1 py-2.5 bg-[#000000] border border-[rgba(201,169,98,0.2)] rounded-xl text-sm text-[#B8B8B8] hover:bg-[rgba(201,169,98,0.1)] transition-colors"
+                        className="flex-1 py-2.5 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-xl text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors"
                       >
                         Cancel
                       </button>
@@ -575,7 +575,7 @@ function VaultContent() {
                 <div className="flex gap-3 pb-10">
                   <button
                     onClick={closeModal}
-                    className="flex-1 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[#B8B8B8] hover:bg-[rgba(201,169,98,0.1)] transition-colors"
+                    className="flex-1 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors"
                   >
                     Cancel
                   </button>

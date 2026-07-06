@@ -181,7 +181,7 @@ export default function HomeOrganization() {
   }, [tasksBySection]);
 
   return (
-    <div className="w-full min-h-screen bg-[#000000] overflow-hidden">
+    <div className="w-full min-h-screen bg-[color:var(--app-bg)] overflow-hidden">
       <div className="min-h-screen" style={{ paddingBottom: 'calc(8rem + env(safe-area-inset-bottom, 0px))' }}>
         <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
           <button
@@ -199,8 +199,8 @@ export default function HomeOrganization() {
           {activeSections.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <Home className="w-16 h-16 text-[#C9A962] opacity-30 mb-4" strokeWidth={1} />
-              <p className="text-[#B8B8B8] font-light text-base mb-1">Setting up your home organization...</p>
-              <p className="text-[#6B6B6B] text-sm font-light">Your 21 categories are being loaded</p>
+              <p className="text-[color:var(--app-text-2)] font-light text-base mb-1">Setting up your home organization...</p>
+              <p className="text-[color:var(--app-text-3)] text-sm font-light">Your 21 categories are being loaded</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -218,13 +218,13 @@ export default function HomeOrganization() {
                     onClick={() => setViewingCategory(section)}
                     className="flex items-center gap-4 p-4 rounded-xl cursor-pointer hover:opacity-90 active:scale-[0.99] transition-all duration-200"
                     style={{
-                      backgroundColor: '#000000',
+                      backgroundColor: 'var(--app-bg)',
                       border: '1px solid rgba(201,169,98,0.2)',
                     }}
                   >
                     <div
                       className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0"
-                      style={{ backgroundColor: '#000000', border: '1px solid rgba(201,169,98,0.15)' }}
+                      style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.15)' }}
                     >
                       {section.image_url ? (
                         <img
@@ -237,7 +237,7 @@ export default function HomeOrganization() {
                       ) : (
                         <div
                           className="w-full h-full"
-                          style={{ background: '#000000' }}
+                          style={{ background: 'var(--app-bg)' }}
                         />
                       )}
                     </div>
@@ -249,7 +249,7 @@ export default function HomeOrganization() {
                       >
                         {section.title}
                       </h3>
-                      <p className="text-white/40 text-sm">
+                      <p className="text-[color:var(--app-wash-3)] text-sm">
                         {completed}/{total} completed
                       </p>
                     </div>

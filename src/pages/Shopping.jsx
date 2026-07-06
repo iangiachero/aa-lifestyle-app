@@ -41,12 +41,12 @@ export default function Shopping() {
 
   const ui = useMemo(() => ({
     gold: '#C9A962',
-    bg: '#000000',
-    panel: '#000000',
-    panel2: '#000000',
-    text: '#F5F1E8',
-    muted: '#B8B8B8',
-    muted2: '#6B6B6B',
+    bg: 'var(--app-bg)',
+    panel: 'var(--app-bg)',
+    panel2: 'var(--app-bg)',
+    text: 'var(--app-text)',
+    muted: 'var(--app-text-2)',
+    muted2: 'var(--app-text-3)',
     border: 'rgba(201,169,98,0.30)',
     borderSoft: 'rgba(201,169,98,0.18)',
     borderSofter: 'rgba(201,169,98,0.10)',
@@ -160,7 +160,7 @@ export default function Shopping() {
   };
 
   return (
-    <div className="w-full min-h-full bg-[#000000]">
+    <div className="w-full min-h-full bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />

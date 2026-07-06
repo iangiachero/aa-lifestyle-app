@@ -152,7 +152,7 @@ function LeftDrawer({ open, onClose, onQuickAdd, birthdays, onAddBirthday, onDel
               <button
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full transition-colors active:scale-95"
-                style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                style={{ backgroundColor: 'var(--app-wash)', border: '1px solid var(--app-wash-2)' }}
               >
                 <X className="w-4 h-4" style={{ color: UI.muted }} strokeWidth={1.5} />
               </button>

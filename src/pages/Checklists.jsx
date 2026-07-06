@@ -95,7 +95,7 @@ function ChecklistModal({
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className="relative w-full bg-[#000000] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl max-h-[85vh] overflow-y-auto scrollbar-soft z-10"
+          className="relative w-full bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl max-h-[85vh] overflow-y-auto scrollbar-soft z-10"
           onClick={e => e.stopPropagation()}
         >
           <div className="flex justify-center pt-3 pb-1">
@@ -108,27 +108,27 @@ function ChecklistModal({
                 <ChecklistIcon iconName={checklist.icon_name} color={iconColor} size="w-8 h-8" />
                 <div>
                   <h2 className="text-xl font-light text-[#C9A962]">{checklist.name}</h2>
-                  <p className="text-xs text-[#B8B8B8] mt-0.5">{templateItems.length + customItemsList.length} items</p>
+                  <p className="text-xs text-[color:var(--app-text-2)] mt-0.5">{templateItems.length + customItemsList.length} items</p>
                 </div>
               </div>
-              <button onClick={onClose} className="text-[#B8B8B8] hover:text-[#C9A962] transition-colors">
+              <button onClick={onClose} className="text-[color:var(--app-text-2)] hover:text-[#C9A962] transition-colors">
                 <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
               </button>
             </div>
 
             {templateItems.length > 0 && (
               <div className="space-y-2 mb-4">
-                <div className="text-[10px] font-light uppercase tracking-wider text-[#B8B8B8] opacity-70 mb-2">Included</div>
+                <div className="text-[10px] font-light uppercase tracking-wider text-[color:var(--app-text-2)] opacity-70 mb-2">Included</div>
                 {templateItems.map((item, idx) => {
                   const isChecked = checkedItems[`${checklist.id}-${idx}`] || false;
                   return (
-                    <div key={idx} className={`flex items-center gap-3 p-3 rounded-xl bg-[#000000] border border-[rgba(201,169,98,0.15)] transition-opacity ${isChecked ? 'opacity-50' : ''}`}>
+                    <div key={idx} className={`flex items-center gap-3 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.15)] transition-opacity ${isChecked ? 'opacity-50' : ''}`}>
                       <button onClick={() => onToggleItem(checklist.id, idx)} className="flex-shrink-0">
                         {isChecked
                           ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
                           : <Circle className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />}
                       </button>
-                      <span className={`text-sm font-light flex-1 ${isChecked ? 'line-through text-[#6B6B6B]' : 'text-[#F5F1E8]'}`}>{item}</span>
+                      <span className={`text-sm font-light flex-1 ${isChecked ? 'line-through text-[color:var(--app-text-3)]' : 'text-[color:var(--app-text)]'}`}>{item}</span>
                     </div>
                   );
                 })}
@@ -137,28 +137,28 @@ function ChecklistModal({
 
             {customItemsList.length > 0 && (
               <div className="space-y-2 mb-4">
-                <div className="text-[10px] font-light uppercase tracking-wider text-[#B8B8B8] opacity-70 mb-2">Your Add-Ons</div>
+                <div className="text-[10px] font-light uppercase tracking-wider text-[color:var(--app-text-2)] opacity-70 mb-2">Your Add-Ons</div>
                 {customItemsList.map((item, idx) => {
                   const isChecked = checkedItems[`${checklist.id}-custom-${idx}`] || false;
                   const itemKey = `${checklist.id}-custom-${idx}`;
                   return (
                     <div key={itemKey}>
                       {editingItem === itemKey ? (
-                        <div className="flex items-center gap-2 p-3 rounded-xl bg-[#000000] border border-[rgba(201,169,98,0.3)]">
+                        <div className="flex items-center gap-2 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)]">
                           <input value={editText} onChange={e => setEditText(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') onEditItem(checklist.id, idx); if (e.key === 'Escape') setEditingItem(null); }}
-                            className="flex-1 text-sm bg-transparent border-none outline-none text-[#F5F1E8]" autoFocus />
+                            className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)]" autoFocus />
                           <button onClick={() => onEditItem(checklist.id, idx)} className="p-1 text-[#C9A962]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
                           <button onClick={() => setEditingItem(null)} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
                         </div>
                       ) : (
-                        <div className={`flex items-center gap-3 p-3 rounded-xl bg-[#000000] border border-[rgba(201,169,98,0.15)] ${isChecked ? 'opacity-50' : ''}`}>
+                        <div className={`flex items-center gap-3 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.15)] ${isChecked ? 'opacity-50' : ''}`}>
                           <button onClick={() => onToggleCustom(checklist.id, idx)} className="flex-shrink-0">
                             {isChecked
                               ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
                               : <Circle className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />}
                           </button>
-                          <span className={`text-sm font-light flex-1 ${isChecked ? 'line-through text-[#6B6B6B]' : 'text-[#F5F1E8]'}`}>{item}</span>
+                          <span className={`text-sm font-light flex-1 ${isChecked ? 'line-through text-[color:var(--app-text-3)]' : 'text-[color:var(--app-text)]'}`}>{item}</span>
                           <button onClick={() => { setEditingItem(itemKey); setEditText(item); }} className="p-1 text-[#C9A962] opacity-60 hover:opacity-100"><Edit2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
                           <button onClick={() => onDeleteItem(checklist.id, idx)} className="p-1 text-red-400 opacity-60 hover:opacity-100"><Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
                         </div>
@@ -170,10 +170,10 @@ function ChecklistModal({
             )}
 
             {addingToTopic === checklist.id ? (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[#000000] border border-[rgba(201,169,98,0.3)]">
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)]">
                 <input value={newItemText} onChange={e => setNewItemText(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') onAddItem(checklist.id); if (e.key === 'Escape') { setAddingToTopic(null); setNewItemText(''); } }}
-                  placeholder="New item..." className="flex-1 text-sm bg-transparent border-none outline-none text-[#F5F1E8] placeholder-[#6B6B6B]" autoFocus />
+                  placeholder="New item..." className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)]" autoFocus />
                 <button onClick={() => onAddItem(checklist.id)} className="p-1 text-[#C9A962]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
                 <button onClick={() => { setAddingToTopic(null); setNewItemText(''); }} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
               </div>
@@ -452,7 +452,7 @@ export default function Checklists() {
     : null;
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: '#000000' }}>
+    <div className="min-h-screen pb-24" style={{ background: 'var(--app-bg)' }}>
       {notification && (
         <div className="fixed top-4 right-4 z-50 px-4 py-3 rounded-xl bg-gradient-to-br from-[#e2ba8b] to-[#C9A962] text-white shadow-lg text-sm font-light">
           {notification}
@@ -485,7 +485,7 @@ export default function Checklists() {
                 className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-light transition-all duration-200 ${
                   isActive
                     ? 'text-[#000000] shadow-sm'
-                    : 'text-[#B8B8B8] hover:text-[#F5F1E8] bg-[rgba(255,255,255,0.04)] hover:bg-[rgba(255,255,255,0.07)]'
+                    : 'text-[color:var(--app-text-2)] hover:text-[color:var(--app-text)] bg-[var(--app-wash-soft)] hover:bg-[color:var(--app-wash)]'
                 }`}
                 style={isActive ? { backgroundColor: color } : {}}
               >
@@ -500,10 +500,10 @@ export default function Checklists() {
         {filteredChecklists.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <ListChecks className="w-16 h-16 text-[#C9A962] opacity-30 mb-4" strokeWidth={1} />
-            <p className="text-[#B8B8B8] font-light text-base mb-1">
+            <p className="text-[color:var(--app-text-2)] font-light text-base mb-1">
               {activeCategory === 'All' ? 'No checklists yet' : `No ${activeCategory} checklists`}
             </p>
-            <p className="text-[#6B6B6B] text-sm font-light">Tap the + button to create a checklist</p>
+            <p className="text-[color:var(--app-text-3)] text-sm font-light">Tap the + button to create a checklist</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -521,7 +521,7 @@ export default function Checklists() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.03 }}
-                  className="rounded-2xl border border-[rgba(201,169,98,0.3)] shadow-[0_0_8px_rgba(201,169,98,0.1)] backdrop-blur-sm hover:border-[rgba(201,169,98,0.5)] transition-all duration-300 overflow-hidden bg-[#000000]"
+                  className="rounded-2xl border border-[rgba(201,169,98,0.3)] shadow-[0_0_8px_rgba(201,169,98,0.1)] backdrop-blur-sm hover:border-[rgba(201,169,98,0.5)] transition-all duration-300 overflow-hidden bg-[color:var(--app-bg)]"
                 >
                   <button
                     onClick={() => setActiveChecklist(checklist.id)}
@@ -545,7 +545,7 @@ export default function Checklists() {
                     )}
                     <div className="flex-1 text-left min-w-0 py-4 pr-4">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <h3 className="font-light text-base text-[#F5F1E8] truncate">{checklist.name}</h3>
+                        <h3 className="font-light text-base text-[color:var(--app-text)] truncate">{checklist.name}</h3>
                         {checklist.category && (
                           <span
                             className="flex-shrink-0 text-[9px] font-light uppercase tracking-wider px-2 py-0.5 rounded-full"
@@ -556,13 +556,13 @@ export default function Checklists() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <div className="flex-1 h-1 bg-[rgba(255,255,255,0.06)] rounded-full overflow-hidden">
+                        <div className="flex-1 h-1 bg-[color:var(--app-wash)] rounded-full overflow-hidden">
                           <div
                             className="h-full rounded-full transition-all duration-500"
                             style={{ width: `${progress}%`, backgroundColor: iconColor }}
                           />
                         </div>
-                        <span className="text-xs text-[#B8B8B8] font-light flex-shrink-0">
+                        <span className="text-xs text-[color:var(--app-text-2)] font-light flex-shrink-0">
                           {totalCompleted}/{totalItems}
                         </span>
                       </div>
@@ -612,20 +612,20 @@ export default function Checklists() {
       {showAddChecklist && (
         <>
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setShowAddChecklist(false); setNewChecklistName(''); setNewChecklistItems([]); setNewChecklistItemInput(''); }} />
-          <div className="fixed bottom-0 left-0 right-0 bg-[#000000] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
+          <div className="fixed bottom-0 left-0 right-0 bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-light text-[#C9A962]">Create Checklist</h2>
-                <button onClick={() => { setShowAddChecklist(false); setNewChecklistName(''); setNewChecklistItems([]); setNewChecklistItemInput(''); }} className="text-[#B8B8B8] hover:text-[#C9A962]">
+                <button onClick={() => { setShowAddChecklist(false); setNewChecklistName(''); setNewChecklistItems([]); setNewChecklistItemInput(''); }} className="text-[color:var(--app-text-2)] hover:text-[#C9A962]">
                   <X className="w-6 h-6" strokeWidth={1.5} />
                 </button>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-light text-[#B8B8B8] mb-2">Checklist Name</label>
-                <Input value={newChecklistName} onChange={e => setNewChecklistName(e.target.value)} placeholder="e.g., Morning Routine" className="w-full border-[#C9A962]/20 bg-white/5 text-[#F5F1E8]" />
+                <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Checklist Name</label>
+                <Input value={newChecklistName} onChange={e => setNewChecklistName(e.target.value)} placeholder="e.g., Morning Routine" className="w-full border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-light text-[#B8B8B8] mb-2">Category</label>
+                <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Category</label>
                 <div className="flex flex-wrap gap-2">
                   {CATEGORY_TABS.filter(t => t !== 'All').map(cat => {
                     const isActive = newChecklistCategory === cat;
@@ -650,9 +650,9 @@ export default function Checklists() {
                 <ColorPicker selectedColor={newChecklistColor} onSelectColor={setNewChecklistColor} />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-light text-[#B8B8B8] mb-2">Add Items</label>
+                <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Add Items</label>
                 <div className="flex items-center gap-2">
-                  <Input value={newChecklistItemInput} onChange={e => setNewChecklistItemInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleAddChecklistItem(); }} placeholder="Enter item..." className="flex-1 border-[#C9A962]/20 bg-white/5 text-[#F5F1E8]" />
+                  <Input value={newChecklistItemInput} onChange={e => setNewChecklistItemInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleAddChecklistItem(); }} placeholder="Enter item..." className="flex-1 border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
                   <button onClick={handleAddChecklistItem} className="w-10 h-10 bg-[#C9A962] rounded-lg flex items-center justify-center hover:bg-[#D4B978]">
                     <Plus className="w-5 h-5 text-[#000000]" strokeWidth={2} />
                   </button>
@@ -660,11 +660,11 @@ export default function Checklists() {
               </div>
               {newChecklistItems.length > 0 && (
                 <div className="mb-6">
-                  <label className="block text-sm font-light text-[#B8B8B8] mb-2">Items ({newChecklistItems.length})</label>
+                  <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Items ({newChecklistItems.length})</label>
                   <div className="space-y-2">
                     {newChecklistItems.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2 p-3 rounded-lg bg-[#000000] border border-[rgba(201,169,98,0.15)]">
-                        <div className="flex-1 text-sm font-light text-[#F5F1E8]">{item}</div>
+                      <div key={idx} className="flex items-center gap-2 p-3 rounded-lg bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.15)]">
+                        <div className="flex-1 text-sm font-light text-[color:var(--app-text)]">{item}</div>
                         <button onClick={() => setNewChecklistItems(newChecklistItems.filter((_, i) => i !== idx))} className="p-1 text-red-400">
                           <X className="w-4 h-4" strokeWidth={1.5} />
                         </button>

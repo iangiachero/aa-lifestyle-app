@@ -21,7 +21,7 @@ export default function Home() {
   const firstName = userProfile?.full_name?.split(' ')[0] || '';
 
   return (
-    <div className="page-safe-x pt-safe pt-6 pb-24 bg-[#000000]">
+    <div className="page-safe-x pt-safe pt-6 pb-24 bg-[color:var(--app-bg)]">
       <div className="flex items-start justify-between mb-5">
         <div className="flex-1 pb-3 border-b-2 border-[rgba(226,186,139,0.25)] mr-4">
           <h1 className="font-serif text-3xl font-semibold text-[#C9A962] tracking-wide leading-tight">
@@ -29,7 +29,7 @@ export default function Home() {
           </h1>
         </div>
         <Link to="/profile">
-          <div className="w-12 h-12 border border-[rgba(226,186,139,0.3)] shadow-[0_0_8px_rgba(226,186,139,0.15)] bg-[#000000] rounded-full flex items-center justify-center backdrop-blur-md flex-shrink-0 cursor-pointer hover:border-[rgba(226,186,139,0.5)] transition-colors overflow-hidden">
+          <div className="w-12 h-12 border border-[rgba(226,186,139,0.3)] shadow-[0_0_8px_rgba(226,186,139,0.15)] bg-[color:var(--app-bg)] rounded-full flex items-center justify-center backdrop-blur-md flex-shrink-0 cursor-pointer hover:border-[rgba(226,186,139,0.5)] transition-colors overflow-hidden">
             {userProfile?.pfp_url ? (
               <img src={userProfile.pfp_url} alt="profile" loading="lazy" decoding="async" className="w-full h-full object-cover" />
             ) : (

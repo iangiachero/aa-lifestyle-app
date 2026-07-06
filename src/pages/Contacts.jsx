@@ -17,7 +17,7 @@ export default function Contacts() {
       </div>
 
       <div className="page-safe-x pt-6">
-        <p className="text-[#B8B8B8]">Contacts page content will be added here.</p>
+        <p className="text-[color:var(--app-text-2)]">Contacts page content will be added here.</p>
       </div>
     </div>
   );

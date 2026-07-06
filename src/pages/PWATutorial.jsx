@@ -41,7 +41,7 @@ export default function PWATutorial() {
   }, [activeTab]);
 
   return (
-    <div className="min-h-full pb-32" style={{ color: '#F5F1E8' }}>
+    <div className="min-h-full pb-32" style={{ color: 'var(--app-text)' }}>
       <div
         className="relative border-b-2 page-safe-x py-5 flex items-center"
         style={{ borderColor: 'rgba(201,169,98,0.2)' }}
@@ -61,7 +61,7 @@ export default function PWATutorial() {
       <div className="page-safe-x py-6 max-w-lg mx-auto">
         <div
           className="flex rounded-xl p-1 mb-6"
-          style={{ background: 'rgba(0,0,0,0.8)', border: '1px solid rgba(201,169,98,0.2)' }}
+          style={{ background: 'var(--app-surface)', border: '1px solid rgba(201,169,98,0.2)' }}
         >
           {['ios', 'android'].map((tab) => (
             <button
@@ -85,7 +85,7 @@ export default function PWATutorial() {
 
         <div
           className="rounded-2xl overflow-hidden mb-6"
-          style={{ border: '1px solid rgba(201,169,98,0.2)', background: 'rgba(0,0,0,0.6)' }}
+          style={{ border: '1px solid rgba(201,169,98,0.2)', background: 'var(--app-surface)' }}
         >
           <video
             ref={videoRef}
@@ -96,7 +96,7 @@ export default function PWATutorial() {
             loop
             playsInline
             muted
-            style={{ display: 'block', maxHeight: '60vh', objectFit: 'contain', background: '#000000' }}
+            style={{ display: 'block', maxHeight: '60vh', objectFit: 'contain', background: 'var(--app-bg)' }}
           >
             <source src={VIDEOS[activeTab]} type={activeTab === 'ios' ? 'video/mp4' : 'video/mp4'} />
           </video>
@@ -104,7 +104,7 @@ export default function PWATutorial() {
 
         <div
           className="rounded-2xl p-5"
-          style={{ background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(201,169,98,0.2)' }}
+          style={{ background: 'var(--app-surface)', border: '1px solid rgba(201,169,98,0.2)' }}
         >
           <h2
             className="text-xs uppercase tracking-widest mb-4"
@@ -132,7 +132,7 @@ export default function PWATutorial() {
                 <div className="flex-1 min-w-0">
                   <p
                     className="text-base font-medium mb-0.5"
-                    style={{ color: '#F5F1E8', fontFamily: "'Cormorant Garamond', serif", fontSize: '17px' }}
+                    style={{ color: 'var(--app-text)', fontFamily: "'Cormorant Garamond', serif", fontSize: '17px' }}
                   >
                     {step.title}
                   </p>

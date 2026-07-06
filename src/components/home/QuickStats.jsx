@@ -19,15 +19,15 @@ export default function QuickStats({ tasks, habits, events }) {
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <div key={stat.label} className="bg-[#000000] rounded-xl p-3 text-center border border-[rgba(201,169,98,0.25)]">
+          <div key={stat.label} className="bg-[color:var(--app-bg)] rounded-xl p-3 text-center border border-[rgba(201,169,98,0.25)]">
             <div
               className="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center"
               style={{ backgroundColor: `${stat.color}15` }}
             >
               <Icon className="w-4 h-4" style={{ color: stat.color }} />
             </div>
-            <div className="text-xl font-semibold text-[#F5F1E8]">{stat.value}</div>
-            <div className="text-[10px] text-[#B8B8B8] uppercase tracking-wide">{stat.label}</div>
+            <div className="text-xl font-semibold text-[color:var(--app-text)]">{stat.value}</div>
+            <div className="text-[10px] text-[color:var(--app-text-2)] uppercase tracking-wide">{stat.label}</div>
           </div>
         );
       })}

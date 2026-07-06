@@ -572,7 +572,7 @@ export default function CalendarIndex() {
 
   if (eventsLoading) {
     return (
-      <div className="min-h-full" style={{ backgroundColor: '#000000' }}>
+      <div className="min-h-full" style={{ backgroundColor: 'var(--app-bg)' }}>
         <CalendarSkeleton />
       </div>
     );
@@ -581,11 +581,11 @@ export default function CalendarIndex() {
   return (
     <div
       className="flex flex-col w-full overflow-hidden"
-      style={{ height: 'calc(100dvh - 64px)', backgroundColor: '#000000', touchAction: 'pan-y', overflowX: 'hidden' }}
+      style={{ height: 'calc(100dvh - 64px)', backgroundColor: 'var(--app-bg)', touchAction: 'pan-y', overflowX: 'hidden' }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="flex-shrink-0" style={{ backgroundColor: '#000000' }}>
+      <div className="flex-shrink-0" style={{ backgroundColor: 'var(--app-bg)' }}>
         <CalendarHeader
           selectedDate={selectedDate}
           viewMode={viewMode}
@@ -601,7 +601,7 @@ export default function CalendarIndex() {
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
         {viewMode === 'monthly' && (
           <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
-            <div className="flex-shrink-0 overflow-hidden" style={{ backgroundColor: '#000000' }}>
+            <div className="flex-shrink-0 overflow-hidden" style={{ backgroundColor: 'var(--app-bg)' }}>
               <MonthView
                 selectedDate={selectedDate}
                 monthWeeks={monthWeeks}
@@ -656,7 +656,7 @@ export default function CalendarIndex() {
               ref={eventListRef}
               className="flex-1 min-h-0 overflow-y-auto scrollbar-hide pb-32"
               style={{
-                backgroundColor: '#000000',
+                backgroundColor: 'var(--app-bg)',
                 overscrollBehavior: 'contain',
                 overflowX: 'hidden',
                 touchAction: 'pan-y',

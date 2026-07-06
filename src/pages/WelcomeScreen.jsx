@@ -16,7 +16,7 @@ export default function WelcomeScreen() {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center"
-      style={{ background: '#000000' }}
+      style={{ background: 'var(--app-bg)' }}
     >
       <div className="flex flex-col items-center gap-8 px-6 text-center animate-fade-in">
         <div className="w-36 h-36 rounded-full overflow-hidden border-2 border-[#C9A962] shadow-2xl">

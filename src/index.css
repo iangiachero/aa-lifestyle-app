@@ -1,7 +1,42 @@
-﻿/* iOS Safe Area Background - Must be BEFORE @tailwind */
+﻿/* =========================
+   App theme palette (Light/Dark)
+   Dark is the default. Adding class "light" to <html> switches the theme.
+   Gold accents (#C9A962 / #e2ba8b) are intentionally identical in both themes.
+   ========================= */
+:root {
+  --app-bg: #000000;
+  --app-text: #F5F1E8;
+  --app-text-2: #B8B8B8;
+  --app-text-3: #6B6B6B;
+  --app-wash-soft: rgba(255, 255, 255, 0.04);
+  --app-wash: rgba(255, 255, 255, 0.06);
+  --app-wash-2: rgba(255, 255, 255, 0.09);
+  --app-wash-3: rgba(255, 255, 255, 0.33);
+  --app-wash-4: rgba(255, 255, 255, 0.47);
+  --app-input-bg: rgba(0, 0, 0, 0.5);
+  --app-surface: rgba(0, 0, 0, 0.6);
+  --app-nav: rgba(10, 10, 10, 0.97);
+}
+
+:root.light {
+  --app-bg: #FAF7F1;
+  --app-text: #2B241A;
+  --app-text-2: #6E6457;
+  --app-text-3: #9A9083;
+  --app-wash-soft: rgba(43, 36, 26, 0.03);
+  --app-wash: rgba(43, 36, 26, 0.05);
+  --app-wash-2: rgba(43, 36, 26, 0.08);
+  --app-wash-3: rgba(43, 36, 26, 0.35);
+  --app-wash-4: rgba(43, 36, 26, 0.5);
+  --app-input-bg: rgba(255, 255, 255, 0.65);
+  --app-surface: #FFFFFF;
+  --app-nav: rgba(255, 255, 255, 0.96);
+}
+
+/* iOS Safe Area Background - Must be BEFORE @tailwind */
 @supports (padding: max(0px)) {
   :root {
-    background: #000000 !important;
+    background: var(--app-bg) !important;
   }
 }
 
@@ -102,14 +137,14 @@
     --brand-accent-dark: #d4ab77;
 
     /* Background Colors */
-    --bg: #000000;
-    --bg-gradient: #000000;
-    --card-bg: #000000;
+    --bg: var(--app-bg);
+    --bg-gradient: var(--app-bg);
+    --card-bg: var(--app-bg);
 
     /* Text Colors */
-    --text-primary: #F5F1E8;
-    --text-secondary: #B8B8B8;
-    --text-muted: #6B6B6B;
+    --text-primary: var(--app-text);
+    --text-secondary: var(--app-text-2);
+    --text-muted: var(--app-text-3);
 
     /* Glow Intensity - Control shadow spread and opacity */
     --glow-spread-sm: 20px;    /* Small glow radius */
@@ -148,7 +183,7 @@
   }
 
   html {
-    background: #000000 !important;
+    background: var(--app-bg) !important;
     min-height: 100vh;
     height: 100%;
     overscroll-behavior: none;
@@ -156,8 +191,8 @@
   }
 
   body {
-    background: #000000 !important;
-    @apply text-[#F5F1E8];
+    background: var(--app-bg) !important;
+    color: var(--app-text);
     font-family: 'Cormorant Garamond', Georgia, serif;
     letter-spacing: 0.01em;
     -webkit-font-smoothing: antialiased;
@@ -182,7 +217,7 @@
   }
 
   #root {
-    background: #000000 !important;
+    background: var(--app-bg) !important;
     min-height: 100vh;
     min-height: 100dvh;
     height: 100%;
@@ -240,7 +275,7 @@
 
   /* Prevent any white backgrounds */
   input, textarea, select {
-    background-color: rgba(0,0,0,0.5);
+    background-color: var(--app-input-bg);
   }
 
   button {
@@ -250,8 +285,8 @@
 
 @layer components {
   .card-luxury {
-    background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.9) 100%) !important;
-    background-color: #000000 !important;
+    background: var(--app-bg) !important;
+    background-color: var(--app-bg) !important;
     border-radius: 1rem;
     border: 1px solid rgba(226, 186, 139, 0.4);
     box-shadow:
@@ -384,9 +419,9 @@
 .skeleton-pulse {
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.04) 25%,
-    rgba(255, 255, 255, 0.09) 50%,
-    rgba(255, 255, 255, 0.04) 75%
+    var(--app-wash-soft) 25%,
+    var(--app-wash-2) 50%,
+    var(--app-wash-soft) 75%
   );
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.6s ease-in-out infinite;

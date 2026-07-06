@@ -142,7 +142,7 @@ export default function PinSetup({ onComplete }) {
             >
               {step === 1 ? 'Create a PIN' : 'Confirm PIN'}
             </h2>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <p className="text-sm" style={{ color: 'var(--app-wash-4)' }}>
               {step === 1
                 ? 'Choose a 4–6 digit PIN to secure your vault'
                 : 'Re-enter your PIN to confirm'}
@@ -170,11 +170,11 @@ export default function PinSetup({ onComplete }) {
             }}
             className="w-full px-4 py-3.5 rounded-xl text-center text-xl tracking-[0.5em] focus:outline-none mb-5"
             style={{
-              backgroundColor: 'rgba(0,0,0,0.8)',
+              backgroundColor: 'var(--app-input-bg)',
               border: error
                 ? '1px solid rgba(239,68,68,0.6)'
                 : '1px solid rgba(201,169,98,0.3)',
-              color: '#F5F1E8',
+              color: 'var(--app-text)',
               caretColor: '#C9A962',
             }}
             placeholder="• • • •"

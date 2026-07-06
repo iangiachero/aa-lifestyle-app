@@ -23,7 +23,7 @@ export function DialogContent({ children, className = "" }) {
       className={`card-luxury p-6 max-h-[90vh] overflow-y-auto scrollbar-hide ${className}`}
       style={{
         background: 'linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.9) 100%)',
-        backgroundColor: '#000000'
+        backgroundColor: 'var(--app-bg)'
       }}
     >
       {children}

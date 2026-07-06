@@ -33,7 +33,7 @@ export default function HabitTracker({ habits }) {
     return (
       <div className="text-center py-6">
         <Flame className="w-8 h-8 opacity-20 mx-auto mb-2 text-[#C9A962]" />
-        <div className="text-[#B8B8B8] text-sm">No habits yet</div>
+        <div className="text-[color:var(--app-text-2)] text-sm">No habits yet</div>
       </div>
     );
   }
@@ -46,7 +46,7 @@ export default function HabitTracker({ habits }) {
           <div
             key={habit.id}
             onClick={() => toggleHabit(habit)}
-            className={`relative overflow-hidden transition-all cursor-pointer bg-[#000000] rounded-xl p-4 border ${
+            className={`relative overflow-hidden transition-all cursor-pointer bg-[color:var(--app-bg)] rounded-xl p-4 border ${
               isCompletedToday
                 ? 'border-[#C9A962] bg-[rgba(201,169,98,0.1)]'
                 : 'border-[rgba(201,169,98,0.25)]'
@@ -56,7 +56,7 @@ export default function HabitTracker({ habits }) {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                 isCompletedToday
                   ? 'bg-[#C9A962] text-white'
-                  : 'bg-[rgba(0,0,0,0.8)] text-[#B8B8B8]'
+                  : 'bg-[rgba(0,0,0,0.8)] text-[color:var(--app-text-2)]'
               }`}>
                 {isCompletedToday ? (
                   <Check className="w-5 h-5" />
@@ -71,7 +71,7 @@ export default function HabitTracker({ habits }) {
                 </div>
               )}
             </div>
-            <div className="font-medium text-sm text-[#F5F1E8] truncate">{habit.name}</div>
+            <div className="font-medium text-sm text-[color:var(--app-text)] truncate">{habit.name}</div>
           </div>
         );
       })}

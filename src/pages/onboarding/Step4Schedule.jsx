@@ -39,7 +39,7 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
           </GoldButton>
           <GoldButton onClick={onSubmit} disabled={!canContinue || loading}>
             {loading ? (
-              <span className="inline-block w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              <span className="inline-block w-5 h-5 border-2 border-[color:var(--app-wash-4)] border-t-white rounded-full animate-spin" />
             ) : (
               <><CheckCircle size={18} /> Let's Go</>
             )}
@@ -71,7 +71,7 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
                 onClick={() => onChange({ schedule_type: key })}
                 className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all duration-200"
                 style={{
-                  background: isSelected ? 'rgba(201,169,98,0.12)' : 'rgba(255,255,255,0.04)',
+                  background: isSelected ? 'rgba(201,169,98,0.12)' : 'var(--app-wash-soft)',
                   border: isSelected ? '1.5px solid rgba(201,169,98,0.5)' : '1.5px solid rgba(201,169,98,0.12)',
                   boxShadow: isSelected ? '0 2px 16px rgba(201,169,98,0.1)' : 'none',
                 }}

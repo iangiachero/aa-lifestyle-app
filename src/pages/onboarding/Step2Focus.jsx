@@ -52,7 +52,7 @@ export default function Step2Focus({ onNext, onBack, data, onChange }) {
                 style={{
                   background: isSelected
                     ? 'rgba(201,169,98,0.12)'
-                    : 'rgba(255,255,255,0.04)',
+                    : 'var(--app-wash-soft)',
                   border: isSelected
                     ? '1.5px solid rgba(201,169,98,0.5)'
                     : '1.5px solid rgba(201,169,98,0.12)',

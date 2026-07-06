@@ -130,7 +130,7 @@ export default function Tasks() {
     const dotColor = task.color_tag || '#C9A962';
     return (
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.96 }} transition={{ duration: 0.15 }}
-        className="rounded-xl p-4 border transition-all bg-[#000000] hover:shadow-md"
+        className="rounded-xl p-4 border transition-all bg-[color:var(--app-bg)] hover:shadow-md"
         style={{ borderColor: `${dotColor}50`, opacity: task.completed ? 0.6 : 1 }}>
         <div className="flex items-start gap-3">
           <button onClick={() => toggleTask(task)} className="mt-0.5 flex-shrink-0 transition-transform hover:scale-110 active:scale-95">
@@ -139,12 +139,12 @@ export default function Tasks() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <ColorDot color={dotColor} size="sm" />
-              <span className={`text-sm text-[#F5F1E8] ${task.completed ? 'line-through opacity-60' : ''}`}>{task.title}</span>
+              <span className={`text-sm text-[color:var(--app-text)] ${task.completed ? 'line-through opacity-60' : ''}`}>{task.title}</span>
             </div>
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               <span className="text-xs px-2 py-0.5 rounded-full uppercase tracking-wider" style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}>{categoryLabels[task.category] || task.category}</span>
               {task.priority !== 'medium' && <span className="text-xs px-2 py-0.5 rounded-full uppercase tracking-wider bg-[rgba(201,169,98,0.2)] text-[#C9A962]">{task.priority}</span>}
-              {dueDateLabel && !task.completed && <span className={`text-xs ${isOverdue ? 'text-red-400' : 'text-[#B8B8B8]'}`}>{dueDateLabel}</span>}
+              {dueDateLabel && !task.completed && <span className={`text-xs ${isOverdue ? 'text-red-400' : 'text-[color:var(--app-text-2)]'}`}>{dueDateLabel}</span>}
               {!task.due_date && !task.completed && (
                 <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(201,169,98,0.12)', color: '#C9A962' }}>Ongoing</span>
               )}
@@ -153,7 +153,7 @@ export default function Tasks() {
           {!task.completed && (
             <div className="flex gap-1 flex-shrink-0">
               <button onClick={() => { setEditingTask(task); setTaskData({ title: task.title, category: task.category, priority: task.priority, due_date: task.due_date || null, color_tag: task.color_tag || '#C9A962' }); setShowAddTask(true); }}
-                className="p-2 rounded-lg transition-all text-[#B8B8B8] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)]">
+                className="p-2 rounded-lg transition-all text-[color:var(--app-text-2)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)]">
                 <Edit2 className="w-4 h-4" strokeWidth={1.5} />
               </button>
               <button onClick={() => deleteTask(task.id)} className="p-2 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
@@ -172,7 +172,7 @@ export default function Tasks() {
   };
 
   return (
-    <div className="min-h-full pb-8 bg-[#000000]">
+    <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6 flex items-center">
         <button onClick={() => navigate(-1)} className="absolute left-4 hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
@@ -187,7 +187,7 @@ export default function Tasks() {
           <div className="p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm text-[#C9A962] font-light">Quick Add</h3>
-              <button onClick={() => setShowBlockLibrary(false)}><X className="w-4 h-4 text-[#B8B8B8]" /></button>
+              <button onClick={() => setShowBlockLibrary(false)}><X className="w-4 h-4 text-[color:var(--app-text-2)]" /></button>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {taskBlocks.map((block) => {
@@ -209,7 +209,7 @@ export default function Tasks() {
                     <div className="flex-1 flex flex-col items-start justify-between px-2.5 py-2.5 h-full">
                       <div className="flex items-center gap-1.5">
                         <BlockIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: block.color }} strokeWidth={1.5} />
-                        <span className="text-xs text-left leading-tight text-[#F5F1E8]">{block.label}</span>
+                        <span className="text-xs text-left leading-tight text-[color:var(--app-text)]">{block.label}</span>
                       </div>
                       <Plus className="w-4 h-4 self-end" style={{ color: '#C9A962' }} strokeWidth={1.5} />
                     </div>
@@ -222,28 +222,28 @@ export default function Tasks() {
 
         {!showBlockLibrary && (
           <button onClick={() => setShowBlockLibrary(true)}
-            className="w-full py-2 bg-[#000000] rounded-xl border border-[rgba(201,169,98,0.3)] text-sm text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-colors flex items-center justify-center gap-2">
+            className="w-full py-2 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.3)] text-sm text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-colors flex items-center justify-center gap-2">
             <Plus className="w-4 h-4" /> Show Quick Add
           </button>
         )}
 
         {todayTasks.length > 0 && (
           <div>
-            <h3 className="text-sm text-[#B8B8B8] uppercase tracking-wider mb-3 px-1">Today</h3>
+            <h3 className="text-sm text-[color:var(--app-text-2)] uppercase tracking-wider mb-3 px-1">Today</h3>
             <div className="space-y-2"><AnimatePresence>{todayTasks.map(task => <TaskItem key={task.id} task={task} />)}</AnimatePresence></div>
           </div>
         )}
 
         {upcomingTasks.length > 0 && (
           <div>
-            <h3 className="text-sm text-[#B8B8B8] uppercase tracking-wider mb-3 px-1">Upcoming</h3>
+            <h3 className="text-sm text-[color:var(--app-text-2)] uppercase tracking-wider mb-3 px-1">Upcoming</h3>
             <div className="space-y-2"><AnimatePresence>{upcomingTasks.map(task => <TaskItem key={task.id} task={task} />)}</AnimatePresence></div>
           </div>
         )}
 
         {noDueDateTasks.length > 0 && (
           <div>
-            <h3 className="text-sm text-[#B8B8B8] uppercase tracking-wider mb-3 px-1">No Due Date</h3>
+            <h3 className="text-sm text-[color:var(--app-text-2)] uppercase tracking-wider mb-3 px-1">No Due Date</h3>
             <div className="space-y-2"><AnimatePresence>{noDueDateTasks.map(task => <TaskItem key={task.id} task={task} />)}</AnimatePresence></div>
           </div>
         )}
@@ -251,15 +251,15 @@ export default function Tasks() {
         {todayTasks.length === 0 && upcomingTasks.length === 0 && noDueDateTasks.length === 0 && (
           <div className="p-12 text-center">
             <CheckCircle2 className="w-12 h-12 text-[#C9A962]/20 mx-auto mb-3" strokeWidth={1.5} />
-            <div className="text-sm text-[#B8B8B8] mb-2">No active tasks</div>
-            <div className="text-xs text-[#6B6B6B]">Use Quick Add blocks to create tasks</div>
+            <div className="text-sm text-[color:var(--app-text-2)] mb-2">No active tasks</div>
+            <div className="text-xs text-[color:var(--app-text-3)]">Use Quick Add blocks to create tasks</div>
           </div>
         )}
 
         {completedTasks.length > 0 && (
           <div className="pt-2">
             <button onClick={() => setShowCompleted(!showCompleted)}
-              className="flex items-center gap-2 text-sm text-[#B8B8B8] uppercase tracking-wider mb-3 hover:text-[#C9A962] transition-colors px-1">
+              className="flex items-center gap-2 text-sm text-[color:var(--app-text-2)] uppercase tracking-wider mb-3 hover:text-[#C9A962] transition-colors px-1">
               <ChevronDown className={`w-4 h-4 transition-transform ${showCompleted ? 'rotate-180' : ''}`} strokeWidth={1.5} />
               Completed ({completedTasks.length})
             </button>
@@ -276,24 +276,24 @@ export default function Tasks() {
 
       {showAddTask && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end" onClick={() => setShowAddTask(false)}>
-          <div className="w-full bg-[#000000] rounded-t-3xl border-t-2 border-[rgba(201,169,98,0.3)] overflow-y-auto scrollbar-hide"
+          <div className="w-full bg-[color:var(--app-bg)] rounded-t-3xl border-t-2 border-[rgba(201,169,98,0.3)] overflow-y-auto scrollbar-hide"
             style={{ maxHeight: '88dvh' }}
             onClick={(e) => e.stopPropagation()}>
             <div className="p-6">
-              <button onClick={() => setShowAddTask(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#000000]">
+              <button onClick={() => setShowAddTask(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)]">
                 <X className="w-5 h-5 text-[#C9A962]" />
               </button>
               <h2 className="text-xl text-[#C9A962] font-light mb-6">{editingTask ? 'Edit Task' : 'Create Task'}</h2>
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Task Name</label>
+                  <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Task Name</label>
                   <input type="text" placeholder="What needs to be done?" value={taskData.title}
                     onChange={(e) => setTaskData({ ...taskData, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none" />
+                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Category</label>
+                    <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Category</label>
                     <CustomSelect
                       value={taskData.category}
                       onChange={(val) => setTaskData({ ...taskData, category: val })}
@@ -307,7 +307,7 @@ export default function Tasks() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Priority</label>
+                    <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Priority</label>
                     <CustomSelect
                       value={taskData.priority}
                       onChange={(val) => setTaskData({ ...taskData, priority: val })}
@@ -322,7 +322,7 @@ export default function Tasks() {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs text-[#B8B8B8] uppercase">Due Date</label>
+                    <label className="text-xs text-[color:var(--app-text-2)] uppercase">Due Date</label>
                     <button
                       type="button"
                       onClick={() => {
@@ -349,7 +349,7 @@ export default function Tasks() {
                       {calendarOpen && <div style={{ height: '320px' }} />}
                     </>
                   ) : (
-                    <div className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.15)] rounded-xl text-[#6B6B6B] text-sm italic">
+                    <div className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.15)] rounded-xl text-[color:var(--app-text-3)] text-sm italic">
                       No due date — task stays visible until completed
                     </div>
                   )}
@@ -360,7 +360,7 @@ export default function Tasks() {
                 />
                 <div className="flex gap-3 pt-2" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
                   <button onClick={() => setShowAddTask(false)}
-                    className="flex-1 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[#B8B8B8] hover:bg-[rgba(201,169,98,0.1)] transition-colors">
+                    className="flex-1 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors">
                     Cancel
                   </button>
                   <button onClick={handleSaveTask} disabled={!taskData.title.trim() || loading}

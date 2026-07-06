@@ -206,7 +206,7 @@ export default function Lifestyle() {
 
   if (loading) {
     return (
-      <div className="min-h-full pb-8 bg-[#000000]">
+      <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
         <div className="border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-5 relative">
           <button onClick={handleBack} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
             <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
@@ -218,7 +218,7 @@ export default function Lifestyle() {
         <div className="page-safe-x pt-5 pb-28">
           <div className="grid grid-cols-2 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="aspect-square rounded-2xl bg-[#000000] animate-pulse border border-[rgba(201,169,98,0.1)]" />
+              <div key={i} className="aspect-square rounded-2xl bg-[color:var(--app-bg)] animate-pulse border border-[rgba(201,169,98,0.1)]" />
             ))}
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function Lifestyle() {
   }
 
   return (
-    <div className="min-h-full pb-8 bg-[#000000]">
+    <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-5">
         <button onClick={handleBack} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
@@ -272,8 +272,8 @@ export default function Lifestyle() {
                     </>
                   )}
                   <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-6">
-                    <p className="text-sm text-[#F5F1E8] font-light tracking-wide">{module.name}</p>
-                    <p className="text-xs text-[#B8B8B8] mt-0.5">{(module.routines || []).length} {(module.routines || []).length === 1 ? 'routine' : 'routines'}</p>
+                    <p className="text-sm text-[color:var(--app-text)] font-light tracking-wide">{module.name}</p>
+                    <p className="text-xs text-[color:var(--app-text-2)] mt-0.5">{(module.routines || []).length} {(module.routines || []).length === 1 ? 'routine' : 'routines'}</p>
                   </div>
                 </motion.div>
               ))}
@@ -293,8 +293,8 @@ export default function Lifestyle() {
             <div className="mt-4 mb-5 flex items-center gap-3 p-3 rounded-2xl border border-[rgba(201,169,98,0.2)] bg-gradient-to-r from-[rgba(0,0,0,0.6)] to-[rgba(0,0,0,0.4)]">
               <ModuleThumb module={selectedModule} size="lg" />
               <div className="flex-1 min-w-0">
-                <p className="text-[#F5F1E8] text-base font-light">{selectedModule.name}</p>
-                <p className="text-[#B8B8B8] text-xs mt-0.5">
+                <p className="text-[color:var(--app-text)] text-base font-light">{selectedModule.name}</p>
+                <p className="text-[color:var(--app-text-2)] text-xs mt-0.5">
                   {(selectedModule.routines || []).length} {(selectedModule.routines || []).length === 1 ? 'routine' : 'routines'}
                 </p>
               </div>
@@ -311,8 +311,8 @@ export default function Lifestyle() {
             {(selectedModule.routines || []).length === 0 ? (
               <div className="text-center py-16 border border-dashed border-[rgba(201,169,98,0.2)] rounded-2xl">
                 <div className="text-3xl mb-3 opacity-30">✦</div>
-                <p className="text-sm text-[#6B6B6B]">No routines yet</p>
-                <p className="text-xs text-[#4B4B4B] mt-1">Tap + to add your first routine</p>
+                <p className="text-sm text-[color:var(--app-text-3)]">No routines yet</p>
+                <p className="text-xs text-[color:var(--app-text-3)] mt-1">Tap + to add your first routine</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -329,7 +329,7 @@ export default function Lifestyle() {
                         <ModuleThumb module={selectedModule} size="sm" />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
-                            <h4 className="text-sm text-[#F5F1E8] font-light flex-1 leading-snug">{routine.name}</h4>
+                            <h4 className="text-sm text-[color:var(--app-text)] font-light flex-1 leading-snug">{routine.name}</h4>
                             {!routine.is_curated && (
                               <div className="flex items-center gap-1.5 flex-shrink-0">
                                 <button
@@ -354,7 +354,7 @@ export default function Lifestyle() {
                               </span>
                             )}
                             {routine.duration_minutes != null && (
-                              <span className="text-[10px] text-[#B8B8B8] bg-[rgba(255,255,255,0.05)] px-2 py-0.5 rounded-full flex items-center gap-1">
+                              <span className="text-[10px] text-[color:var(--app-text-2)] bg-[color:var(--app-wash)] px-2 py-0.5 rounded-full flex items-center gap-1">
                                 <Timer className="w-2.5 h-2.5" strokeWidth={1.5} />
                                 {routine.duration_minutes}m
                               </span>
@@ -371,11 +371,11 @@ export default function Lifestyle() {
                                 <span className="text-[9px] text-[#C9A962]">{stepIdx + 1}</span>
                               </div>
                               <div className="flex-1 h-px bg-[rgba(201,169,98,0.1)]" />
-                              <span className="text-xs text-[#B8B8B8] font-light flex-shrink-0 max-w-[55%] text-right">{step.title}</span>
+                              <span className="text-xs text-[color:var(--app-text-2)] font-light flex-shrink-0 max-w-[55%] text-right">{step.title}</span>
                               {!routine.is_curated && (
                                 <button
                                   onClick={() => handleDeleteStep(routine.id, step.id)}
-                                  className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-[#4B4B4B] hover:text-red-400"
+                                  className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity text-[color:var(--app-text-3)] hover:text-red-400"
                                 >
                                   <Trash2 className="w-3 h-3" strokeWidth={1.5} />
                                 </button>

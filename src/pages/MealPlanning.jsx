@@ -443,7 +443,7 @@ export default function MealPlanning() {
     .map(c => ({ value: c.label, label: c.label }));
 
   return (
-    <div className="min-h-full pb-8 bg-[#000000]">
+    <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
       <Notification
         message={notification}
         show={!!notification}
@@ -497,13 +497,13 @@ export default function MealPlanning() {
                       <div className="flex-1 flex items-start justify-between p-4">
                         <div className="flex-1">
                           <div className="text-[9px] text-[#C9A962] uppercase font-light tracking-[0.15em] mb-2">{type}</div>
-                          <div className="font-light text-[#F5F1E8] text-base mb-1">{meal?.name || 'Not planned'}</div>
+                          <div className="font-light text-[color:var(--app-text)] text-base mb-1">{meal?.name || 'Not planned'}</div>
                           {meal?.time && (
-                            <div className="flex items-center gap-1.5 text-xs text-[#B8B8B8] font-light mb-1">
+                            <div className="flex items-center gap-1.5 text-xs text-[color:var(--app-text-2)] font-light mb-1">
                               <Clock className="w-3 h-3" strokeWidth={1.5} />{(() => { const [h, m] = meal.time.split(':'); const hr = parseInt(h, 10); return `${hr % 12 || 12}:${m} ${hr >= 12 ? 'PM' : 'AM'}`; })()}
                             </div>
                           )}
-                          {meal?.notes && <div className="text-xs text-[#B8B8B8] font-light italic mt-2">{meal.notes}</div>}
+                          {meal?.notes && <div className="text-xs text-[color:var(--app-text-2)] font-light italic mt-2">{meal.notes}</div>}
                         </div>
                         <div className="flex gap-2 flex-shrink-0">
                           {meal ? (
@@ -560,7 +560,7 @@ export default function MealPlanning() {
                               <img src={getWeeklyMealImage(day, type)} alt={type} className="w-full h-full object-cover" loading="lazy" />
                             </div>
                             <div className="w-20 text-[9px] text-[#C9A962] uppercase tracking-wider font-light">{type}</div>
-                            <div className="flex-1 text-[#F5F1E8] font-light truncate">{meal?.name || '—'}</div>
+                            <div className="flex-1 text-[color:var(--app-text)] font-light truncate">{meal?.name || '—'}</div>
                             {meal ? (
                               <div className="flex gap-1 flex-shrink-0">
                                 {parseIngredients(meal.ingredients).length > 0 && (
@@ -603,12 +603,12 @@ export default function MealPlanning() {
               </button>
             </div>
             <div className="relative mb-5">
-              <div className="flex items-center gap-3 px-4 rounded-xl h-11" style={{ backgroundColor: '#000000', border: '1px solid rgba(201,169,98,0.30)' }}>
+              <div className="flex items-center gap-3 px-4 rounded-xl h-11" style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.30)' }}>
                 <Search className="w-4 h-4 text-[#C9A962] flex-shrink-0" strokeWidth={1.5} />
                 <input type="text" placeholder="Search recipes..." value={recipeSearch}
                   onChange={e => setRecipeSearch(e.target.value)}
                   className="flex-1 bg-transparent focus:outline-none text-sm font-light"
-                  style={{ color: '#F5F1E8' }} />
+                  style={{ color: 'var(--app-text)' }} />
                 <button onClick={() => setShowFilterDropdown(v => !v)} className="flex-shrink-0">
                   <SlidersHorizontal className="w-4 h-4 transition-colors"
                     style={{ color: activeRecipeCategory !== 'all' ? '#C9A962' : 'rgba(201,169,98,0.5)' }}
@@ -619,7 +619,7 @@ export default function MealPlanning() {
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setShowFilterDropdown(false)} />
                   <div className="absolute left-0 right-0 top-13 z-20 rounded-xl overflow-hidden mt-2 py-1"
-                    style={{ backgroundColor: '#1E1E1E', border: '1px solid rgba(201,169,98,0.25)', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}>
+                    style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.25)', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}>
                     {RECIPE_CATEGORIES.map(cat => (
                       <button key={cat.id} onClick={() => { setActiveRecipeCategory(cat.id); setShowFilterDropdown(false); }}
                         className="w-full px-4 py-2.5 text-left text-sm font-light transition-colors flex items-center justify-between"
@@ -634,7 +634,7 @@ export default function MealPlanning() {
             </div>
             <div className="space-y-3">
               {filteredRecipes.length === 0 ? (
-                <div className="text-center py-12 text-[#B8B8B8] font-light text-sm">No recipes in this category.</div>
+                <div className="text-center py-12 text-[color:var(--app-text-2)] font-light text-sm">No recipes in this category.</div>
               ) : (
                 filteredRecipes.map(recipe => (
                   <RecipeCard key={recipe.id} recipe={recipe}
@@ -654,13 +654,13 @@ export default function MealPlanning() {
       {showAddMeal && (
         <>
           <div className="fixed inset-0 bg-black/50 z-40" onClick={closeDrawer} />
-          <div className="fixed bottom-0 left-0 right-0 bg-[#000000] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[80dvh] overflow-y-auto scrollbar-hide">
+          <div className="fixed bottom-0 left-0 right-0 bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[80dvh] overflow-y-auto scrollbar-hide">
             <div className="p-6" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
               <button onClick={closeDrawer} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#e2ba8b]/10 transition-colors">
                 <X className="w-5 h-5 text-[#e2ba8b]" strokeWidth={1.5} />
               </button>
               <h2 className="font-serif text-2xl font-light text-[#e2ba8b] mb-1">{editingMeal ? 'Edit Meal' : 'Add Meal'}</h2>
-              <p className="text-xs text-[#B8B8B8] font-light mb-6 tracking-widest uppercase">Plan with intention</p>
+              <p className="text-xs text-[color:var(--app-text-2)] font-light mb-6 tracking-widest uppercase">Plan with intention</p>
 
               <div className="space-y-4">
                 <div>
@@ -669,7 +669,7 @@ export default function MealPlanning() {
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -712,7 +712,7 @@ export default function MealPlanning() {
                     onChange={e => setFormData({ ...formData, notes: e.target.value })}
                     rows={3}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none text-sm font-light"
-                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                 </div>
 
                 <div>
@@ -723,7 +723,7 @@ export default function MealPlanning() {
                     onChange={e => setFormData({ ...formData, ingredients: e.target.value })}
                     rows={5}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none text-xs font-mono"
-                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                 </div>
 
                 <div className="pt-2">
@@ -743,13 +743,13 @@ export default function MealPlanning() {
       {showCreateRecipe && (
         <>
           <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); setEditingRecipe(null); }} />
-          <div className="fixed bottom-0 left-0 right-0 bg-[#000000] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide">
+          <div className="fixed bottom-0 left-0 right-0 bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide">
             <div className="p-6" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
               <button onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); setEditingRecipe(null); }} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#e2ba8b]/10 transition-colors">
                 <X className="w-5 h-5 text-[#e2ba8b]" strokeWidth={1.5} />
               </button>
               <h2 className="font-serif text-2xl font-light text-[#e2ba8b] mb-1">{editingRecipe ? 'Edit Recipe' : 'Create Recipe'}</h2>
-              <p className="text-xs text-[#B8B8B8] font-light mb-6 tracking-widest uppercase">{editingRecipe ? 'Update your recipe details' : 'Save your favourite dishes'}</p>
+              <p className="text-xs text-[color:var(--app-text-2)] font-light mb-6 tracking-widest uppercase">{editingRecipe ? 'Update your recipe details' : 'Save your favourite dishes'}</p>
 
               <div className="space-y-4">
                 {/* Photo upload */}
@@ -774,7 +774,7 @@ export default function MealPlanning() {
                         <img src={recipeImagePreview || recipeForm.image_url} alt="Recipe" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                           {uploadingRecipeImage ? (
-                            <span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                            <span className="w-5 h-5 border-2 border-[color:var(--app-wash-4)] border-t-white rounded-full animate-spin" />
                           ) : (
                             <Camera className="w-5 h-5 text-white" strokeWidth={1.5} />
                           )}
@@ -811,7 +811,7 @@ export default function MealPlanning() {
                     value={recipeForm.title}
                     onChange={e => setRecipeForm({ ...recipeForm, title: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                 </div>
 
                 <div>
@@ -831,7 +831,7 @@ export default function MealPlanning() {
                       value={recipeForm.time}
                       onChange={e => setRecipeForm({ ...recipeForm, time: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                      style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                      style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                   </div>
                   <div>
                     <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Calories</label>
@@ -842,7 +842,7 @@ export default function MealPlanning() {
                       value={recipeForm.calories}
                       onChange={e => setRecipeForm({ ...recipeForm, calories: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                      style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                      style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                   </div>
                 </div>
 
@@ -856,7 +856,7 @@ export default function MealPlanning() {
                       value={recipeForm.servings}
                       onChange={e => setRecipeForm({ ...recipeForm, servings: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl focus:outline-none text-sm font-light"
-                      style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                      style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                   </div>
                   <div>
                     <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Difficulty</label>
@@ -879,7 +879,7 @@ export default function MealPlanning() {
                     onChange={e => setRecipeForm({ ...recipeForm, ingredients: e.target.value })}
                     rows={5}
                     className="w-full px-4 py-3 rounded-xl focus:outline-none resize-none text-xs font-mono"
-                    style={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid rgba(226,186,139,0.2)', color: '#F5F1E8' }} />
+                    style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                 </div>
 
                 <div className="pt-2">
@@ -917,7 +917,7 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
   const showCreatedByYou = recipe.is_custom && !customPhotoUrl;
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: '#000000', border: '1px solid rgba(201,169,98,0.25)' }}>
+    <div className="rounded-2xl overflow-hidden" style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.25)' }}>
       <div className="flex items-stretch">
         {/* Photo/Icon panel */}
         <div className="flex-shrink-0 flex items-center justify-center overflow-hidden"
@@ -959,9 +959,9 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
         className="w-full text-left"
       >
         <div className="flex items-start justify-between gap-3 mb-2">
-          <h4 className="font-light text-[#F5F1E8] text-sm leading-snug flex-1">{recipe.title}</h4>
+          <h4 className="font-light text-[color:var(--app-text)] text-sm leading-snug flex-1">{recipe.title}</h4>
           <div className="flex items-center gap-2 flex-shrink-0 mt-0.5">
-            <span className={`text-[10px] font-light capitalize ${difficultyColors[recipe.difficulty] || 'text-[#B8B8B8]'}`}>{recipe.difficulty}</span>
+            <span className={`text-[10px] font-light capitalize ${difficultyColors[recipe.difficulty] || 'text-[color:var(--app-text-2)]'}`}>{recipe.difficulty}</span>
             {onEdit && (
               <button onClick={e => { e.stopPropagation(); onEdit(); }} className="p-1 rounded-lg hover:bg-[#C9A962]/10 transition-colors">
                 <Pencil className="w-3.5 h-3.5 text-[#C9A962]/70" strokeWidth={1.5} />
@@ -979,14 +979,14 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
           </div>
         </div>
         <div className="flex items-center gap-3 mb-3 flex-wrap">
-          <div className="flex items-center gap-1 text-[11px] text-[#B8B8B8] font-light"><Flame className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.calories} cal</div>
-          <div className="flex items-center gap-1 text-[11px] text-[#B8B8B8] font-light"><Clock className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.time}</div>
-          <div className="flex items-center gap-1 text-[11px] text-[#B8B8B8] font-light"><Users className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.servings}</div>
+          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Flame className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.calories} cal</div>
+          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Clock className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.time}</div>
+          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Users className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.servings}</div>
         </div>
         {!expanded && (
           <div className="flex flex-wrap gap-1.5 mb-4">
             {visible.map((ing, i) => (
-              <span key={i} className="px-2.5 py-1 rounded-full text-[10px] font-light text-[#B8B8B8] border border-[rgba(226,186,139,0.12)] bg-[rgba(226,186,139,0.04)]">{ing}</span>
+              <span key={i} className="px-2.5 py-1 rounded-full text-[10px] font-light text-[color:var(--app-text-2)] border border-[rgba(226,186,139,0.12)] bg-[rgba(226,186,139,0.04)]">{ing}</span>
             ))}
             {extra > 0 && <span className="px-2.5 py-1 rounded-full text-[10px] font-light text-[#e2ba8b]/60 border border-[rgba(201,169,98,0.2)]">+{extra} more</span>}
           </div>
@@ -999,7 +999,7 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
             <p className="text-[10px] uppercase tracking-widest text-[#C9A962] font-light mb-3">Ingredients</p>
             <ul className="space-y-1.5">
               {recipe.ingredients.map((ing, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs font-light text-[#B8B8B8]">
+                <li key={i} className="flex items-start gap-2 text-xs font-light text-[color:var(--app-text-2)]">
                   <span className="w-1 h-1 rounded-full bg-[#C9A962] flex-shrink-0 mt-1.5"></span>
                   {ing}
                 </li>

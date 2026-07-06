@@ -8,11 +8,11 @@ export default function TimePicker({ value, onChange, placeholder = 'Select time
 
   const ui = {
     gold: '#C9A962',
-    bg: '#000000',
-    panel: '#000000',
-    text: '#F5F1E8',
-    muted: '#B8B8B8',
-    muted2: '#6B6B6B',
+    bg: 'var(--app-bg)',
+    panel: 'var(--app-bg)',
+    text: 'var(--app-text)',
+    muted: 'var(--app-text-2)',
+    muted2: 'var(--app-text-3)',
     border: 'rgba(201,169,98,0.3)',
     borderSoft: 'rgba(201,169,98,0.18)',
     wash: 'rgba(201,169,98,0.1)',

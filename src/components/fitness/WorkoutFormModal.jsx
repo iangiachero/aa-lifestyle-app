@@ -90,12 +90,12 @@ export default function WorkoutFormModal({
 
         <motion.div initial={{ y: '100%', opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: '100%', opacity: 0 }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className="relative w-full sm:max-w-2xl bg-[#000000] rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col"
+          className="relative w-full sm:max-w-2xl bg-[color:var(--app-bg)] rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col"
           style={{ height: '90dvh' }}>
 
           <div className="flex items-center justify-between p-6 border-b border-[rgba(201,169,98,0.3)]">
-            <h2 className="text-xl text-[#F5F1E8] font-light">{initialData ? 'Edit Workout' : 'Create Workout'}</h2>
-            <button onClick={onClose} className="w-10 h-10 rounded-full bg-[#000000] border border-[rgba(201,169,98,0.3)] flex items-center justify-center hover:bg-[#000000] transition-colors">
+            <h2 className="text-xl text-[color:var(--app-text)] font-light">{initialData ? 'Edit Workout' : 'Create Workout'}</h2>
+            <button onClick={onClose} className="w-10 h-10 rounded-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] flex items-center justify-center hover:bg-[color:var(--app-bg)] transition-colors">
               <X className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
             </button>
           </div>
@@ -105,7 +105,7 @@ export default function WorkoutFormModal({
               <label className="block text-sm text-[#C9A962] mb-2">Workout Name</label>
               <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g., Pull Day, Upper Body Strength"
-                className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#6B6B6B] focus:outline-none focus:border-[#C9A962]" />
+                className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:outline-none focus:border-[#C9A962]" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -113,7 +113,7 @@ export default function WorkoutFormModal({
                 <label className="block text-sm text-[#C9A962] mb-2">Duration (min)</label>
                 <input type="number" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) || 0 })}
                   min="5" max="180"
-                  className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] focus:outline-none focus:border-[#C9A962]" />
+                  className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] focus:outline-none focus:border-[#C9A962]" />
               </div>
               <div>
                 <label className="block text-sm text-[#C9A962] mb-2">Difficulty</label>
@@ -137,7 +137,7 @@ export default function WorkoutFormModal({
                     className={`px-4 py-2 rounded-xl text-sm border transition-all ${
                       formData.muscle_groups.includes(group.id)
                         ? 'bg-[#C9A962] text-[#000000] border-[#C9A962]'
-                        : 'bg-[#000000] text-[#B8B8B8] border-[rgba(201,169,98,0.3)] hover:border-[#C9A962]'
+                        : 'bg-[color:var(--app-bg)] text-[color:var(--app-text-2)] border-[rgba(201,169,98,0.3)] hover:border-[#C9A962]'
                     }`}>
                     {group.label}
                   </button>
@@ -145,10 +145,10 @@ export default function WorkoutFormModal({
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-[#000000] rounded-xl border border-[rgba(201,169,98,0.3)]">
+            <div className="flex items-center justify-between p-4 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.3)]">
               <div className="flex items-center gap-2">
-                <Star className={`w-5 h-5 ${formData.is_favorite ? 'text-[#C9A962] fill-[#C9A962]' : 'text-[#6B6B6B]'}`} strokeWidth={1.5} />
-                <span className="text-sm text-[#F5F1E8]">Mark as Favorite</span>
+                <Star className={`w-5 h-5 ${formData.is_favorite ? 'text-[#C9A962] fill-[#C9A962]' : 'text-[color:var(--app-text-3)]'}`} strokeWidth={1.5} />
+                <span className="text-sm text-[color:var(--app-text)]">Mark as Favorite</span>
               </div>
               <button onClick={() => setFormData({ ...formData, is_favorite: !formData.is_favorite })}
                 className={`relative w-12 h-6 rounded-full transition-colors ${formData.is_favorite ? 'bg-[#C9A962]' : 'bg-[#3A3A3A]'}`}>
@@ -167,62 +167,62 @@ export default function WorkoutFormModal({
 
               <div className="space-y-3">
                 {formData.exercises.map((exercise, index) => (
-                  <div key={index} className="bg-[#000000] rounded-xl border border-[rgba(201,169,98,0.3)] overflow-hidden">
+                  <div key={index} className="bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.3)] overflow-hidden">
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-sm text-[#C9A962]">Exercise {index + 1}</span>
                         <div className="flex gap-2">
                           <button onClick={() => setExpandedExercise(expandedExercise === index ? null : index)}
-                            className="p-1.5 rounded-lg hover:bg-[#000000] transition-colors">
-                            {expandedExercise === index ? <ChevronUp className="w-4 h-4 text-[#B8B8B8]" /> : <ChevronDown className="w-4 h-4 text-[#B8B8B8]" />}
+                            className="p-1.5 rounded-lg hover:bg-[color:var(--app-bg)] transition-colors">
+                            {expandedExercise === index ? <ChevronUp className="w-4 h-4 text-[color:var(--app-text-2)]" /> : <ChevronDown className="w-4 h-4 text-[color:var(--app-text-2)]" />}
                           </button>
-                          <button onClick={() => handleRemoveExercise(index)} className="p-1.5 rounded-lg hover:bg-[#000000] transition-colors">
+                          <button onClick={() => handleRemoveExercise(index)} className="p-1.5 rounded-lg hover:bg-[color:var(--app-bg)] transition-colors">
                             <Trash2 className="w-4 h-4 text-red-400" strokeWidth={1.5} />
                           </button>
                         </div>
                       </div>
                       <input type="text" value={exercise.name} onChange={(e) => handleExerciseChange(index, 'name', e.target.value)}
                         placeholder="Exercise name"
-                        className="w-full px-3 py-2 mb-3 bg-[#000000] border border-[rgba(201,169,98,0.2)] rounded-lg text-[#F5F1E8] placeholder-[#6B6B6B] text-sm focus:outline-none focus:border-[#C9A962]" />
+                        className="w-full px-3 py-2 mb-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-lg text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] text-sm focus:outline-none focus:border-[#C9A962]" />
                       <div className="grid grid-cols-3 gap-2">
                         <div>
-                          <label className="block text-xs text-[#B8B8B8] mb-1">Sets</label>
+                          <label className="block text-xs text-[color:var(--app-text-2)] mb-1">Sets</label>
                           <input type="number" value={exercise.sets} onChange={(e) => handleExerciseChange(index, 'sets', parseInt(e.target.value) || 0)}
                             min="1" max="10"
-                            className="w-full px-3 py-2 bg-[#000000] border border-[rgba(201,169,98,0.2)] rounded-lg text-[#F5F1E8] text-sm focus:outline-none focus:border-[#C9A962]" />
+                            className="w-full px-3 py-2 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-lg text-[color:var(--app-text)] text-sm focus:outline-none focus:border-[#C9A962]" />
                         </div>
                         <div>
-                          <label className="block text-xs text-[#B8B8B8] mb-1">Reps</label>
+                          <label className="block text-xs text-[color:var(--app-text-2)] mb-1">Reps</label>
                           <input type="text" value={exercise.reps} onChange={(e) => handleExerciseChange(index, 'reps', e.target.value)}
                             placeholder="8-12"
-                            className="w-full px-3 py-2 bg-[#000000] border border-[rgba(201,169,98,0.2)] rounded-lg text-[#F5F1E8] text-sm focus:outline-none focus:border-[#C9A962]" />
+                            className="w-full px-3 py-2 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-lg text-[color:var(--app-text)] text-sm focus:outline-none focus:border-[#C9A962]" />
                         </div>
                         <div>
-                          <label className="block text-xs text-[#B8B8B8] mb-1">Rest (s)</label>
+                          <label className="block text-xs text-[color:var(--app-text-2)] mb-1">Rest (s)</label>
                           <input type="number" value={exercise.rest_seconds} onChange={(e) => handleExerciseChange(index, 'rest_seconds', parseInt(e.target.value) || 0)}
                             min="0" max="300"
-                            className="w-full px-3 py-2 bg-[#000000] border border-[rgba(201,169,98,0.2)] rounded-lg text-[#F5F1E8] text-sm focus:outline-none focus:border-[#C9A962]" />
+                            className="w-full px-3 py-2 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-lg text-[color:var(--app-text)] text-sm focus:outline-none focus:border-[#C9A962]" />
                         </div>
                       </div>
                       {expandedExercise === index && (
                         <div className="mt-3">
-                          <label className="block text-xs text-[#B8B8B8] mb-1">Notes (optional)</label>
+                          <label className="block text-xs text-[color:var(--app-text-2)] mb-1">Notes (optional)</label>
                           <textarea value={exercise.notes} onChange={(e) => handleExerciseChange(index, 'notes', e.target.value)}
                             placeholder="Add form cues or tips..." rows="2"
-                            className="w-full px-3 py-2 bg-[#000000] border border-[rgba(201,169,98,0.2)] rounded-lg text-[#F5F1E8] placeholder-[#6B6B6B] text-sm focus:outline-none focus:border-[#C9A962] resize-none" />
+                            className="w-full px-3 py-2 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-lg text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] text-sm focus:outline-none focus:border-[#C9A962] resize-none" />
                         </div>
                       )}
                     </div>
                   </div>
                 ))}
                 {formData.exercises.length === 0 && (
-                  <div className="text-center py-8 text-[#6B6B6B] text-sm">No exercises added yet. Click "Add Exercise" to start building your workout.</div>
+                  <div className="text-center py-8 text-[color:var(--app-text-3)] text-sm">No exercises added yet. Click "Add Exercise" to start building your workout.</div>
                 )}
               </div>
             </div>
             <div className="flex gap-3 pt-4" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
               <button onClick={onClose} disabled={isLoading}
-                className="flex-1 px-6 py-3 bg-[#000000] text-[#C9A962] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[#000000] transition-colors disabled:opacity-50">
+                className="flex-1 px-6 py-3 bg-[color:var(--app-bg)] text-[#C9A962] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors disabled:opacity-50">
                 Cancel
               </button>
               <button onClick={handleSubmit} disabled={isLoading}

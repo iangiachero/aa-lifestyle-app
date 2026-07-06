@@ -17,7 +17,7 @@ export default function Birthdays() {
       </div>
 
       <div className="page-safe-x pt-4">
-        <p className="text-[#B8B8B8]">Birthdays page content will be added here.</p>
+        <p className="text-[color:var(--app-text-2)]">Birthdays page content will be added here.</p>
       </div>
     </div>
   );

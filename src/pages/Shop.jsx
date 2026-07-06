@@ -32,8 +32,8 @@ export default function Shop() {
   );
 
   const ui = useMemo(() => ({
-    gold: '#C9A962', bg: '#000000', panel: '#000000', panel2: '#000000',
-    text: '#F5F1E8', muted: '#B8B8B8', muted2: '#6B6B6B',
+    gold: '#C9A962', bg: 'var(--app-bg)', panel: 'var(--app-bg)', panel2: 'var(--app-bg)',
+    text: 'var(--app-text)', muted: 'var(--app-text-2)', muted2: 'var(--app-text-3)',
     border: 'rgba(201,169,98,0.30)', borderSoft: 'rgba(201,169,98,0.18)',
     borderSofter: 'rgba(201,169,98,0.10)', wash: 'rgba(201,169,98,0.06)', wash2: 'rgba(201,169,98,0.10)',
   }), []);

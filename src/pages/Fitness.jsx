@@ -109,7 +109,7 @@ export default function Fitness() {
   const curatedWorkouts = getCuratedWorkoutsByMuscleGroup(selectedMuscleGroup, userProfile?.gender?.toLowerCase());
 
   return (
-    <div className="min-h-full pb-36 bg-[#000000]">
+    <div className="min-h-full pb-36 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
@@ -131,15 +131,15 @@ export default function Fitness() {
 
         {activeTab === 'library' && (
           <>
-            <div className="bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.3)] p-5">
+            <div className="bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.3)] p-5">
               <h2 className="text-sm text-[#C9A962] font-light mb-4 tracking-wide">CURATED WORKOUTS</h2>
               <div className="grid grid-cols-3 gap-3">
                 {MUSCLE_GROUPS.map((group) => (
                   <button key={group.id} onClick={() => setSelectedMuscleGroup(group.id)}
-                    className={`aspect-square bg-[#000000] rounded-2xl border-2 transition-all overflow-hidden relative group ${selectedMuscleGroup === group.id ? 'border-[#C9A962] shadow-lg shadow-[rgba(201,169,98,0.3)]' : 'border-[rgba(201,169,98,0.3)]'}`}>
+                    className={`aspect-square bg-[color:var(--app-bg)] rounded-2xl border-2 transition-all overflow-hidden relative group ${selectedMuscleGroup === group.id ? 'border-[#C9A962] shadow-lg shadow-[rgba(201,169,98,0.3)]' : 'border-[rgba(201,169,98,0.3)]'}`}>
                     <img src={group.image} alt={group.label} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:brightness-90 transition-all duration-300" />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent pt-8 pb-2 px-2">
-                      <div className="relative z-10 text-[11px] text-[#F5F1E8] font-light text-center tracking-wide">{group.label}</div>
+                      <div className="relative z-10 text-[11px] text-[color:var(--app-text)] font-light text-center tracking-wide">{group.label}</div>
                     </div>
                   </button>
                 ))}
@@ -149,21 +149,21 @@ export default function Fitness() {
             <div className="space-y-3">
               {curatedWorkouts.map((workout) => (
                 <motion.div key={workout.id} whileHover={{ scale: 1.01 }} onClick={() => handleViewWorkout(workout, true)}
-                  className="bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.3)] p-5 cursor-pointer hover:border-[#C9A962] transition-all">
-                  <h3 className="text-base text-[#F5F1E8] font-light mb-2">{workout.name}</h3>
-                  <div className="flex gap-3 text-xs text-[#B8B8B8] mb-4">
+                  className="bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.3)] p-5 cursor-pointer hover:border-[#C9A962] transition-all">
+                  <h3 className="text-base text-[color:var(--app-text)] font-light mb-2">{workout.name}</h3>
+                  <div className="flex gap-3 text-xs text-[color:var(--app-text-2)] mb-4">
                     <div className="flex items-center gap-1"><Clock className="w-3 h-3" /><span>{workout.duration} min</span></div>
                     <span>•</span><span>{workout.difficulty}</span>
                   </div>
                   <div className="space-y-2">
                     {workout.exercises.slice(0, 3).map((ex, j) => (
-                      <div key={j} className="text-sm text-[#B8B8B8] flex items-center gap-2">
+                      <div key={j} className="text-sm text-[color:var(--app-text-2)] flex items-center gap-2">
                         <div className="w-1 h-1 rounded-full bg-[#C9A962]" />
                         <span className="flex-1">{ex.name}</span>
-                        <span className="text-xs text-[#6B6B6B]">{ex.sets}×{ex.reps}</span>
+                        <span className="text-xs text-[color:var(--app-text-3)]">{ex.sets}×{ex.reps}</span>
                       </div>
                     ))}
-                    {workout.exercises.length > 3 && <div className="text-xs text-[#6B6B6B] ml-3">+{workout.exercises.length - 3} more exercises</div>}
+                    {workout.exercises.length > 3 && <div className="text-xs text-[color:var(--app-text-3)] ml-3">+{workout.exercises.length - 3} more exercises</div>}
                   </div>
                 </motion.div>
               ))}
@@ -173,16 +173,16 @@ export default function Fitness() {
 
         {activeTab === 'myworkouts' && (
           <div className="space-y-4">
-            <div className="bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.3)] p-4">
+            <div className="bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.3)] p-4">
               <h2 className="text-sm text-[#C9A962] font-light mb-1 tracking-wide">MY CUSTOM WORKOUTS</h2>
-              <p className="text-xs text-[#B8B8B8]">Create and manage your personal workouts</p>
+              <p className="text-xs text-[color:var(--app-text-2)]">Create and manage your personal workouts</p>
             </div>
 
             {workouts.length === 0 ? (
-              <div className="bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.3)] text-center py-16 px-6">
+              <div className="bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.3)] text-center py-16 px-6">
                 <Dumbbell className="w-16 h-16 text-[#C9A962] opacity-20 mx-auto mb-4" strokeWidth={1} />
-                <h3 className="text-lg text-[#F5F1E8] font-light mb-2">No workouts yet</h3>
-                <p className="text-sm text-[#B8B8B8] mb-6 max-w-sm mx-auto">Start building your perfect workout routine with custom exercises</p>
+                <h3 className="text-lg text-[color:var(--app-text)] font-light mb-2">No workouts yet</h3>
+                <p className="text-sm text-[color:var(--app-text-2)] mb-6 max-w-sm mx-auto">Start building your perfect workout routine with custom exercises</p>
                 <button onClick={handleCreateWorkout} className="px-6 py-3 bg-[#C9A962] text-[#000000] rounded-full text-sm font-light flex items-center gap-2 mx-auto hover:bg-[#D4B574] transition-colors">
                   <Plus className="w-4 h-4" />Create Your First Workout
                 </button>
@@ -190,25 +190,25 @@ export default function Fitness() {
             ) : (
               <div className="space-y-3">
                 {workouts.map((workout) => (
-                  <motion.div key={workout.id} whileHover={{ scale: 1.01 }} className="bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.3)] p-5">
+                  <motion.div key={workout.id} whileHover={{ scale: 1.01 }} className="bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.3)] p-5">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1" onClick={() => handleViewWorkout(workout)}>
-                        <h4 className="text-base text-[#F5F1E8] font-light mb-2 cursor-pointer">{workout.name}</h4>
+                        <h4 className="text-base text-[color:var(--app-text)] font-light mb-2 cursor-pointer">{workout.name}</h4>
                         <div className="flex flex-wrap gap-2">
-                          <div className="flex items-center gap-1 text-xs text-[#B8B8B8]"><Clock className="w-3 h-3" /><span>{workout.duration} min</span></div>
-                          <span className="text-xs text-[#6B6B6B]">•</span>
-                          <span className="text-xs text-[#B8B8B8]">{workout.difficulty}</span>
-                          {workout.exercises?.length > 0 && <><span className="text-xs text-[#6B6B6B]">•</span><span className="text-xs text-[#B8B8B8]">{workout.exercises.length} exercises</span></>}
+                          <div className="flex items-center gap-1 text-xs text-[color:var(--app-text-2)]"><Clock className="w-3 h-3" /><span>{workout.duration} min</span></div>
+                          <span className="text-xs text-[color:var(--app-text-3)]">•</span>
+                          <span className="text-xs text-[color:var(--app-text-2)]">{workout.difficulty}</span>
+                          {workout.exercises?.length > 0 && <><span className="text-xs text-[color:var(--app-text-3)]">•</span><span className="text-xs text-[color:var(--app-text-2)]">{workout.exercises.length} exercises</span></>}
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        <button onClick={() => handleToggleFavorite(workout)} className="p-2 rounded-xl hover:bg-[#000000] transition-colors">
-                          <Star className={`w-4 h-4 ${workout.is_favorite ? 'text-[#C9A962] fill-[#C9A962]' : 'text-[#6B6B6B]'}`} strokeWidth={1.5} />
+                        <button onClick={() => handleToggleFavorite(workout)} className="p-2 rounded-xl hover:bg-[color:var(--app-bg)] transition-colors">
+                          <Star className={`w-4 h-4 ${workout.is_favorite ? 'text-[#C9A962] fill-[#C9A962]' : 'text-[color:var(--app-text-3)]'}`} strokeWidth={1.5} />
                         </button>
-                        <button onClick={() => handleEditWorkout(workout)} className="p-2 rounded-xl hover:bg-[#000000] transition-colors">
+                        <button onClick={() => handleEditWorkout(workout)} className="p-2 rounded-xl hover:bg-[color:var(--app-bg)] transition-colors">
                           <Edit2 className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
                         </button>
-                        <button onClick={() => { if (window.confirm('Delete this workout?')) handleDeleteWorkout(workout); }} className="p-2 rounded-xl hover:bg-[#000000] transition-colors">
+                        <button onClick={() => { if (window.confirm('Delete this workout?')) handleDeleteWorkout(workout); }} className="p-2 rounded-xl hover:bg-[color:var(--app-bg)] transition-colors">
                           <Trash2 className="w-4 h-4 text-red-400" strokeWidth={1.5} />
                         </button>
                       </div>
@@ -223,13 +223,13 @@ export default function Fitness() {
                         <div className="h-[1px] w-full bg-[rgba(201,169,98,0.2)] mb-3" />
                         <div className="space-y-1.5">
                           {workout.exercises.slice(0, 3).map((ex, i) => (
-                            <div key={i} className="text-xs text-[#B8B8B8] flex items-center gap-2">
+                            <div key={i} className="text-xs text-[color:var(--app-text-2)] flex items-center gap-2">
                               <div className="w-1 h-1 rounded-full bg-[#C9A962]" />
                               <span>{ex.name}</span>
-                              <span className="text-[10px] text-[#6B6B6B]">{ex.sets}×{ex.reps}</span>
+                              <span className="text-[10px] text-[color:var(--app-text-3)]">{ex.sets}×{ex.reps}</span>
                             </div>
                           ))}
-                          {workout.exercises.length > 3 && <div className="text-xs text-[#6B6B6B] ml-3">+{workout.exercises.length - 3} more</div>}
+                          {workout.exercises.length > 3 && <div className="text-xs text-[color:var(--app-text-3)] ml-3">+{workout.exercises.length - 3} more</div>}
                         </div>
                       </>
                     )}

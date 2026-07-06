@@ -5,6 +5,7 @@ import { Camera, ChevronRight, ChevronLeft, LogOut, X, User, Check, Sparkles, Ca
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { resetAndReseedLifestyle } from '../lib/seedLifestyleRoutines';
+import { useTheme } from '../hooks/useTheme';
 
 const FOCUS_LABELS = {
   organize: { label: 'Organize', Icon: Sparkles },
@@ -25,6 +26,7 @@ export default function Profile() {
   const queryClient = useQueryClient();
   const fileInputRef = useRef(null);
   const { user, userProfile, signOut, refreshUserProfile } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   const [formData, setFormData] = useState({
     full_name: userProfile?.full_name || '',
@@ -188,11 +190,11 @@ export default function Profile() {
   };
 
   const pfpUrl = userProfile?.pfp_url;
-  const inputClass = "w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-[#F5F1E8] placeholder-[#555] focus:outline-none focus:border-[#C9A962] transition-colors text-sm";
+  const inputClass = "w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[#555] focus:outline-none focus:border-[#C9A962] transition-colors text-sm";
   const labelClass = "block text-xs uppercase tracking-widest text-[#8A7E72] mb-1.5";
 
   return (
-    <div className="min-h-full pb-32 bg-[#000000]">
+    <div className="min-h-full pb-32 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.2)] page-safe-x py-5 flex items-center">
         <button onClick={() => navigate(-1)} className="hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
@@ -208,7 +210,7 @@ export default function Profile() {
           <div className="relative mb-3">
             <button onClick={() => !uploading && fileInputRef.current?.click()} disabled={uploading}
               className="relative w-28 h-28 rounded-full border-2 border-[#C9A962] overflow-hidden flex items-center justify-center group transition-all duration-200"
-              style={{ background: '#000000', cursor: uploading ? 'not-allowed' : 'pointer' }}>
+              style={{ background: 'var(--app-bg)', cursor: uploading ? 'not-allowed' : 'pointer' }}>
               {pfpUrl ? (
                 <>
                   <img src={pfpUrl} alt="Profile" loading="lazy" decoding="async" className="w-full h-full object-cover" />
@@ -251,7 +253,7 @@ export default function Profile() {
         </div>
 
         {/* Personal */}
-        <div className="rounded-2xl p-5 mb-4 space-y-4" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.2)' }}>
+        <div className="rounded-2xl p-5 mb-4 space-y-4" style={{ background: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.2)' }}>
           <h3 className="text-xs uppercase tracking-widest mb-3" style={{ color: '#8A7E72' }}>Personal</h3>
           <div>
             <label className={labelClass}>Full Name</label>
@@ -269,7 +271,7 @@ export default function Profile() {
                   className="flex-1 py-2.5 rounded-xl text-sm capitalize transition-all duration-200"
                   style={{
                     border: formData.gender === g ? '1.5px solid rgba(201,169,98,0.6)' : '1.5px solid rgba(201,169,98,0.2)',
-                    background: formData.gender === g ? 'rgba(201,169,98,0.12)' : '#000000',
+                    background: formData.gender === g ? 'rgba(201,169,98,0.12)' : 'var(--app-bg)',
                     color: formData.gender === g ? '#C9A962' : '#8A7E72',
                   }}>
                   {g.charAt(0).toUpperCase() + g.slice(1)}
@@ -285,7 +287,7 @@ export default function Profile() {
                   className="flex-1 py-2.5 rounded-xl text-sm transition-all duration-200"
                   style={{
                     border: formData.is_student === val ? '1.5px solid rgba(201,169,98,0.6)' : '1.5px solid rgba(201,169,98,0.2)',
-                    background: formData.is_student === val ? 'rgba(201,169,98,0.12)' : '#000000',
+                    background: formData.is_student === val ? 'rgba(201,169,98,0.12)' : 'var(--app-bg)',
                     color: formData.is_student === val ? '#C9A962' : '#8A7E72',
                   }}>
                   {label}
@@ -296,7 +298,7 @@ export default function Profile() {
         </div>
 
         {/* Preferences */}
-        <div className="rounded-2xl p-5 mb-4 space-y-4" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.2)' }}>
+        <div className="rounded-2xl p-5 mb-4 space-y-4" style={{ background: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.2)' }}>
           <h3 className="text-xs uppercase tracking-widest mb-3" style={{ color: '#8A7E72' }}>Preferences</h3>
           <div>
             <label className={labelClass}>Focus</label>
@@ -306,7 +308,7 @@ export default function Profile() {
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 text-left"
                   style={{
                     border: formData.focus === key ? '1.5px solid rgba(201,169,98,0.6)' : '1.5px solid rgba(201,169,98,0.15)',
-                    background: formData.focus === key ? 'rgba(201,169,98,0.1)' : '#000000',
+                    background: formData.focus === key ? 'rgba(201,169,98,0.1)' : 'var(--app-bg)',
                     color: formData.focus === key ? '#C9A962' : '#8A7E72',
                   }}>
                   <Icon size={15} />
@@ -324,7 +326,7 @@ export default function Profile() {
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 text-left"
                   style={{
                     border: formData.schedule_type === key ? '1.5px solid rgba(201,169,98,0.6)' : '1.5px solid rgba(201,169,98,0.15)',
-                    background: formData.schedule_type === key ? 'rgba(201,169,98,0.1)' : '#000000',
+                    background: formData.schedule_type === key ? 'rgba(201,169,98,0.1)' : 'var(--app-bg)',
                     color: formData.schedule_type === key ? '#C9A962' : '#8A7E72',
                   }}>
                   <Icon size={15} />
@@ -348,9 +350,41 @@ export default function Profile() {
             cursor: (saving || uploading) ? 'not-allowed' : 'pointer',
             fontSize: '17px',
           }}>
-          {saving ? <span className="inline-block w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+          {saving ? <span className="inline-block w-5 h-5 border-2 border-[color:var(--app-wash-4)] border-t-white rounded-full animate-spin" />
             : saveSuccess ? <><Check size={18} /> Saved</> : 'Save Changes'}
         </button>
+
+        {/* Appearance */}
+        <div className="rounded-2xl overflow-hidden mb-6" style={{ border: '1px solid rgba(201,169,98,0.2)' }}>
+          <div className="w-full flex items-center justify-between px-5 py-4">
+            <div className="flex items-center gap-2.5">
+              {theme === 'light'
+                ? <Sun className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                : <Moon className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />}
+              <span className="text-base text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Appearance</span>
+            </div>
+            <div className="flex rounded-full p-0.5" style={{ border: '1px solid rgba(201,169,98,0.3)', backgroundColor: 'var(--app-wash-soft)' }}>
+              <button
+                onClick={() => setTheme('dark')}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all"
+                style={theme === 'dark'
+                  ? { backgroundColor: '#C9A962', color: '#1A1508', fontWeight: 500 }
+                  : { color: 'var(--app-text-2)' }}
+              >
+                <Moon className="w-3 h-3" strokeWidth={2} /> Dark
+              </button>
+              <button
+                onClick={() => setTheme('light')}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs transition-all"
+                style={theme === 'light'
+                  ? { backgroundColor: '#C9A962', color: '#1A1508', fontWeight: 500 }
+                  : { color: 'var(--app-text-2)' }}
+              >
+                <Sun className="w-3 h-3" strokeWidth={2} /> Light
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* Bottom links */}
         <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,169,98,0.2)' }}>
@@ -383,7 +417,7 @@ export default function Profile() {
                 <span className="block text-base text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {updateStatus === 'checking' ? 'Checking...' : updateStatus === 'clearing' ? 'Clearing cache...' : updateStatus === 'updating' ? 'Reloading...' : 'Check for Updates'}
                 </span>
-                <span className="block text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                <span className="block text-xs" style={{ color: 'var(--app-wash-3)' }}>
                   Install latest version available
                 </span>
               </div>

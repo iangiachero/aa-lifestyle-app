@@ -102,7 +102,7 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
         className="relative w-full z-10"
         style={{
-          background: '#000000',
+          background: 'var(--app-bg)',
           borderTop: '2px solid rgba(201,169,98,0.3)',
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
@@ -117,7 +117,7 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
           <h2 className="text-xl text-[#C9A962] font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             Change PIN
           </h2>
-          <p className="text-xs text-[#6B6B6B] mb-5">
+          <p className="text-xs text-[color:var(--app-text-3)] mb-5">
             Step {step === 'current' ? 1 : step === 'new' ? 2 : 3} of 3
           </p>
 
@@ -133,8 +133,8 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
                 <Lock className="w-5 h-5" style={{ color: error ? '#EF4444' : '#C9A962' }} strokeWidth={1.5} />
               </div>
               <div>
-                <p className="text-sm font-medium" style={{ color: '#F5F1E8' }}>{stepLabels[step].title}</p>
-                <p className="text-xs" style={{ color: '#6B6B6B' }}>{stepLabels[step].subtitle}</p>
+                <p className="text-sm font-medium" style={{ color: 'var(--app-text)' }}>{stepLabels[step].title}</p>
+                <p className="text-xs" style={{ color: 'var(--app-text-3)' }}>{stepLabels[step].subtitle}</p>
               </div>
             </div>
 
@@ -152,9 +152,9 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
                 onKeyDown={(e) => { if (e.key === 'Enter' && activePin.length >= 4) handleNext(); }}
                 className="w-full px-4 py-3.5 rounded-xl text-center text-xl tracking-[0.5em] focus:outline-none mb-4"
                 style={{
-                  backgroundColor: '#000000',
+                  backgroundColor: 'var(--app-bg)',
                   border: error ? '1px solid rgba(239,68,68,0.6)' : '1px solid rgba(201,169,98,0.3)',
-                  color: '#F5F1E8',
+                  color: 'var(--app-text)',
                   caretColor: '#C9A962',
                   fontFamily: "'DM Sans', sans-serif",
                 }}

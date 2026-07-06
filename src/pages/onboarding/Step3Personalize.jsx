@@ -8,7 +8,7 @@ function TileButton({ label, selected, onClick }) {
       onClick={onClick}
       className="flex-1 flex flex-col items-center justify-center gap-2 py-6 rounded-2xl transition-all duration-200"
       style={{
-        background: selected ? 'rgba(201,169,98,0.12)' : 'rgba(255,255,255,0.04)',
+        background: selected ? 'rgba(201,169,98,0.12)' : 'var(--app-wash-soft)',
         border: selected ? '1.5px solid rgba(201,169,98,0.5)' : '1.5px solid rgba(201,169,98,0.12)',
         boxShadow: selected ? '0 2px 16px rgba(201,169,98,0.1)' : 'none',
       }}

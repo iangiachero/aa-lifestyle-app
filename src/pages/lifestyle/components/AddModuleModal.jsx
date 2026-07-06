@@ -7,11 +7,11 @@ import { useModal } from '../../../context/ModalContext';
 
 const MODAL_STYLE = {
   overlay: 'fixed inset-0 bg-black/60 z-50 flex items-end',
-  sheet: 'w-full bg-[#000000] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90vh] flex flex-col',
-  header: 'sticky top-0 bg-[#000000] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
+  sheet: 'w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90vh] flex flex-col',
+  header: 'sticky top-0 bg-[color:var(--app-bg)] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
   title: 'text-xl text-[#C9A962] font-light',
-  input: 'w-full bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl px-4 py-3 text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm',
-  label: 'text-xs text-[#B8B8B8] font-light uppercase tracking-wider mb-2 block',
+  input: 'w-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl px-4 py-3 text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm',
+  label: 'text-xs text-[color:var(--app-text-2)] font-light uppercase tracking-wider mb-2 block',
 };
 
 const CARD_GRADIENTS = [
@@ -177,8 +177,8 @@ export default function AddModuleModal({ visible, onClose, onAdd }) {
                     className="w-full aspect-video rounded-xl border-2 border-dashed border-[rgba(201,169,98,0.3)] flex flex-col items-center justify-center gap-2 hover:border-[rgba(201,169,98,0.5)] hover:bg-[rgba(201,169,98,0.04)] transition-all"
                   >
                     <ImagePlus className="w-7 h-7 text-[#C9A962] opacity-60" strokeWidth={1.5} />
-                    <span className="text-xs text-[#6B6B6B]">Tap to upload image</span>
-                    <span className="text-[10px] text-[#4B4B4B]">Optional — a pattern will be used if none</span>
+                    <span className="text-xs text-[color:var(--app-text-3)]">Tap to upload image</span>
+                    <span className="text-[10px] text-[color:var(--app-text-3)]">Optional — a pattern will be used if none</span>
                   </button>
                 )}
               </div>
@@ -188,7 +188,7 @@ export default function AddModuleModal({ visible, onClose, onAdd }) {
               <button
                 onClick={handleSave}
                 disabled={!name.trim() || saving || uploading}
-                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[#6B6B6B] text-[#000000] font-medium py-4 rounded-xl transition-all text-sm flex items-center justify-center gap-2"
+                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[color:var(--app-text-3)] text-[#000000] font-medium py-4 rounded-xl transition-all text-sm flex items-center justify-center gap-2"
               >
                 {saving ? (
                   <div className="w-4 h-4 border-2 border-[#000000] border-t-transparent rounded-full animate-spin" />

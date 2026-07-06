@@ -94,7 +94,7 @@ export default function WeekView({ weekDates, events, tasks, birthdays, onEditEv
                   ? UI.wash2
                   : isCurrentDay
                   ? UI.wash
-                  : 'rgba(255,255,255,0.03)',
+                  : 'var(--app-wash-soft)',
                 transition: 'border-color 0.15s, background 0.15s',
                 overflow: 'hidden',
               }}
@@ -113,7 +113,7 @@ export default function WeekView({ weekDates, events, tasks, birthdays, onEditEv
                         isCurrentDay ? 'w-10 h-10 rounded-full flex items-center justify-center' : ''
                       }`}
                       style={{
-                        color: isCurrentDay ? UI.bg : UI.text,
+                        color: isCurrentDay ? UI.onGold : UI.text,
                         backgroundColor: isCurrentDay ? UI.gold : 'transparent',
                       }}
                     >
@@ -134,7 +134,7 @@ export default function WeekView({ weekDates, events, tasks, birthdays, onEditEv
                 style={{
                   margin: '0 12px 12px',
                   borderRadius: '10px',
-                  background: 'rgba(255,255,255,0.03)',
+                  background: 'var(--app-wash-soft)',
                   border: `1px solid ${UI.borderSofter}`,
                   minHeight: '64px',
                   overflow: 'hidden',

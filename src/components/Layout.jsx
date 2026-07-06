@@ -157,11 +157,11 @@ export default function Layout({ children, currentPageName }) {
     <div
       className={isAuthPage ? "min-h-screen flex flex-col overflow-x-hidden" : "fixed inset-0 overflow-hidden"}
       style={{
-        background: '#000000',
-        color: '#F5F1E8',
+        background: 'var(--app-bg)',
+        color: 'var(--app-text)',
         '--accent-color': effectiveTheme.accent,
-        '--bg-color': '#000000',
-        '--text-color': '#F5F1E8',
+        '--bg-color': 'var(--app-bg)',
+        '--text-color': 'var(--app-text)',
         maxWidth: '100vw',
       }}
     >
@@ -170,11 +170,11 @@ export default function Layout({ children, currentPageName }) {
           --accent: ${effectiveTheme.accent};
           --accent-light: ${effectiveTheme.accentLight};
           --accent-very-light: ${effectiveTheme.accentVeryLight};
-          --bg: ${effectiveTheme.bg};
-          --bg-gradient: ${effectiveTheme.bgGradient};
-          --text: ${effectiveTheme.text};
-          --text-light: ${effectiveTheme.textLight};
-          --card-bg: ${effectiveTheme.card};
+          --bg: var(--app-bg);
+          --bg-gradient: var(--app-bg);
+          --text: var(--app-text);
+          --text-light: var(--app-text-2);
+          --card-bg: var(--app-bg);
           --border: ${effectiveTheme.border};
           --logo-filter: ${effectiveTheme.logoFilter};
         }
@@ -197,7 +197,7 @@ export default function Layout({ children, currentPageName }) {
           letter-spacing: 0.01em;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
-          background: #000000 !important;
+          background: var(--app-bg) !important;
         }
 
         input, textarea, select {
@@ -281,7 +281,7 @@ export default function Layout({ children, currentPageName }) {
           style={{
             paddingBottom: `calc(1rem + env(safe-area-inset-bottom, 0px))`,
             paddingTop: '0.75rem',
-            background: '#000000',
+            background: 'var(--app-bg)',
             transform: isAnyModalOpen ? 'translateY(120%)' : 'translateY(0)',
             transition: 'transform 0.25s ease',
             pointerEvents: isAnyModalOpen ? 'none' : 'auto',
@@ -290,7 +290,7 @@ export default function Layout({ children, currentPageName }) {
           <nav
             className="rounded-full px-6 py-3 flex items-center gap-6 border-2"
             style={{
-              background: 'rgba(10, 10, 10, 0.97)',
+              background: 'var(--app-nav)',
               backdropFilter: 'blur(12px)',
               borderColor: 'rgba(201, 169, 98, 0.30)',
               boxShadow: '0 0 20px rgba(201, 169, 98, 0.10)',

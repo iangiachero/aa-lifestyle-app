@@ -270,7 +270,7 @@ export default function Student() {
   ];
 
   return (
-    <div className="min-h-full bg-[#000000]" style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}>
+    <div className="min-h-full bg-[color:var(--app-bg)]" style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}>
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
           <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
@@ -300,12 +300,12 @@ export default function Student() {
               <button
                 key={block.id}
                 onClick={() => openModal(block.id)}
-                className="flex-shrink-0 flex flex-col items-center gap-1.5 w-[4.5rem] pt-3.5 pb-3 px-1 rounded-2xl bg-[#000000] border border-[rgba(201,169,98,0.25)] hover:border-[rgba(201,169,98,0.5)] active:scale-95 transition-all"
+                className="flex-shrink-0 flex flex-col items-center gap-1.5 w-[4.5rem] pt-3.5 pb-3 px-1 rounded-2xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.25)] hover:border-[rgba(201,169,98,0.5)] active:scale-95 transition-all"
               >
                 <div className="w-9 h-9 rounded-xl bg-[rgba(201,169,98,0.1)] border border-[rgba(201,169,98,0.12)] flex items-center justify-center">
                   {block.icon}
                 </div>
-                <span className="text-[11px] text-[#F5F1E8] font-light text-center leading-tight">{block.label}</span>
+                <span className="text-[11px] text-[color:var(--app-text)] font-light text-center leading-tight">{block.label}</span>
                 <div className="w-5 h-5 rounded-full bg-[rgba(201,169,98,0.12)] flex items-center justify-center">
                   <Plus className="w-3 h-3 text-[#C9A962]" strokeWidth={2.5} />
                 </div>
@@ -320,25 +320,25 @@ export default function Student() {
             <p className="text-[10px] text-[#C9A962] font-light tracking-widest uppercase">Classes</p>
           </div>
           {loadingClasses ? (
-            <div className="page-safe-x"><p className="text-xs text-[#6B6B6B]">Loading...</p></div>
+            <div className="page-safe-x"><p className="text-xs text-[color:var(--app-text-3)]">Loading...</p></div>
           ) : classes.length === 0 ? (
             <div className="page-safe-x py-2">
-              <p className="text-xs text-[#6B6B6B]">No classes yet — tap "Class" above to add one</p>
+              <p className="text-xs text-[color:var(--app-text-3)]">No classes yet — tap "Class" above to add one</p>
             </div>
           ) : (
             <div className="flex gap-3 overflow-x-auto scrollbar-hide px-4 pb-1">
               {classes.map(cls => (
-                <div key={cls.id} className="flex-shrink-0 w-36 rounded-2xl bg-[#000000] border border-[rgba(201,169,98,0.2)] overflow-hidden">
+                <div key={cls.id} className="flex-shrink-0 w-36 rounded-2xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] overflow-hidden">
                   <div className="h-1" style={{ backgroundColor: cls.color || '#3B82F6' }} />
                   <div className="p-3.5">
                     <div className="flex items-start gap-2 mb-2">
                       <div className="w-2 h-2 rounded-full mt-[5px] flex-shrink-0" style={{ backgroundColor: cls.color || '#3B82F6' }} />
-                      <p className="text-sm text-[#F5F1E8] font-medium leading-snug">{cls.class_name}</p>
+                      <p className="text-sm text-[color:var(--app-text)] font-medium leading-snug">{cls.class_name}</p>
                     </div>
                     {cls.is_online ? (
                       <span className="inline-block text-[10px] px-1.5 py-0.5 rounded-full bg-[rgba(201,169,98,0.15)] text-[#C9A962] border border-[rgba(201,169,98,0.3)]">Online</span>
                     ) : (cls.meeting_days?.length > 0 || cls.meeting_start_time) ? (
-                      <p className="text-[11px] text-[#6B6B6B] leading-tight">
+                      <p className="text-[11px] text-[color:var(--app-text-3)] leading-tight">
                         {cls.meeting_days?.join(' ')}
                         {cls.meeting_start_time ? ` · ${fmtTime(cls.meeting_start_time)}` : ''}
                       </p>
@@ -365,7 +365,7 @@ export default function Student() {
             {completedAssignments.length > 0 && (
               <button
                 onClick={() => setShowCompleted(v => !v)}
-                className="flex items-center gap-1 text-[#6B6B6B] hover:text-[#9B9B9B] transition-colors"
+                className="flex items-center gap-1 text-[color:var(--app-text-3)] hover:text-[color:var(--app-text-3)] transition-colors"
               >
                 {showCompleted
                   ? <ChevronUp className="w-3 h-3" strokeWidth={2} />
@@ -376,11 +376,11 @@ export default function Student() {
             )}
           </div>
           {loadingAssignments ? (
-            <p className="text-xs text-[#6B6B6B]">Loading...</p>
+            <p className="text-xs text-[color:var(--app-text-3)]">Loading...</p>
           ) : visibleAssignments.length === 0 && completedAssignments.length === 0 ? (
             <div className="py-8 text-center">
-              <p className="text-sm text-[#6B6B6B] font-light">No upcoming assignments</p>
-              <p className="text-xs text-[#4B4B4B] mt-1">Tap "Assignment" above to add one</p>
+              <p className="text-sm text-[color:var(--app-text-3)] font-light">No upcoming assignments</p>
+              <p className="text-xs text-[color:var(--app-text-3)] mt-1">Tap "Assignment" above to add one</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -403,7 +403,7 @@ export default function Student() {
       {activeModal && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-end" onClick={closeModal}>
           <div
-            className="w-full bg-[#000000] rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto scrollbar-hide border-t-2 border-[rgba(201,169,98,0.3)]"
+            className="w-full bg-[color:var(--app-bg)] rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto scrollbar-hide border-t-2 border-[rgba(201,169,98,0.3)]"
             style={{ animation: 'slideUp 0.3s ease-out' }}
             onClick={e => e.stopPropagation()}
           >
@@ -416,7 +416,7 @@ export default function Student() {
                 {activeModal === 'project' && 'Add Project'}
                 {activeModal === 'custom' && 'Add Custom Block'}
               </h2>
-              <button onClick={closeModal} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#000000] transition-colors">
+              <button onClick={closeModal} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors">
                 <X className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
               </button>
             </div>
@@ -426,7 +426,7 @@ export default function Student() {
               {activeModal === 'class' && (
                 <>
                   <div>
-                    <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Quick Select</label>
+                    <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Quick Select</label>
                     <div className="grid grid-cols-3 gap-2">
                       {CLASS_CATEGORIES.map(cat => (
                         <button
@@ -439,7 +439,7 @@ export default function Student() {
                           className={`py-2.5 px-2 rounded-xl text-xs border transition-colors ${
                             classForm.category === cat
                               ? 'bg-[rgba(201,169,98,0.2)] border-[#C9A962] text-[#C9A962]'
-                              : 'bg-[#000000] border-[rgba(201,169,98,0.3)] text-[#F5F1E8] hover:border-[#C9A962]'
+                              : 'bg-[color:var(--app-bg)] border-[rgba(201,169,98,0.3)] text-[color:var(--app-text)] hover:border-[#C9A962]'
                           }`}
                         >{cat}</button>
                       ))}
@@ -447,25 +447,25 @@ export default function Student() {
                   </div>
                   {classForm.category === 'Custom' ? (
                     <div>
-                      <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Class Name</label>
+                      <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Class Name</label>
                       <input
                         type="text"
                         value={classForm.class_name}
                         onChange={e => setClassForm(prev => ({ ...prev, class_name: e.target.value }))}
                         placeholder="e.g., Advanced Physics, Creative Writing"
                         autoFocus
-                        className="w-full px-4 py-3 bg-[#000000] border border-[#C9A962] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:outline-none"
+                        className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[#C9A962] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:outline-none"
                       />
                     </div>
                   ) : (
                     <div>
-                      <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">Class Name</label>
+                      <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Class Name</label>
                       <input
                         type="text"
                         value={classForm.class_name}
                         onChange={e => setClassForm(prev => ({ ...prev, class_name: e.target.value }))}
                         placeholder="e.g., Psychology 101"
-                        className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none"
+                        className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none"
                       />
                     </div>
                   )}
@@ -482,7 +482,7 @@ export default function Student() {
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border transition-colors ${
                       classForm.is_online
                         ? 'bg-[rgba(201,169,98,0.12)] border-[#C9A962]'
-                        : 'bg-[#000000] border-[rgba(201,169,98,0.3)] hover:border-[rgba(201,169,98,0.5)]'
+                        : 'bg-[color:var(--app-bg)] border-[rgba(201,169,98,0.3)] hover:border-[rgba(201,169,98,0.5)]'
                     }`}
                   >
                     <div className={`w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-colors ${
@@ -494,17 +494,17 @@ export default function Student() {
                         </svg>
                       )}
                     </div>
-                    <span className={`text-sm ${classForm.is_online ? 'text-[#C9A962]' : 'text-[#B8B8B8]'}`}>
+                    <span className={`text-sm ${classForm.is_online ? 'text-[#C9A962]' : 'text-[color:var(--app-text-2)]'}`}>
                       Online class
                     </span>
                   </button>
                   <Collapsible label="Instructor Name" expanded={expanded.instructorName} onToggle={() => toggleExp('instructorName')}>
                     <input type="text" value={classForm.instructor_name} onChange={e => setClassForm(prev => ({ ...prev, instructor_name: e.target.value }))}
-                      placeholder="Dr. Smith" className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none mt-2" />
+                      placeholder="Dr. Smith" className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none mt-2" />
                   </Collapsible>
                   <Collapsible label="Instructor Email" expanded={expanded.instructorEmail} onToggle={() => toggleExp('instructorEmail')}>
                     <input type="email" value={classForm.instructor_email} onChange={e => setClassForm(prev => ({ ...prev, instructor_email: e.target.value }))}
-                      placeholder="professor@university.edu" className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none mt-2" />
+                      placeholder="professor@university.edu" className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none mt-2" />
                   </Collapsible>
                   {!classForm.is_online && (
                     <>
@@ -512,7 +512,7 @@ export default function Student() {
                         <div className="flex gap-2 mt-2">
                           {DAYS.map(day => (
                             <button key={day} onClick={() => toggleDay(day)}
-                              className={`flex-1 py-2 rounded-lg text-sm border transition-colors ${classForm.meeting_days.includes(day) ? 'bg-[#C9A962] text-[#000000] border-[#C9A962]' : 'bg-[#000000] border-[rgba(201,169,98,0.3)] text-[#F5F1E8] hover:border-[#C9A962]'}`}>
+                              className={`flex-1 py-2 rounded-lg text-sm border transition-colors ${classForm.meeting_days.includes(day) ? 'bg-[#C9A962] text-[#000000] border-[#C9A962]' : 'bg-[color:var(--app-bg)] border-[rgba(201,169,98,0.3)] text-[color:var(--app-text)] hover:border-[#C9A962]'}`}>
                               {day}
                             </button>
                           ))}
@@ -521,11 +521,11 @@ export default function Student() {
                       <Collapsible label="Meeting Time" expanded={expanded.meetingTime} onToggle={() => toggleExp('meetingTime')}>
                         <div className="grid grid-cols-2 gap-3 mt-2">
                           <div>
-                            <label className="text-xs text-[#6B6B6B] mb-1 block">Start</label>
+                            <label className="text-xs text-[color:var(--app-text-3)] mb-1 block">Start</label>
                             <TimePicker value={classForm.meeting_start_time} onChange={v => setClassForm(prev => ({ ...prev, meeting_start_time: v }))} placeholder="Start" />
                           </div>
                           <div>
-                            <label className="text-xs text-[#6B6B6B] mb-1 block">End</label>
+                            <label className="text-xs text-[color:var(--app-text-3)] mb-1 block">End</label>
                             <TimePicker value={classForm.meeting_end_time} onChange={v => setClassForm(prev => ({ ...prev, meeting_end_time: v }))} placeholder="End" />
                           </div>
                         </div>
@@ -534,12 +534,12 @@ export default function Student() {
                   )}
                   <Collapsible label="Location" expanded={expanded.location} onToggle={() => toggleExp('location')}>
                     <input type="text" value={classForm.location} onChange={e => setClassForm(prev => ({ ...prev, location: e.target.value }))}
-                      placeholder="Building / Room or Zoom link" className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none mt-2" />
+                      placeholder="Building / Room or Zoom link" className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none mt-2" />
                   </Collapsible>
                   <Collapsible label="Notes" expanded={expanded.notes} onToggle={() => toggleExp('notes')}>
                     <textarea value={classForm.notes} onChange={e => setClassForm(prev => ({ ...prev, notes: e.target.value }))}
                       placeholder="Syllabus info, office hours, etc." rows={3}
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
                   </Collapsible>
                   <ModalButtons onCancel={closeModal} onSave={saveClass} saving={saving} disabled={!classForm.class_name.trim()} label={editingItem ? 'Save Changes' : 'Add'} />
                 </>
@@ -551,7 +551,7 @@ export default function Student() {
                   <Field label="Title">
                     <input type="text" value={assignForm.title} onChange={e => setAssignForm(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="e.g., Essay on Chapter 5"
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none" />
                   </Field>
                   <Field label="Class">
                     <ClassSelect classes={classes} value={assignForm.class_id} onChange={v => setAssignForm(prev => ({ ...prev, class_id: v }))} />
@@ -574,7 +574,7 @@ export default function Student() {
                   <Collapsible label="Notes (Optional)" expanded={expanded.notes} onToggle={() => toggleExp('notes')}>
                     <textarea value={assignForm.notes} onChange={e => setAssignForm(prev => ({ ...prev, notes: e.target.value }))}
                       placeholder="Add any notes or details" rows={3}
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
                   </Collapsible>
                   <ColorPicker
                     selectedColor={assignForm.color}
@@ -590,7 +590,7 @@ export default function Student() {
                   <Field label="Title">
                     <input type="text" value={examForm.title} onChange={e => setExamForm(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="e.g., Midterm Exam"
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none" />
                   </Field>
                   <Field label="Class">
                     <ClassSelect classes={classes} value={examForm.class_id} onChange={v => setExamForm(prev => ({ ...prev, class_id: v }))} />
@@ -606,7 +606,7 @@ export default function Student() {
                   <Collapsible label="Notes (Optional)" expanded={expanded.notes} onToggle={() => toggleExp('notes')}>
                     <textarea value={examForm.notes} onChange={e => setExamForm(prev => ({ ...prev, notes: e.target.value }))}
                       placeholder="Topics to study, location, etc." rows={3}
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
                   </Collapsible>
                   <ModalButtons onCancel={closeModal} onSave={saveExam} saving={saving} disabled={!examForm.title.trim()} />
                 </>
@@ -626,7 +626,7 @@ export default function Student() {
                   </Field>
                   <Field label="Duration (Minutes)">
                     <input type="number" value={sessionForm.duration_minutes} onChange={e => setSessionForm(prev => ({ ...prev, duration_minutes: parseInt(e.target.value) || 60 }))}
-                      min={5} step={5} className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] focus:border-[#C9A962] focus:outline-none" />
+                      min={5} step={5} className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] focus:border-[#C9A962] focus:outline-none" />
                   </Field>
                   <ModalButtons onCancel={closeModal} onSave={saveSession} saving={saving} />
                 </>
@@ -638,7 +638,7 @@ export default function Student() {
                   <Field label="Title">
                     <input type="text" value={projectForm.title} onChange={e => setProjectForm(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="e.g., Research Paper"
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none" />
                   </Field>
                   <Field label="Class">
                     <ClassSelect classes={classes} value={projectForm.class_id} onChange={v => setProjectForm(prev => ({ ...prev, class_id: v }))} />
@@ -649,7 +649,7 @@ export default function Student() {
                   <Collapsible label="Notes (Optional)" expanded={expanded.notes} onToggle={() => toggleExp('notes')}>
                     <textarea value={projectForm.notes} onChange={e => setProjectForm(prev => ({ ...prev, notes: e.target.value }))}
                       placeholder="Add any notes or details" rows={3}
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
                   </Collapsible>
                   <ModalButtons onCancel={closeModal} onSave={saveProject} saving={saving} disabled={!projectForm.title.trim()} />
                 </>
@@ -661,7 +661,7 @@ export default function Student() {
                   <Field label="Title">
                     <input type="text" value={customForm.title} onChange={e => setCustomForm(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="e.g., Lab Report"
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none" />
                   </Field>
                   <Field label="Class">
                     <ClassSelect classes={classes} value={customForm.class_id} onChange={v => setCustomForm(prev => ({ ...prev, class_id: v }))} />
@@ -677,12 +677,12 @@ export default function Student() {
                   <Field label="Custom Label">
                     <input type="text" value={customForm.custom_label} onChange={e => setCustomForm(prev => ({ ...prev, custom_label: e.target.value }))}
                       placeholder="e.g., Research, Reading, Review"
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none" />
                   </Field>
                   <Collapsible label="Notes (Optional)" expanded={expanded.notes} onToggle={() => toggleExp('notes')}>
                     <textarea value={customForm.notes} onChange={e => setCustomForm(prev => ({ ...prev, notes: e.target.value }))}
                       placeholder="Add any notes or details" rows={3}
-                      className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
+                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
                   </Collapsible>
                   <ModalButtons onCancel={closeModal} onSave={saveCustom} saving={saving} disabled={!customForm.title.trim()} />
                 </>
@@ -702,7 +702,7 @@ export default function Student() {
 function AssignmentRow({ assignment, onToggle }) {
   return (
     <div
-      className="flex items-center gap-2.5 p-2.5 bg-[#000000] rounded-xl border border-[rgba(201,169,98,0.12)]"
+      className="flex items-center gap-2.5 p-2.5 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.12)]"
       style={{ borderLeft: `3px solid ${assignment.color || '#3B82F6'}` }}
     >
       <button
@@ -710,16 +710,16 @@ function AssignmentRow({ assignment, onToggle }) {
         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
           assignment.completed
             ? 'bg-[#C9A962] border-[#C9A962]'
-            : 'border-white/25 hover:border-[#C9A962]'
+            : 'border-[color:var(--app-wash-3)] hover:border-[#C9A962]'
         }`}
       >
         {assignment.completed && <Check className="w-3 h-3 text-[#000000]" strokeWidth={3} />}
       </button>
       <div className="flex-1 min-w-0">
-        <p className={`text-xs text-[#F5F1E8] font-medium truncate ${assignment.completed ? 'line-through opacity-50' : ''}`}>
+        <p className={`text-xs text-[color:var(--app-text)] font-medium truncate ${assignment.completed ? 'line-through opacity-50' : ''}`}>
           {assignment.title}
         </p>
-        <p className="text-[10px] text-[#6B6B6B] truncate">
+        <p className="text-[10px] text-[color:var(--app-text-3)] truncate">
           {assignment.student_classes?.class_name || ''}
           {assignment.due_date ? `${assignment.student_classes?.class_name ? ' · ' : ''}Due ${fmtDate(assignment.due_date)}` : ''}
         </p>
@@ -735,7 +735,7 @@ function Collapsible({ label, expanded, onToggle, children }) {
   return (
     <div>
       <button onClick={onToggle} className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-[rgba(201,169,98,0.05)] transition-colors">
-        <span className="text-xs text-[#B8B8B8] uppercase">{label}</span>
+        <span className="text-xs text-[color:var(--app-text-2)] uppercase">{label}</span>
         {expanded
           ? <ChevronUp className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
           : <ChevronDown className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
@@ -749,7 +749,7 @@ function Collapsible({ label, expanded, onToggle, children }) {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="text-xs text-[#B8B8B8] uppercase mb-2 block">{label}</label>
+      <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">{label}</label>
       {children}
     </div>
   );
@@ -774,7 +774,7 @@ function ModalButtons({ onCancel, onSave, saving, disabled = false, label = 'Add
   return (
     <div className="flex gap-3 pt-2">
       <button onClick={onCancel} disabled={saving}
-        className="flex-1 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[#B8B8B8] hover:bg-[rgba(201,169,98,0.1)] transition-colors disabled:opacity-50">
+        className="flex-1 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors disabled:opacity-50">
         Cancel
       </button>
       <button onClick={onSave} disabled={saving || disabled}

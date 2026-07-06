@@ -16,9 +16,9 @@ export default function CustomSelect({
   
   const ui = {
     gold: '#C9A962',
-    panel: '#000000',
-    text: '#F5F1E8',
-    muted: '#B8B8B8',
+    panel: 'var(--app-bg)',
+    text: 'var(--app-text)',
+    muted: 'var(--app-text-2)',
     border: 'rgba(201,169,98,0.3)',
     wash: 'rgba(201,169,98,0.1)',
   };

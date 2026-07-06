@@ -28,7 +28,7 @@ export default function DeleteModuleModal({ visible, moduleName, onConfirm, onCa
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 16 }}
             transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-            className="w-full max-w-sm bg-[#000000] rounded-2xl border border-[rgba(201,169,98,0.2)] overflow-hidden"
+            className="w-full max-w-sm bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.2)] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-6 pt-6 pb-2 flex items-start justify-between">
@@ -37,15 +37,15 @@ export default function DeleteModuleModal({ visible, moduleName, onConfirm, onCa
               </div>
               <button
                 onClick={onCancel}
-                className="text-[#4B4B4B] hover:text-[#B8B8B8] transition-colors"
+                className="text-[color:var(--app-text-3)] hover:text-[color:var(--app-text-2)] transition-colors"
               >
                 <X className="w-5 h-5" strokeWidth={1.5} />
               </button>
             </div>
 
             <div className="px-6 pt-3 pb-6">
-              <h3 className="text-[#F5F1E8] text-base font-light mb-1.5">Delete Module</h3>
-              <p className="text-sm text-[#6B6B6B] leading-relaxed">
+              <h3 className="text-[color:var(--app-text)] text-base font-light mb-1.5">Delete Module</h3>
+              <p className="text-sm text-[color:var(--app-text-3)] leading-relaxed">
                 Are you sure you want to delete{' '}
                 <span className="text-[#C9A962]">{moduleName}</span>?
                 All routines and steps inside will be permanently removed.
@@ -55,7 +55,7 @@ export default function DeleteModuleModal({ visible, moduleName, onConfirm, onCa
                 <button
                   onClick={onCancel}
                   disabled={deleting}
-                  className="flex-1 py-3 rounded-xl border border-[rgba(201,169,98,0.25)] text-[#B8B8B8] text-sm hover:border-[rgba(201,169,98,0.4)] hover:text-[#F5F1E8] transition-all disabled:opacity-40"
+                  className="flex-1 py-3 rounded-xl border border-[rgba(201,169,98,0.25)] text-[color:var(--app-text-2)] text-sm hover:border-[rgba(201,169,98,0.4)] hover:text-[color:var(--app-text)] transition-all disabled:opacity-40"
                 >
                   Cancel
                 </button>

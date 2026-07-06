@@ -17,7 +17,7 @@ export default function Journal() {
       </div>
 
       <div className="page-safe-x pt-6">
-        <p className="text-[#B8B8B8]">Journal page content will be added here.</p>
+        <p className="text-[color:var(--app-text-2)]">Journal page content will be added here.</p>
       </div>
     </div>
   );

@@ -146,7 +146,7 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
             >
               Enter PIN
             </h2>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <p className="text-sm" style={{ color: 'var(--app-wash-4)' }}>
               Unlock your password vault
             </p>
 
@@ -171,11 +171,11 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
             disabled={locked}
             className="w-full px-4 py-3.5 rounded-xl text-center text-xl tracking-[0.5em] focus:outline-none mb-5 mt-3"
             style={{
-              backgroundColor: 'rgba(0,0,0,0.8)',
+              backgroundColor: 'var(--app-input-bg)',
               border: error
                 ? '1px solid rgba(239,68,68,0.6)'
                 : '1px solid rgba(201,169,98,0.3)',
-              color: '#F5F1E8',
+              color: 'var(--app-text)',
               caretColor: '#C9A962',
               opacity: locked ? 0.4 : 1,
             }}
@@ -201,7 +201,7 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
           <button
             onClick={() => setShowResetConfirm(true)}
             className="w-full mt-4 text-sm py-2 transition-opacity hover:opacity-70"
-            style={{ color: 'rgba(255,255,255,0.3)', fontFamily: "'Cormorant Garamond', serif" }}
+            style={{ color: 'var(--app-wash-3)', fontFamily: "'Cormorant Garamond', serif" }}
           >
             Forgot PIN?
           </button>
@@ -228,12 +228,12 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
               style={{ top: '50%', transform: 'translateY(-50%)' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="rounded-2xl p-6" style={{ background: '#000000', border: '1px solid rgba(201,169,98,0.25)' }}>
-                <h3 className="text-base text-[#F5F1E8] font-light mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              <div className="rounded-2xl p-6" style={{ background: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.25)' }}>
+                <h3 className="text-base text-[color:var(--app-text)] font-light mb-2" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   Reset Vault?
                 </h3>
-                <p className="text-sm text-[#6B6B6B] mb-5 leading-relaxed">
-                  This will permanently delete <span className="text-[#F5F1E8]">all saved passwords</span> and reset your PIN. This action cannot be undone.
+                <p className="text-sm text-[color:var(--app-text-3)] mb-5 leading-relaxed">
+                  This will permanently delete <span className="text-[color:var(--app-text)]">all saved passwords</span> and reset your PIN. This action cannot be undone.
                 </p>
                 <div className="space-y-2.5">
                   <button
@@ -246,8 +246,8 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
                   </button>
                   <button
                     onClick={() => setShowResetConfirm(false)}
-                    className="w-full py-3 rounded-xl text-sm text-[#B8B8B8] transition-colors"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(201,169,98,0.15)' }}
+                    className="w-full py-3 rounded-xl text-sm text-[color:var(--app-text-2)] transition-colors"
+                    style={{ background: 'var(--app-wash)', border: '1px solid rgba(201,169,98,0.15)' }}
                   >
                     Cancel
                   </button>

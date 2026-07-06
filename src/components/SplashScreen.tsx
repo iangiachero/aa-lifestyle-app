@@ -19,7 +19,7 @@ export default function SplashScreen() {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center z-[9999] animate-fade-in"
-      style={{ backgroundColor: '#000000' }}
+      style={{ backgroundColor: 'var(--app-bg)' }}
     >
       <div className="flex flex-col items-center gap-6">
         <div

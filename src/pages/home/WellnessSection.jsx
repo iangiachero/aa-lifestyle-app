@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 export default function WellnessSection() {
   const STYLE = {
     container: {
-      background: 'bg-[#000000]',
+      background: 'bg-[color:var(--app-bg)]',
       blur: '',
       border: 'border border-[rgba(226,186,139,0.3)]',
       glow: 'shadow-[0_0_8px_rgba(226,186,139,0.12),0_0_16px_rgba(226,186,139,0.05)]',
@@ -15,10 +15,10 @@ export default function WellnessSection() {
       padding: 'px-4 py-3',
     },
     colors: {
-      title: 'text-[#F5F1E8]',
+      title: 'text-[color:var(--app-text)]',
     },
     itemCard: {
-      background: 'bg-[#000000]',
+      background: 'bg-[color:var(--app-bg)]',
       border: 'border border-[rgba(226,186,139,0.3)]',
       glow: 'shadow-[0_0_6px_rgba(226,186,139,0.1)]',
       hoverBorder: 'hover:border-[rgba(226,186,139,0.5)]',
@@ -28,7 +28,7 @@ export default function WellnessSection() {
       radius: 'rounded-xl',
       height: 'h-[110px]',
     },
-    expandedBg: 'bg-[#000000]',
+    expandedBg: 'bg-[color:var(--app-bg)]',
     grid: {
       cols: 'grid-cols-4',
       gap: 'gap-3',

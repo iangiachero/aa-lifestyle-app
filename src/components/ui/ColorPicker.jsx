@@ -33,7 +33,7 @@ export default function ColorPicker({ selectedColor, onSelectColor }) {
 
   return (
     <div className="space-y-2">
-      <label className="text-xs uppercase font-light tracking-wider" style={{ color: '#9B9B9B' }}>
+      <label className="text-xs uppercase font-light tracking-wider" style={{ color: 'var(--app-text-3)' }}>
         Color
       </label>
 

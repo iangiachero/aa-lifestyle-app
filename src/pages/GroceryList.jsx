@@ -193,7 +193,7 @@ export default function GroceryList() {
                   <div className="flex-1 flex flex-col items-start justify-between px-2.5 py-2.5 h-full">
                     <div className="flex items-center gap-1.5">
                       <BlockIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: block.color }} strokeWidth={1.5} />
-                      <span className="text-xs text-left leading-tight text-[#F5F1E8] font-light">{block.label}</span>
+                      <span className="text-xs text-left leading-tight text-[color:var(--app-text)] font-light">{block.label}</span>
                     </div>
                     <Plus className="w-4 h-4 self-end" style={{ color: '#C9A962' }} strokeWidth={1.5} />
                   </div>
@@ -216,8 +216,8 @@ export default function GroceryList() {
                   className="w-full px-4 py-3.5 flex items-center justify-between hover:bg-[rgba(226,186,139,0.05)] transition-colors border-b border-[rgba(226,186,139,0.15)]">
                   <div className="flex items-center gap-2.5">
                     <BlockIcon className="w-5 h-5" style={{ color: block.color }} strokeWidth={1.5} />
-                    <span className="text-sm text-[#F5F1E8] font-light">{block.label}</span>
-                    <span className="text-xs text-[#B8B8B8]">({uncheckedCount})</span>
+                    <span className="text-sm text-[color:var(--app-text)] font-light">{block.label}</span>
+                    <span className="text-xs text-[color:var(--app-text-2)]">({uncheckedCount})</span>
                   </div>
                   {isCollapsed
                     ? <ChevronRight className="w-4 h-4 text-[#e2ba8b]" strokeWidth={1.5} />
@@ -235,14 +235,14 @@ export default function GroceryList() {
                           {item.is_completed && <Check className="w-3.5 h-3.5 text-[#000000]" strokeWidth={2.5} />}
                         </button>
                         <div className="flex-1 min-w-0">
-                          <span className={`text-sm block font-light ${item.is_completed ? 'line-through text-[#6B6B6B]' : 'text-[#F5F1E8]'}`}>
+                          <span className={`text-sm block font-light ${item.is_completed ? 'line-through text-[color:var(--app-text-3)]' : 'text-[color:var(--app-text)]'}`}>
                             {item.name}
                           </span>
                           {item.notes && !item.is_completed && (
-                            <span className="text-xs text-[#B8B8B8] font-light">{item.notes}</span>
+                            <span className="text-xs text-[color:var(--app-text-2)] font-light">{item.notes}</span>
                           )}
                         </div>
-                        <button onClick={() => deleteItem(item.id)} className="hover:text-red-400 transition-colors text-[#B8B8B8] flex-shrink-0 mt-0.5">
+                        <button onClick={() => deleteItem(item.id)} className="hover:text-red-400 transition-colors text-[color:var(--app-text-2)] flex-shrink-0 mt-0.5">
                           <X className="w-4 h-4" strokeWidth={1.5} />
                         </button>
                       </div>
@@ -257,8 +257,8 @@ export default function GroceryList() {
         {groceryItems.length === 0 && (
           <div className="card-luxury p-12 text-center border-2 border-dashed border-[rgba(201,169,98,0.2)]">
             <ShoppingCart className="w-12 h-12 mx-auto mb-3 text-[rgba(201,169,98,0.20)]" strokeWidth={1.5} />
-            <div className="text-sm text-[#B8B8B8] mb-2">No items yet</div>
-            <div className="text-xs text-[#6B6B6B]">Use Quick Add to start your list</div>
+            <div className="text-sm text-[color:var(--app-text-2)] mb-2">No items yet</div>
+            <div className="text-xs text-[color:var(--app-text-3)]">Use Quick Add to start your list</div>
           </div>
         )}
 
@@ -272,15 +272,15 @@ export default function GroceryList() {
 
       {showDialog && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end" onClick={() => setShowDialog(false)}>
-          <div className="w-full bg-[#000000] rounded-t-3xl border-t-2 border-[rgba(201,169,98,0.3)] max-h-[85vh] overflow-y-auto scrollbar-hide"
+          <div className="w-full bg-[color:var(--app-bg)] rounded-t-3xl border-t-2 border-[rgba(201,169,98,0.3)] max-h-[85vh] overflow-y-auto scrollbar-hide"
             onClick={e => e.stopPropagation()}>
-            <div className="sticky top-0 bg-[#000000] border-b border-[rgba(201,169,98,0.2)] px-6 py-4 flex items-center justify-between">
+            <div className="sticky top-0 bg-[color:var(--app-bg)] border-b border-[rgba(201,169,98,0.2)] px-6 py-4 flex items-center justify-between">
               <div>
                 <h2 className="text-xl text-[#e2ba8b] font-light">Add Grocery Item</h2>
-                <p className="text-xs text-[#B8B8B8] mt-1">Add to your shopping list</p>
+                <p className="text-xs text-[color:var(--app-text-2)] mt-1">Add to your shopping list</p>
               </div>
               <button onClick={() => setShowDialog(false)}
-                className="w-8 h-8 rounded-full bg-[#000000] border border-[rgba(201,169,98,0.3)] flex items-center justify-center">
+                className="w-8 h-8 rounded-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] flex items-center justify-center">
                 <X className="w-4 h-4 text-[#e2ba8b]" strokeWidth={1.5} />
               </button>
             </div>
@@ -291,7 +291,7 @@ export default function GroceryList() {
                 <Input placeholder="e.g., Organic Spinach"
                   value={newItem.name}
                   onChange={e => setNewItem({ ...newItem, name: e.target.value })}
-                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl bg-[rgba(0,0,0,0.5)] text-[#F5F1E8]" />
+                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl bg-[rgba(0,0,0,0.5)] text-[color:var(--app-text)]" />
               </div>
 
               <div>
@@ -299,11 +299,11 @@ export default function GroceryList() {
                 <select
                   value={newItem.category}
                   onChange={e => setNewItem({ ...newItem, category: e.target.value })}
-                  className="w-full px-4 py-3 bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[#F5F1E8] focus:border-[#C9A962] focus:outline-none appearance-none"
+                  className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] focus:border-[#C9A962] focus:outline-none appearance-none"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23C9A962' stroke-width='1.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
                 >
                   {GROCERY_BLOCKS.map(block => (
-                    <option key={block.id} value={block.id} style={{ backgroundColor: '#000000', color: '#F5F1E8' }}>
+                    <option key={block.id} value={block.id} style={{ backgroundColor: 'var(--app-bg)', color: 'var(--app-text)' }}>
                       {block.label}
                     </option>
                   ))}
@@ -315,7 +315,7 @@ export default function GroceryList() {
                 <Textarea placeholder="Quantity, brand, or other details..."
                   value={newItem.notes}
                   onChange={e => setNewItem({ ...newItem, notes: e.target.value })}
-                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl min-h-[80px] bg-[rgba(0,0,0,0.5)] text-[#F5F1E8]" />
+                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl min-h-[80px] bg-[rgba(0,0,0,0.5)] text-[color:var(--app-text)]" />
               </div>
 
               <button onClick={addItem}

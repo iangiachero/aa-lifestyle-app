@@ -18,9 +18,54 @@ function computeNewTimes(slotIndex, offsetMinutes, durationMinutes) {
   return [`${sh}:${sm}`, `${eh}:${em}`];
 }
 
+// Assigns overlapping events to side-by-side columns.
+// Returns { [eventId]: { col, cols } } where cols is the column count of the event's overlap cluster.
+function computeOverlapLayout(events) {
+  const items = events
+    .map((e) => {
+      const [sh, sm] = (e.start_time || '00:00').split(':').map(Number);
+      const [eh, em] = (e.end_time || '00:00').split(':').map(Number);
+      const start = sh * 60 + sm;
+      // Enforce the same 40px visual minimum so short back-to-back events still split columns
+      const end = Math.max(eh * 60 + em, start + 30);
+      return { id: e.id, start, end };
+    })
+    .sort((a, b) => a.start - b.start || b.end - a.end);
+
+  const layout = {};
+  let cluster = [];
+  let clusterEnd = -1;
+
+  const flushCluster = () => {
+    if (!cluster.length) return;
+    const colEnds = [];
+    for (const it of cluster) {
+      let col = colEnds.findIndex((end) => end <= it.start);
+      if (col === -1) {
+        col = colEnds.length;
+        colEnds.push(it.end);
+      } else {
+        colEnds[col] = it.end;
+      }
+      it.col = col;
+    }
+    for (const it of cluster) layout[it.id] = { col: it.col, cols: colEnds.length };
+    cluster = [];
+  };
+
+  for (const it of items) {
+    if (cluster.length && it.start >= clusterEnd) flushCluster();
+    cluster.push(it);
+    clusterEnd = Math.max(clusterEnd, it.end);
+  }
+  flushCluster();
+  return layout;
+}
+
 export default function DayView({ selectedDate, events, tasks, birthdays, onEditEvent, onEventDrop }) {
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
   const dayEvents = events.filter((e) => (e.display_date || e.date) === dateStr && e.category !== 'birthday');
+  const overlapLayout = computeOverlapLayout(dayEvents);
   const dayTasks = tasks.filter((t) => t.due_date === dateStr && t.status !== 'completed');
   const dayBirthdays = birthdays.filter((b) => isBirthdayOnDate(b, selectedDate));
 
@@ -195,6 +240,8 @@ export default function DayView({ selectedDate, events, tasks, birthdays, onEdit
           {dayEvents.map((event) => {
             const style = getBlockStyle(event.start_time, event.end_time);
             const isDragging = dragState?.event?.id === event.id;
+            const lay = overlapLayout[event.id] || { col: 0, cols: 1 };
+            const colFraction = lay.col / lay.cols;
             return (
               <div
                 key={event.id}
@@ -204,10 +251,12 @@ export default function DayView({ selectedDate, events, tasks, birthdays, onEdit
                   handleDragStart(e, event);
                 }}
                 onDragEnd={handleDragEnd}
-                className="absolute left-2 right-2 rounded-xl shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md transition-all"
+                className="absolute rounded-xl shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md transition-all"
                 style={{
                   top: `${style.top}px`,
                   height: `${style.height}px`,
+                  left: `calc(8px + (100% - 16px) * ${colFraction}${lay.col > 0 ? ' + 2px' : ''})`,
+                  width: `calc((100% - 16px) / ${lay.cols}${lay.cols > 1 ? ' - 2px' : ''})`,
                   backgroundColor: `${event.color}20`,
                   border: `2px solid ${event.color}`,
                   minHeight: '40px',
@@ -216,7 +265,7 @@ export default function DayView({ selectedDate, events, tasks, birthdays, onEdit
                 }}
                 onClick={() => !isDragging && onEditEvent(event)}
               >
-                <div className="px-4 py-3 h-full flex flex-col overflow-hidden">
+                <div className={`${lay.cols > 1 ? 'px-2.5' : 'px-4'} py-3 h-full flex flex-col overflow-hidden`}>
                   <div className="flex items-center gap-1.5 mb-1 min-w-0 overflow-hidden">
                     {event.is_multi_day && event.is_middle_day && (
                       <span className="text-xs flex-shrink-0" style={{ color: event.color || UI.gold }}>↔</span>

@@ -7,11 +7,11 @@ import { useModal } from '../../../context/ModalContext';
 
 const MODAL_STYLE = {
   overlay: 'fixed inset-0 bg-black/60 z-50 flex items-end',
-  sheet: 'w-full bg-[#000000] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90vh] flex flex-col',
-  header: 'sticky top-0 bg-[#000000] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
+  sheet: 'w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90vh] flex flex-col',
+  header: 'sticky top-0 bg-[color:var(--app-bg)] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
   title: 'text-xl text-[#C9A962] font-light',
-  input: 'w-full bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl px-4 py-3 text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm',
-  label: 'text-xs text-[#B8B8B8] font-light uppercase tracking-wider mb-2 block',
+  input: 'w-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl px-4 py-3 text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm',
+  label: 'text-xs text-[color:var(--app-text-2)] font-light uppercase tracking-wider mb-2 block',
 };
 
 const CYCLE_OPTIONS = ['Daily', 'Weekly', 'Monthly', 'Yearly', 'Custom'];
@@ -185,7 +185,7 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
                       className={`py-2 px-1 rounded-xl text-xs font-light transition-all border ${
                         form.cycle === option
                           ? 'bg-[rgba(201,169,98,0.15)] border-[#C9A962] text-[#C9A962]'
-                          : 'bg-[#000000] border-[rgba(201,169,98,0.3)] text-[#B8B8B8] hover:border-[rgba(201,169,98,0.5)]'
+                          : 'bg-[color:var(--app-bg)] border-[rgba(201,169,98,0.3)] text-[color:var(--app-text-2)] hover:border-[rgba(201,169,98,0.5)]'
                       }`}
                     >
                       {option}
@@ -215,7 +215,7 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
               <div>
                 <label className={MODAL_STYLE.label}>Duration (minutes)</label>
                 <div className="relative">
-                  <Timer className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B6B6B]" strokeWidth={1.5} />
+                  <Timer className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--app-text-3)]" strokeWidth={1.5} />
                   <input
                     type="number"
                     min="1"
@@ -223,9 +223,9 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
                     placeholder="e.g., 15"
                     value={form.duration}
                     onChange={(e) => setForm(prev => ({ ...prev, duration: e.target.value }))}
-                    className="w-full bg-[#000000] border border-[rgba(201,169,98,0.3)] rounded-xl pl-10 pr-16 py-3 text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm [color-scheme:dark]"
+                    className="w-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl pl-10 pr-16 py-3 text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm [color-scheme:dark]"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#6B6B6B]">min</span>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[color:var(--app-text-3)]">min</span>
                 </div>
               </div>
 
@@ -253,7 +253,7 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
                           initial={{ opacity: 0, y: -8 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -8, height: 0 }}
-                          className="bg-[#000000] rounded-xl border border-[rgba(201,169,98,0.25)] overflow-hidden"
+                          className="bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.25)] overflow-hidden"
                         >
                           <div
                             className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[rgba(201,169,98,0.05)] transition-colors"
@@ -263,14 +263,14 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
                               <span className="text-xs text-[#C9A962] w-5 h-5 rounded-full border border-[rgba(201,169,98,0.4)] flex items-center justify-center font-light flex-shrink-0">
                                 {index + 1}
                               </span>
-                              <span className={`text-sm font-light ${step.title ? 'text-[#F5F1E8]' : 'text-[#6B6B6B]'}`}>
+                              <span className={`text-sm font-light ${step.title ? 'text-[color:var(--app-text)]' : 'text-[color:var(--app-text-3)]'}`}>
                                 {step.title || 'Untitled step'}
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={(e) => { e.stopPropagation(); removeStep(step.id); }}
-                                className="text-[#6B6B6B] hover:text-red-400 transition-colors"
+                                className="text-[color:var(--app-text-3)] hover:text-red-400 transition-colors"
                               >
                                 <X className="w-3.5 h-3.5" strokeWidth={1.5} />
                               </button>
@@ -289,13 +289,13 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
                                 transition={{ duration: 0.2 }}
                                 className="border-t border-[rgba(201,169,98,0.15)] px-4 py-3"
                               >
-                                <label className="text-[10px] text-[#B8B8B8] uppercase tracking-wider mb-1 block">Title</label>
+                                <label className="text-[10px] text-[color:var(--app-text-2)] uppercase tracking-wider mb-1 block">Title</label>
                                 <input
                                   type="text"
                                   placeholder="Step title..."
                                   value={step.title}
                                   onChange={(e) => updateStep(step.id, e.target.value)}
-                                  className="w-full bg-[#000000] border border-[rgba(201,169,98,0.25)] rounded-lg px-3 py-2.5 text-[#F5F1E8] placeholder-[#6B6B6B] focus:border-[#C9A962] focus:outline-none text-sm"
+                                  className="w-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.25)] rounded-lg px-3 py-2.5 text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm"
                                   onClick={(e) => e.stopPropagation()}
                                 />
                               </motion.div>
@@ -308,8 +308,8 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
 
                   {form.steps.length === 0 && (
                     <div className="text-center py-6 border border-dashed border-[rgba(201,169,98,0.2)] rounded-xl">
-                      <p className="text-xs text-[#6B6B6B]">No steps added yet</p>
-                      <p className="text-[10px] text-[#4B4B4B] mt-1">Tap "Add Step" to begin</p>
+                      <p className="text-xs text-[color:var(--app-text-3)]">No steps added yet</p>
+                      <p className="text-[10px] text-[color:var(--app-text-3)] mt-1">Tap "Add Step" to begin</p>
                     </div>
                   )}
                 </div>
@@ -320,7 +320,7 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
               <button
                 onClick={handleSubmit}
                 disabled={!form.name.trim() || saving}
-                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[#6B6B6B] text-[#000000] font-medium py-4 rounded-xl transition-all text-sm flex items-center justify-center gap-2"
+                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[color:var(--app-text-3)] text-[#000000] font-medium py-4 rounded-xl transition-all text-sm flex items-center justify-center gap-2"
               >
                 {saving ? (
                   <div className="w-4 h-4 border-2 border-[#000000] border-t-transparent rounded-full animate-spin" />
