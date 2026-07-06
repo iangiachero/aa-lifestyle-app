@@ -46,12 +46,15 @@ const PasswordVault = lazy(() => import('./pages/PasswordVault'));
 const pageVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
-  exit: { opacity: 0 },
+  // Instant exit: with mode="wait" a timed exit leaves a blank frame between
+  // pages; dropping the old page immediately lets the new one fade in with
+  // no visible gap.
+  exit: { opacity: 0, transition: { duration: 0 } },
 };
 
 const pageTransition = {
-  duration: 0.18,
-  ease: 'easeInOut',
+  duration: 0.15,
+  ease: 'easeOut',
 };
 
 function PageTransition({ children }: { children: React.ReactNode }) {
