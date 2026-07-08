@@ -47,10 +47,10 @@ export default function PWATutorial() {
         style={{ borderColor: 'rgba(201,169,98,0.2)' }}
       >
         <button onClick={() => navigate(-1)} className="hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <h1
-          className="flex-1 text-center text-3xl text-[#C9A962] font-light tracking-wide"
+          className="flex-1 text-center text-3xl text-[color:var(--app-gold)] font-light tracking-wide"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}
         >
           Install AA Lifestyle

@@ -7,7 +7,7 @@ export default function TimePicker({ value, onChange, placeholder = 'Select time
   const containerRef = useRef(null);
 
   const ui = {
-    gold: '#C9A962',
+    gold: 'var(--app-gold)',
     bg: 'var(--app-bg)',
     panel: 'var(--app-bg)',
     text: 'var(--app-text)',
@@ -82,7 +82,7 @@ export default function TimePicker({ value, onChange, placeholder = 'Select time
           color: value ? ui.text : ui.muted,
         }}
       >
-        <Clock className="w-4 h-4" style={{ color: ui.gold }} strokeWidth={1.5} />
+        <Clock className="w-4 h-4" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
         <span className="flex-1 text-left">{formatDisplay(value) || placeholder}</span>
       </button>
 

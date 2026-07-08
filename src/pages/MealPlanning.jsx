@@ -452,10 +452,10 @@ export default function MealPlanning() {
 
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Meal Planning</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Meal Planning</h1>
         </div>
       </div>
 
@@ -467,7 +467,7 @@ export default function MealPlanning() {
               className={`flex-1 text-xs font-light py-2.5 rounded-xl transition-all ${
                 activeView === tab.id
                   ? 'bg-gradient-to-br from-[#e2ba8b] to-[#C9A962] text-white shadow-sm'
-                  : 'text-[#e2ba8b] border border-[rgba(201,169,98,0.3)]'
+                  : 'text-[color:var(--app-gold-light)] border border-[rgba(201,169,98,0.3)]'
               }`}>
               {tab.label}
             </button>
@@ -479,8 +479,8 @@ export default function MealPlanning() {
           <div>
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <Calendar className="w-5 h-5 text-[#e2ba8b]" strokeWidth={1.5} />
-                <h3 className="font-serif text-2xl font-light text-[#e2ba8b] tracking-tight">Today's Meals</h3>
+                <Calendar className="w-5 h-5 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
+                <h3 className="font-serif text-2xl font-light text-[color:var(--app-gold-light)] tracking-tight">Today's Meals</h3>
               </div>
               <div className="h-[1px] w-16 bg-[#e2ba8b]/40" />
             </div>
@@ -496,7 +496,7 @@ export default function MealPlanning() {
                       </div>
                       <div className="flex-1 flex items-start justify-between p-4">
                         <div className="flex-1">
-                          <div className="text-[9px] text-[#C9A962] uppercase font-light tracking-[0.15em] mb-2">{type}</div>
+                          <div className="text-[9px] text-[color:var(--app-gold)] uppercase font-light tracking-[0.15em] mb-2">{type}</div>
                           <div className="font-light text-[color:var(--app-text)] text-base mb-1">{meal?.name || 'Not planned'}</div>
                           {meal?.time && (
                             <div className="flex items-center gap-1.5 text-xs text-[color:var(--app-text-2)] font-light mb-1">
@@ -510,11 +510,11 @@ export default function MealPlanning() {
                             <>
                               {parseIngredients(meal.ingredients).length > 0 && (
                                 <button onClick={() => handleAddMealToGrocery(meal)} className="p-2 rounded-lg hover:bg-[#e2ba8b]/10 transition-colors">
-                                  <ShoppingCart className="w-4 h-4 text-[#e2ba8b]" strokeWidth={1.5} />
+                                  <ShoppingCart className="w-4 h-4 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
                                 </button>
                               )}
                               <button onClick={() => openEdit(meal)} className="p-2 rounded-lg hover:bg-[#e2ba8b]/10 transition-colors">
-                                <Edit2 className="w-4 h-4 text-[#e2ba8b]" strokeWidth={1.5} />
+                                <Edit2 className="w-4 h-4 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
                               </button>
                               <button onClick={() => deleteMutation.mutate(meal.id)} className="p-2 rounded-lg hover:bg-red-500/10 transition-colors">
                                 <Trash2 className="w-4 h-4 text-red-400" strokeWidth={1.5} />
@@ -541,7 +541,7 @@ export default function MealPlanning() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="font-serif text-2xl font-light text-[#e2ba8b] tracking-tight mb-2">This Week</h3>
+                <h3 className="font-serif text-2xl font-light text-[color:var(--app-gold-light)] tracking-tight mb-2">This Week</h3>
                 <div className="h-[1px] w-16 bg-[#e2ba8b]/40" />
               </div>
             </div>
@@ -550,7 +550,7 @@ export default function MealPlanning() {
                 const dayDate = addDays(weekStart, idx);
                 return (
                   <div key={day} className="card-luxury p-5">
-                    <div className="font-light text-[#e2ba8b] mb-4 capitalize">{day} • {format(dayDate, 'MMM d')}</div>
+                    <div className="font-light text-[color:var(--app-gold-light)] mb-4 capitalize">{day} • {format(dayDate, 'MMM d')}</div>
                     <div className="space-y-3">
                       {MEAL_TYPES.map(type => {
                         const meal = getMealForDayAndCategory(day, type);
@@ -559,24 +559,24 @@ export default function MealPlanning() {
                             <div className="flex-shrink-0 w-[clamp(80px,22vw,110px)] h-[clamp(50px,14vw,70px)] rounded-lg overflow-hidden">
                               <img src={getWeeklyMealImage(day, type)} alt={type} className="w-full h-full object-cover" loading="lazy" />
                             </div>
-                            <div className="w-20 text-[9px] text-[#C9A962] uppercase tracking-wider font-light">{type}</div>
+                            <div className="w-20 text-[9px] text-[color:var(--app-gold)] uppercase tracking-wider font-light">{type}</div>
                             <div className="flex-1 text-[color:var(--app-text)] font-light truncate">{meal?.name || '—'}</div>
                             {meal ? (
                               <div className="flex gap-1 flex-shrink-0">
                                 {parseIngredients(meal.ingredients).length > 0 && (
                                   <button onClick={() => handleAddMealToGrocery(meal)} className="p-1.5 rounded-lg hover:bg-[#e2ba8b]/10 transition-colors">
-                                    <ShoppingCart className="w-3.5 h-3.5 text-[#e2ba8b]" strokeWidth={1.5} />
+                                    <ShoppingCart className="w-3.5 h-3.5 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
                                   </button>
                                 )}
                                 <button onClick={() => openEdit(meal)} className="p-1.5 rounded-lg hover:bg-[#e2ba8b]/10 transition-colors">
-                                  <Edit2 className="w-3.5 h-3.5 text-[#e2ba8b]" strokeWidth={1.5} />
+                                  <Edit2 className="w-3.5 h-3.5 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
                                 </button>
                                 <button onClick={() => deleteMutation.mutate(meal.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 transition-colors">
                                   <Trash2 className="w-3.5 h-3.5 text-red-400" strokeWidth={1.5} />
                                 </button>
                               </div>
                             ) : (
-                              <button onClick={() => openAdd(type, day)} className="text-xs text-[#e2ba8b] font-light px-2 py-1 rounded-lg hover:bg-[#e2ba8b]/10 transition-colors flex-shrink-0">
+                              <button onClick={() => openAdd(type, day)} className="text-xs text-[color:var(--app-gold-light)] font-light px-2 py-1 rounded-lg hover:bg-[#e2ba8b]/10 transition-colors flex-shrink-0">
                                 + Add
                               </button>
                             )}
@@ -595,16 +595,16 @@ export default function MealPlanning() {
         {activeView === 'recipes' && (
           <div className="pb-24">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-serif text-2xl font-light text-[#e2ba8b] tracking-tight">Recipes</h3>
+              <h3 className="font-serif text-2xl font-light text-[color:var(--app-gold-light)] tracking-tight">Recipes</h3>
               <button
                 onClick={() => { setRecipeForm(EMPTY_RECIPE_FORM); setRecipeImagePreview(null); setEditingRecipe(null); setShowCreateRecipe(true); }}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-light text-[#C9A962] border border-[rgba(201,169,98,0.4)] hover:bg-[#C9A962]/10 transition-all active:scale-95">
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-light text-[color:var(--app-gold)] border border-[rgba(201,169,98,0.4)] hover:bg-[#C9A962]/10 transition-all active:scale-95">
                 <Plus className="w-3.5 h-3.5" strokeWidth={2} />Create Recipe
               </button>
             </div>
             <div className="relative mb-5">
               <div className="flex items-center gap-3 px-4 rounded-xl h-11" style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.30)' }}>
-                <Search className="w-4 h-4 text-[#C9A962] flex-shrink-0" strokeWidth={1.5} />
+                <Search className="w-4 h-4 text-[color:var(--app-gold)] flex-shrink-0" strokeWidth={1.5} />
                 <input type="text" placeholder="Search recipes..." value={recipeSearch}
                   onChange={e => setRecipeSearch(e.target.value)}
                   className="flex-1 bg-transparent focus:outline-none text-sm font-light"
@@ -657,14 +657,14 @@ export default function MealPlanning() {
           <div className="fixed bottom-0 left-0 right-0 bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[80dvh] overflow-y-auto scrollbar-hide">
             <div className="p-6" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
               <button onClick={closeDrawer} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#e2ba8b]/10 transition-colors">
-                <X className="w-5 h-5 text-[#e2ba8b]" strokeWidth={1.5} />
+                <X className="w-5 h-5 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
               </button>
-              <h2 className="font-serif text-2xl font-light text-[#e2ba8b] mb-1">{editingMeal ? 'Edit Meal' : 'Add Meal'}</h2>
+              <h2 className="font-serif text-2xl font-light text-[color:var(--app-gold-light)] mb-1">{editingMeal ? 'Edit Meal' : 'Add Meal'}</h2>
               <p className="text-xs text-[color:var(--app-text-2)] font-light mb-6 tracking-widest uppercase">Plan with intention</p>
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Meal Name</label>
+                  <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Meal Name</label>
                   <input placeholder="e.g., Grilled Salmon with Vegetables"
                     value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -674,7 +674,7 @@ export default function MealPlanning() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Category</label>
+                    <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Category</label>
                     <CustomSelect
                       value={selectedCategory}
                       onChange={(val) => setSelectedCategory(val)}
@@ -687,7 +687,7 @@ export default function MealPlanning() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Time (Optional)</label>
+                    <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Time (Optional)</label>
                     <TimePicker
                       value={formData.time}
                       onChange={(val) => setFormData({ ...formData, time: val })}
@@ -697,7 +697,7 @@ export default function MealPlanning() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Day</label>
+                  <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Day</label>
                   <CustomSelect
                     value={selectedDay}
                     onChange={(val) => setSelectedDay(val)}
@@ -706,7 +706,7 @@ export default function MealPlanning() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Notes (Optional)</label>
+                  <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Notes (Optional)</label>
                   <textarea placeholder="Add special instructions or dietary notes..."
                     value={formData.notes}
                     onChange={e => setFormData({ ...formData, notes: e.target.value })}
@@ -716,7 +716,7 @@ export default function MealPlanning() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Ingredients (Optional)</label>
+                  <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Ingredients (Optional)</label>
                   <textarea
                     placeholder={'One ingredient per line\ne.g.,\n2 salmon fillets\n1 cup broccoli\nolive oil'}
                     value={formData.ingredients}
@@ -746,15 +746,15 @@ export default function MealPlanning() {
           <div className="fixed bottom-0 left-0 right-0 bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide">
             <div className="p-6" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
               <button onClick={() => { setShowCreateRecipe(false); setRecipeImagePreview(null); setEditingRecipe(null); }} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#e2ba8b]/10 transition-colors">
-                <X className="w-5 h-5 text-[#e2ba8b]" strokeWidth={1.5} />
+                <X className="w-5 h-5 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
               </button>
-              <h2 className="font-serif text-2xl font-light text-[#e2ba8b] mb-1">{editingRecipe ? 'Edit Recipe' : 'Create Recipe'}</h2>
+              <h2 className="font-serif text-2xl font-light text-[color:var(--app-gold-light)] mb-1">{editingRecipe ? 'Edit Recipe' : 'Create Recipe'}</h2>
               <p className="text-xs text-[color:var(--app-text-2)] font-light mb-6 tracking-widest uppercase">{editingRecipe ? 'Update your recipe details' : 'Save your favourite dishes'}</p>
 
               <div className="space-y-4">
                 {/* Photo upload */}
                 <div>
-                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Photo (Optional)</label>
+                  <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Photo (Optional)</label>
                   <input
                     ref={recipeImageRef}
                     type="file"
@@ -785,9 +785,9 @@ export default function MealPlanning() {
                         {uploadingRecipeImage ? (
                           <span className="w-5 h-5 border-2 border-[#C9A962]/40 border-t-[#C9A962] rounded-full animate-spin" />
                         ) : (
-                          <Camera className="w-6 h-6 text-[#e2ba8b]/50" strokeWidth={1.5} />
+                          <Camera className="w-6 h-6 text-[color:var(--app-gold-light)]/50" strokeWidth={1.5} />
                         )}
-                        <span className="text-xs text-[#e2ba8b]/50 font-light">
+                        <span className="text-xs text-[color:var(--app-gold-light)]/50 font-light">
                           {uploadingRecipeImage ? 'Uploading…' : 'Tap to add a photo'}
                         </span>
                       </div>
@@ -805,7 +805,7 @@ export default function MealPlanning() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Recipe Name</label>
+                  <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Recipe Name</label>
                   <input
                     placeholder="e.g., Creamy Tuscan Pasta"
                     value={recipeForm.title}
@@ -815,7 +815,7 @@ export default function MealPlanning() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Category</label>
+                  <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Category</label>
                   <CustomSelect
                     value={recipeForm.category}
                     onChange={(val) => setRecipeForm({ ...recipeForm, category: val })}
@@ -825,7 +825,7 @@ export default function MealPlanning() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Prep Time</label>
+                    <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Prep Time</label>
                     <input
                       placeholder="e.g., 30 min"
                       value={recipeForm.time}
@@ -834,7 +834,7 @@ export default function MealPlanning() {
                       style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                   </div>
                   <div>
-                    <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Calories</label>
+                    <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Calories</label>
                     <input
                       type="number"
                       min="0"
@@ -848,7 +848,7 @@ export default function MealPlanning() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Servings</label>
+                    <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Servings</label>
                     <input
                       type="number"
                       min="1"
@@ -859,7 +859,7 @@ export default function MealPlanning() {
                       style={{ backgroundColor: 'var(--app-input-bg)', border: '1px solid rgba(226,186,139,0.2)', color: 'var(--app-text)' }} />
                   </div>
                   <div>
-                    <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Difficulty</label>
+                    <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Difficulty</label>
                     <CustomSelect
                       value={recipeForm.difficulty}
                       onChange={(val) => setRecipeForm({ ...recipeForm, difficulty: val })}
@@ -872,7 +872,7 @@ export default function MealPlanning() {
                 </div>
 
                 <div>
-                  <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Ingredients</label>
+                  <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Ingredients</label>
                   <textarea
                     placeholder={'One ingredient per line\ne.g.,\n200g pasta\n1 cup cream\n2 cloves garlic'}
                     value={recipeForm.ingredients}
@@ -936,8 +936,8 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
             />
           ) : showCreatedByYou ? (
             <div className="flex flex-col items-center justify-center gap-1.5 px-2 py-3 text-center">
-              <Camera className="w-5 h-5 text-[#C9A962]/60" strokeWidth={1.5} />
-              <span className="text-[9px] text-[#C9A962]/50 font-light leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              <Camera className="w-5 h-5 text-[color:var(--app-gold)]/60" strokeWidth={1.5} />
+              <span className="text-[9px] text-[color:var(--app-gold)]/50 font-light leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                 Created<br />by You
               </span>
             </div>
@@ -964,7 +964,7 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
             <span className={`text-[10px] font-light capitalize ${difficultyColors[recipe.difficulty] || 'text-[color:var(--app-text-2)]'}`}>{recipe.difficulty}</span>
             {onEdit && (
               <button onClick={e => { e.stopPropagation(); onEdit(); }} className="p-1 rounded-lg hover:bg-[#C9A962]/10 transition-colors">
-                <Pencil className="w-3.5 h-3.5 text-[#C9A962]/70" strokeWidth={1.5} />
+                <Pencil className="w-3.5 h-3.5 text-[color:var(--app-gold)]/70" strokeWidth={1.5} />
               </button>
             )}
             {onDelete && (
@@ -973,22 +973,22 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
               </button>
             )}
             <ChevronDown
-              className={`w-4 h-4 text-[#C9A962] transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
+              className={`w-4 h-4 text-[color:var(--app-gold)] transition-transform duration-300 ${expanded ? 'rotate-180' : ''}`}
               strokeWidth={1.5}
             />
           </div>
         </div>
         <div className="flex items-center gap-3 mb-3 flex-wrap">
-          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Flame className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.calories} cal</div>
-          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Clock className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.time}</div>
-          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Users className="w-3 h-3 text-[#e2ba8b]" strokeWidth={1.5} />{recipe.servings}</div>
+          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Flame className="w-3 h-3 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />{recipe.calories} cal</div>
+          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Clock className="w-3 h-3 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />{recipe.time}</div>
+          <div className="flex items-center gap-1 text-[11px] text-[color:var(--app-text-2)] font-light"><Users className="w-3 h-3 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />{recipe.servings}</div>
         </div>
         {!expanded && (
           <div className="flex flex-wrap gap-1.5 mb-4">
             {visible.map((ing, i) => (
               <span key={i} className="px-2.5 py-1 rounded-full text-[10px] font-light text-[color:var(--app-text-2)] border border-[rgba(226,186,139,0.12)] bg-[rgba(226,186,139,0.04)]">{ing}</span>
             ))}
-            {extra > 0 && <span className="px-2.5 py-1 rounded-full text-[10px] font-light text-[#e2ba8b]/60 border border-[rgba(201,169,98,0.2)]">+{extra} more</span>}
+            {extra > 0 && <span className="px-2.5 py-1 rounded-full text-[10px] font-light text-[color:var(--app-gold-light)]/60 border border-[rgba(201,169,98,0.2)]">+{extra} more</span>}
           </div>
         )}
       </button>
@@ -996,7 +996,7 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
       {expanded && (
         <div className="mb-4">
           <div className="border-t border-[rgba(201,169,98,0.15)] pt-4 mb-4">
-            <p className="text-[10px] uppercase tracking-widest text-[#C9A962] font-light mb-3">Ingredients</p>
+            <p className="text-[10px] uppercase tracking-widest text-[color:var(--app-gold)] font-light mb-3">Ingredients</p>
             <ul className="space-y-1.5">
               {recipe.ingredients.map((ing, i) => (
                 <li key={i} className="flex items-start gap-2 text-xs font-light text-[color:var(--app-text-2)]">
@@ -1008,7 +1008,7 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
           </div>
           {recipe.instructions && recipe.instructions.length > 0 && (
             <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(201, 169, 98, 0.2)' }}>
-              <h4 style={{ color: '#C9A962', fontSize: '14px', fontWeight: '600', marginBottom: '12px', textTransform: 'uppercase' }}>
+              <h4 style={{ color: 'var(--app-gold)', fontSize: '14px', fontWeight: '600', marginBottom: '12px', textTransform: 'uppercase' }}>
                 Instructions
               </h4>
               <ol style={{ paddingLeft: '20px', margin: 0 }}>

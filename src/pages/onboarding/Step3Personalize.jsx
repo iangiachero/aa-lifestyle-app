@@ -26,7 +26,7 @@ function TileButton({ label, selected, onClick }) {
           className="w-5 h-5 rounded-full flex items-center justify-center"
           style={{ border: '1.5px solid rgba(201,169,98,0.5)', background: 'rgba(201,169,98,0.08)' }}
         >
-          <Check size={11} style={{ color: '#C9A962' }} />
+          <Check size={11} style={{ color: 'var(--app-gold)' }} />
         </div>
       )}
     </button>
@@ -56,13 +56,13 @@ export default function Step3Personalize({ onNext, onBack, data, onChange }) {
         <div className="mb-8">
           <h2
             className="text-3xl font-semibold mb-1 text-center"
-            style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A962' }}
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: 'var(--app-gold)' }}
           >
             Personalize your
           </h2>
           <h2
             className="text-3xl font-semibold mb-2 text-center"
-            style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A962' }}
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: 'var(--app-gold)' }}
           >
             experience
           </h2>

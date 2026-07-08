@@ -123,7 +123,7 @@ export default function WeekView({ weekDates, events, tasks, birthdays, onEditEv
                   <button
                     onClick={() => onDayClick && onDayClick(date)}
                     className="text-[11px] font-light mt-0.5 transition-opacity hover:opacity-70 active:opacity-50"
-                    style={{ color: UI.gold }}
+                    style={{ color: 'var(--app-gold)' }}
                   >
                     View Day
                   </button>
@@ -152,7 +152,7 @@ export default function WeekView({ weekDates, events, tasks, birthdays, onEditEv
                     {dayHolidays.map((holiday) => (
                       <div key={holiday.id} className="flex items-center gap-2.5 px-3 py-2.5 overflow-hidden" style={{ background: 'rgba(201,169,98,0.06)' }}>
                         <span className="text-base flex-shrink-0">{holiday.holidayEmoji}</span>
-                        <span className="text-[12px] font-medium truncate min-w-0 flex-1" style={{ color: UI.gold }}>
+                        <span className="text-[12px] font-medium truncate min-w-0 flex-1" style={{ color: 'var(--app-gold)' }}>
                           {holiday.holidayName}
                         </span>
                         <span className="text-[10px] flex-shrink-0" style={{ color: UI.muted2 }}>

@@ -107,11 +107,11 @@ function ChecklistModal({
               <div className="flex items-center gap-3">
                 <ChecklistIcon iconName={checklist.icon_name} color={iconColor} size="w-8 h-8" />
                 <div>
-                  <h2 className="text-xl font-light text-[#C9A962]">{checklist.name}</h2>
+                  <h2 className="text-xl font-light text-[color:var(--app-gold)]">{checklist.name}</h2>
                   <p className="text-xs text-[color:var(--app-text-2)] mt-0.5">{templateItems.length + customItemsList.length} items</p>
                 </div>
               </div>
-              <button onClick={onClose} className="text-[color:var(--app-text-2)] hover:text-[#C9A962] transition-colors">
+              <button onClick={onClose} className="text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)] transition-colors">
                 <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
               </button>
             </div>
@@ -126,7 +126,7 @@ function ChecklistModal({
                       <button onClick={() => onToggleItem(checklist.id, idx)} className="flex-shrink-0">
                         {isChecked
                           ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
-                          : <Circle className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />}
+                          : <Circle className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />}
                       </button>
                       <span className={`text-sm font-light flex-1 ${isChecked ? 'line-through text-[color:var(--app-text-3)]' : 'text-[color:var(--app-text)]'}`}>{item}</span>
                     </div>
@@ -148,7 +148,7 @@ function ChecklistModal({
                           <input value={editText} onChange={e => setEditText(e.target.value)}
                             onKeyDown={e => { if (e.key === 'Enter') onEditItem(checklist.id, idx); if (e.key === 'Escape') setEditingItem(null); }}
                             className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)]" autoFocus />
-                          <button onClick={() => onEditItem(checklist.id, idx)} className="p-1 text-[#C9A962]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
+                          <button onClick={() => onEditItem(checklist.id, idx)} className="p-1 text-[color:var(--app-gold)]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
                           <button onClick={() => setEditingItem(null)} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
                         </div>
                       ) : (
@@ -156,10 +156,10 @@ function ChecklistModal({
                           <button onClick={() => onToggleCustom(checklist.id, idx)} className="flex-shrink-0">
                             {isChecked
                               ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
-                              : <Circle className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />}
+                              : <Circle className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />}
                           </button>
                           <span className={`text-sm font-light flex-1 ${isChecked ? 'line-through text-[color:var(--app-text-3)]' : 'text-[color:var(--app-text)]'}`}>{item}</span>
-                          <button onClick={() => { setEditingItem(itemKey); setEditText(item); }} className="p-1 text-[#C9A962] opacity-60 hover:opacity-100"><Edit2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
+                          <button onClick={() => { setEditingItem(itemKey); setEditText(item); }} className="p-1 text-[color:var(--app-gold)] opacity-60 hover:opacity-100"><Edit2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
                           <button onClick={() => onDeleteItem(checklist.id, idx)} className="p-1 text-red-400 opacity-60 hover:opacity-100"><Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
                         </div>
                       )}
@@ -174,12 +174,12 @@ function ChecklistModal({
                 <input value={newItemText} onChange={e => setNewItemText(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') onAddItem(checklist.id); if (e.key === 'Escape') { setAddingToTopic(null); setNewItemText(''); } }}
                   placeholder="New item..." className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)]" autoFocus />
-                <button onClick={() => onAddItem(checklist.id)} className="p-1 text-[#C9A962]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
+                <button onClick={() => onAddItem(checklist.id)} className="p-1 text-[color:var(--app-gold)]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
                 <button onClick={() => { setAddingToTopic(null); setNewItemText(''); }} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
               </div>
             ) : (
               <button onClick={() => setAddingToTopic(checklist.id)}
-                className="w-full py-3 rounded-xl border border-dashed border-[#C9A962]/30 hover:border-[#C9A962]/50 hover:bg-[rgba(201,169,98,0.05)] transition-all flex items-center justify-center gap-2 text-[#C9A962]">
+                className="w-full py-3 rounded-xl border border-dashed border-[#C9A962]/30 hover:border-[#C9A962]/50 hover:bg-[rgba(201,169,98,0.05)] transition-all flex items-center justify-center gap-2 text-[color:var(--app-gold)]">
                 <Plus className="w-4 h-4" strokeWidth={1.5} />
                 <span className="text-sm font-light">Add item</span>
               </button>
@@ -461,10 +461,10 @@ export default function Checklists() {
 
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Checklists</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Checklists</h1>
         </div>
       </div>
 
@@ -499,7 +499,7 @@ export default function Checklists() {
       <div className="px-4 pt-4 pb-8">
         {filteredChecklists.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <ListChecks className="w-16 h-16 text-[#C9A962] opacity-30 mb-4" strokeWidth={1} />
+            <ListChecks className="w-16 h-16 text-[color:var(--app-gold)] opacity-30 mb-4" strokeWidth={1} />
             <p className="text-[color:var(--app-text-2)] font-light text-base mb-1">
               {activeCategory === 'All' ? 'No checklists yet' : `No ${activeCategory} checklists`}
             </p>
@@ -567,7 +567,7 @@ export default function Checklists() {
                         </span>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-[#C9A962] flex-shrink-0 mr-4" strokeWidth={1.5} />
+                    <ChevronRight className="w-4 h-4 text-[color:var(--app-gold)] flex-shrink-0 mr-4" strokeWidth={1.5} />
                   </button>
                 </motion.div>
               );
@@ -615,8 +615,8 @@ export default function Checklists() {
           <div className="fixed bottom-0 left-0 right-0 bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-light text-[#C9A962]">Create Checklist</h2>
-                <button onClick={() => { setShowAddChecklist(false); setNewChecklistName(''); setNewChecklistItems([]); setNewChecklistItemInput(''); }} className="text-[color:var(--app-text-2)] hover:text-[#C9A962]">
+                <h2 className="text-xl font-light text-[color:var(--app-gold)]">Create Checklist</h2>
+                <button onClick={() => { setShowAddChecklist(false); setNewChecklistName(''); setNewChecklistItems([]); setNewChecklistItemInput(''); }} className="text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)]">
                   <X className="w-6 h-6" strokeWidth={1.5} />
                 </button>
               </div>

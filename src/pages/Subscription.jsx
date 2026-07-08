@@ -192,10 +192,10 @@ export default function Subscription() {
     <div className="min-h-full pb-32">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             Subscription
           </h1>
         </div>
@@ -204,8 +204,8 @@ export default function Subscription() {
       <div className="page-safe-x pt-6 space-y-5">
         {successMsg && (
           <div className="flex items-start gap-3 rounded-xl px-4 py-3" style={{ background: 'rgba(201,169,98,0.12)', border: '1px solid rgba(201,169,98,0.3)' }}>
-            <CheckCircle2 className="w-4 h-4 text-[#C9A962] mt-0.5 flex-shrink-0" strokeWidth={2} />
-            <p className="text-sm text-[#C9A962]">{successMsg}</p>
+            <CheckCircle2 className="w-4 h-4 text-[color:var(--app-gold)] mt-0.5 flex-shrink-0" strokeWidth={2} />
+            <p className="text-sm text-[color:var(--app-gold)]">{successMsg}</p>
           </div>
         )}
 
@@ -222,7 +222,7 @@ export default function Subscription() {
         )}
 
         <div className="text-center py-4">
-          <p className="text-2xl text-[#C9A962] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <p className="text-2xl text-[color:var(--app-gold)] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             {isPro ? "You're on Pro" : "You're on Free"}
           </p>
           <p className="text-sm text-[#8A7E72] mt-1">Thank you for supporting AA Lifestyle</p>
@@ -235,16 +235,16 @@ export default function Subscription() {
               <div className="rounded-2xl p-4" style={{ background: 'var(--app-surface)', border: '1px solid rgba(201,169,98,0.2)' }}>
                 <p className="text-base text-[color:var(--app-text)] font-light mb-0.5" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Free</p>
                 <p className="text-xs text-[#8A7E72] mb-3">Basic features</p>
-                <p className="text-2xl text-[#C9A962] mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>$0</p>
+                <p className="text-2xl text-[color:var(--app-gold)] mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>$0</p>
                 <div className="space-y-2">
                   {FREE_FEATURES.map(f => (
                     <div key={f} className="flex items-start gap-2">
-                      <Check className="w-3.5 h-3.5 text-[#C9A962] mt-0.5 flex-shrink-0" strokeWidth={2} />
+                      <Check className="w-3.5 h-3.5 text-[color:var(--app-gold)] mt-0.5 flex-shrink-0" strokeWidth={2} />
                       <span className="text-xs text-[color:var(--app-text-2)]">{f}</span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 w-full py-2.5 rounded-xl text-sm text-center" style={{ background: 'rgba(201,169,98,0.1)', color: '#C9A962', fontFamily: "'Cormorant Garamond', serif", fontSize: '15px', border: '1px solid rgba(201,169,98,0.3)' }}>
+                <div className="mt-4 w-full py-2.5 rounded-xl text-sm text-center" style={{ background: 'rgba(201,169,98,0.1)', color: 'var(--app-gold)', fontFamily: "'Cormorant Garamond', serif", fontSize: '15px', border: '1px solid rgba(201,169,98,0.3)' }}>
                   Current Plan
                 </div>
               </div>
@@ -275,7 +275,7 @@ export default function Subscription() {
 
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-1.5">
-                        <Crown className="w-3.5 h-3.5 text-[#C9A962]" strokeWidth={1.5} />
+                        <Crown className="w-3.5 h-3.5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                         <p className="text-sm text-[color:var(--app-text)] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{plan.name}</p>
                       </div>
                       <div
@@ -292,14 +292,14 @@ export default function Subscription() {
                     </div>
 
                     <div className="flex items-baseline gap-0.5 mb-0.5">
-                      <span className="text-2xl text-[#C9A962] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                      <span className="text-2xl text-[color:var(--app-gold)] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                         {plan.price}
                       </span>
                     </div>
                     <p className="text-[11px] text-[#8A7E72] mb-2">{plan.period}</p>
 
                     {plan.savings && (
-                      <p className="text-[11px] font-medium mb-3" style={{ color: '#C9A962' }}>
+                      <p className="text-[11px] font-medium mb-3" style={{ color: 'var(--app-gold)' }}>
                         {plan.savings}
                       </p>
                     )}
@@ -307,7 +307,7 @@ export default function Subscription() {
                     <div className="space-y-1.5">
                       {plan.features.map((feature, i) => (
                         <div key={i} className="flex items-start gap-1.5">
-                          <Check className="w-3 h-3 text-[#C9A962] mt-0.5 flex-shrink-0" strokeWidth={2.5} />
+                          <Check className="w-3 h-3 text-[color:var(--app-gold)] mt-0.5 flex-shrink-0" strokeWidth={2.5} />
                           <span className="text-[11px] text-[color:var(--app-text-2)] leading-snug">{feature}</span>
                         </div>
                       ))}
@@ -333,11 +333,11 @@ export default function Subscription() {
           <div className="flex flex-col gap-3">
             <div className="rounded-2xl p-4 relative" style={{ background: 'var(--app-surface)', border: '1.5px solid rgba(201,169,98,0.5)' }}>
               <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full flex items-center gap-1" style={{ background: 'rgba(201,169,98,0.2)', border: '1px solid rgba(201,169,98,0.4)' }}>
-                <Check className="w-3 h-3 text-[#C9A962]" strokeWidth={2.5} />
-                <span className="text-[10px] text-[#C9A962]">Active</span>
+                <Check className="w-3 h-3 text-[color:var(--app-gold)]" strokeWidth={2.5} />
+                <span className="text-[10px] text-[color:var(--app-gold)]">Active</span>
               </div>
               <div className="flex items-center gap-1.5 mb-0.5">
-                <Crown className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                <Crown className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                 <p className="text-base text-[color:var(--app-text)] font-light" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Pro</p>
               </div>
               <p className="text-xs text-[#8A7E72] mb-3">Everything unlocked</p>
@@ -345,7 +345,7 @@ export default function Subscription() {
               <div className="space-y-2">
                 {PLANS[0].features.map(f => (
                   <div key={f} className="flex items-start gap-2">
-                    <Check className="w-3.5 h-3.5 text-[#C9A962] mt-0.5 flex-shrink-0" strokeWidth={2} />
+                    <Check className="w-3.5 h-3.5 text-[color:var(--app-gold)] mt-0.5 flex-shrink-0" strokeWidth={2} />
                     <span className="text-xs text-[color:var(--app-text-2)]">{f}</span>
                   </div>
                 ))}
@@ -365,7 +365,7 @@ export default function Subscription() {
 
         <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,169,98,0.2)' }}>
           <div className="px-4 py-3" style={{ background: 'var(--app-surface)', borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
-            <p className="text-center text-sm text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.1em' }}>
+            <p className="text-center text-sm text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif", letterSpacing: '0.1em' }}>
               Feature Comparison
             </p>
           </div>
@@ -373,7 +373,7 @@ export default function Subscription() {
           <div className="grid grid-cols-3 px-4 py-2" style={{ background: 'var(--app-surface)', borderBottom: '1px solid rgba(201,169,98,0.1)' }}>
             <span className="text-xs text-[#8A7E72]">Features</span>
             <span className="text-xs text-[#8A7E72] text-center">Free</span>
-            <span className="text-xs text-[#C9A962] text-center">Pro</span>
+            <span className="text-xs text-[color:var(--app-gold)] text-center">Pro</span>
           </div>
 
           {ALL_FEATURES.map((f, i) => (
@@ -388,12 +388,12 @@ export default function Subscription() {
               <span className="text-xs text-[color:var(--app-text-2)] pr-2">{f.label}</span>
               <div className="flex justify-center">
                 {f.free
-                  ? <Check className="w-3.5 h-3.5 text-[#C9A962]" strokeWidth={2.5} />
+                  ? <Check className="w-3.5 h-3.5 text-[color:var(--app-gold)]" strokeWidth={2.5} />
                   : <Lock className="w-3 h-3 text-[#555]" strokeWidth={1.5} />
                 }
               </div>
               <div className="flex justify-center">
-                <Check className="w-3.5 h-3.5 text-[#C9A962]" strokeWidth={2.5} />
+                <Check className="w-3.5 h-3.5 text-[color:var(--app-gold)]" strokeWidth={2.5} />
               </div>
             </div>
           ))}

@@ -96,13 +96,13 @@ export default function WorkoutFormModal({
           <div className="flex items-center justify-between p-6 border-b border-[rgba(201,169,98,0.3)]">
             <h2 className="text-xl text-[color:var(--app-text)] font-light">{initialData ? 'Edit Workout' : 'Create Workout'}</h2>
             <button onClick={onClose} className="w-10 h-10 rounded-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] flex items-center justify-center hover:bg-[color:var(--app-bg)] transition-colors">
-              <X className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+              <X className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
             </button>
           </div>
 
           <div className="flex-1 overflow-y-auto scrollbar-hide p-6 space-y-6">
             <div>
-              <label className="block text-sm text-[#C9A962] mb-2">Workout Name</label>
+              <label className="block text-sm text-[color:var(--app-gold)] mb-2">Workout Name</label>
               <input type="text" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g., Pull Day, Upper Body Strength"
                 className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:outline-none focus:border-[#C9A962]" />
@@ -110,13 +110,13 @@ export default function WorkoutFormModal({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm text-[#C9A962] mb-2">Duration (min)</label>
+                <label className="block text-sm text-[color:var(--app-gold)] mb-2">Duration (min)</label>
                 <input type="number" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) || 0 })}
                   min="5" max="180"
                   className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] focus:outline-none focus:border-[#C9A962]" />
               </div>
               <div>
-                <label className="block text-sm text-[#C9A962] mb-2">Difficulty</label>
+                <label className="block text-sm text-[color:var(--app-gold)] mb-2">Difficulty</label>
                 <CustomSelect
                   value={formData.difficulty}
                   onChange={(val) => setFormData({ ...formData, difficulty: val })}
@@ -130,7 +130,7 @@ export default function WorkoutFormModal({
             </div>
 
             <div>
-              <label className="block text-sm text-[#C9A962] mb-2">Muscle Groups</label>
+              <label className="block text-sm text-[color:var(--app-gold)] mb-2">Muscle Groups</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {muscleGroups.map((group) => (
                   <button key={group.id} onClick={() => toggleMuscleGroup(group.id)}
@@ -147,7 +147,7 @@ export default function WorkoutFormModal({
 
             <div className="flex items-center justify-between p-4 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.3)]">
               <div className="flex items-center gap-2">
-                <Star className={`w-5 h-5 ${formData.is_favorite ? 'text-[#C9A962] fill-[#C9A962]' : 'text-[color:var(--app-text-3)]'}`} strokeWidth={1.5} />
+                <Star className={`w-5 h-5 ${formData.is_favorite ? 'text-[color:var(--app-gold)] fill-[#C9A962]' : 'text-[color:var(--app-text-3)]'}`} strokeWidth={1.5} />
                 <span className="text-sm text-[color:var(--app-text)]">Mark as Favorite</span>
               </div>
               <button onClick={() => setFormData({ ...formData, is_favorite: !formData.is_favorite })}
@@ -158,7 +158,7 @@ export default function WorkoutFormModal({
 
             <div>
               <div className="flex items-center justify-between mb-3">
-                <label className="text-sm text-[#C9A962]">Exercises ({formData.exercises.length})</label>
+                <label className="text-sm text-[color:var(--app-gold)]">Exercises ({formData.exercises.length})</label>
                 <button onClick={handleAddExercise}
                   className="flex items-center gap-2 px-4 py-2 bg-[#C9A962] text-[#000000] rounded-xl text-sm hover:bg-[#D4B574] transition-colors">
                   <Plus className="w-4 h-4" strokeWidth={2} />Add Exercise
@@ -170,7 +170,7 @@ export default function WorkoutFormModal({
                   <div key={index} className="bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.3)] overflow-hidden">
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-sm text-[#C9A962]">Exercise {index + 1}</span>
+                        <span className="text-sm text-[color:var(--app-gold)]">Exercise {index + 1}</span>
                         <div className="flex gap-2">
                           <button onClick={() => setExpandedExercise(expandedExercise === index ? null : index)}
                             className="p-1.5 rounded-lg hover:bg-[color:var(--app-bg)] transition-colors">
@@ -222,7 +222,7 @@ export default function WorkoutFormModal({
             </div>
             <div className="flex gap-3 pt-4" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
               <button onClick={onClose} disabled={isLoading}
-                className="flex-1 px-6 py-3 bg-[color:var(--app-bg)] text-[#C9A962] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors disabled:opacity-50">
+                className="flex-1 px-6 py-3 bg-[color:var(--app-bg)] text-[color:var(--app-gold)] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors disabled:opacity-50">
                 Cancel
               </button>
               <button onClick={handleSubmit} disabled={isLoading}

@@ -245,7 +245,7 @@ export default function TodaySchedule({ events }) {
   if (todayEvents.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80px] py-3">
-        <Calendar className="w-8 h-8 opacity-20 mb-2 text-[#C9A962]" strokeWidth={1.3} />
+        <Calendar className="w-8 h-8 opacity-20 mb-2 text-[color:var(--app-gold)]" strokeWidth={1.3} />
         <div className="text-xs text-[color:var(--app-text-2)] font-light">No events scheduled</div>
       </div>
     );
@@ -256,18 +256,18 @@ export default function TodaySchedule({ events }) {
       <div className="max-h-[350px] overflow-y-auto scrollbar-hide space-y-2 pr-0.5">
         {todayEvents.map((event) => (
           <div key={event.id} className="flex items-start gap-2.5">
-            <div className="text-[10px] text-[#C9A962] font-light w-12 pt-0.5 flex-shrink-0">
+            <div className="text-[10px] text-[color:var(--app-gold)] font-light w-12 pt-0.5 flex-shrink-0">
               {formatTime(event.start_time) || 'All day'}
             </div>
             <div className="flex-1 min-w-0 bg-[color:var(--app-bg)] rounded-xl px-2.5 py-2 border-l-2 overflow-hidden" style={{ borderLeftColor: event.color || '#C9A962' }}>
               <div className="flex items-center gap-1.5">
                 <div className="text-sm leading-snug text-[color:var(--app-text)] truncate flex-1" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, letterSpacing: '0.01em' }}>{event.title}</div>
                 {(event.repeat && event.repeat !== 'none') && (
-                  <Repeat className="w-2.5 h-2.5 flex-shrink-0 opacity-50 text-[#C9A962]" strokeWidth={1.5} />
+                  <Repeat className="w-2.5 h-2.5 flex-shrink-0 opacity-50 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                 )}
                 <button
                   onClick={(e) => handleEditEvent(e, event)}
-                  className="p-1 rounded-lg transition-all text-[color:var(--app-text-3)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.12)]"
+                  className="p-1 rounded-lg transition-all text-[color:var(--app-text-3)] hover:text-[color:var(--app-gold)] hover:bg-[rgba(201,169,98,0.12)]"
                 >
                   <Edit2 className="w-3 h-3" strokeWidth={1.5} />
                 </button>
@@ -445,7 +445,7 @@ export default function TodaySchedule({ events }) {
                 onClick={() => setEditingEvent(null)}
                 className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors"
               >
-                <X className="w-5 h-5 text-[#C9A962]" />
+                <X className="w-5 h-5 text-[color:var(--app-gold)]" />
               </button>
               <h2 className="text-xl text-[color:var(--app-text)] font-light mb-6" style={{ fontFamily: 'Georgia, serif' }}>
                 {editingEvent.isRecurringInstance ? 'Edit This Event' : 'Edit Event'}

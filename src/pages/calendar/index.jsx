@@ -37,7 +37,7 @@ const DEFAULT_EVENT = {
   start_time: '09:00',
   end_time: '10:00',
   category: 'personal',
-  color: '#C9A962',
+  color: 'var(--app-gold)',
   notes: '',
   repeat: 'none',
   recurrence_end_date: '',
@@ -618,7 +618,7 @@ export default function CalendarIndex() {
                 <div className="flex items-baseline gap-2.5">
                   <span
                     className="font-bold leading-none"
-                    style={{ fontSize: 54, color: UI.gold, lineHeight: 1 }}
+                    style={{ fontSize: 54, color: 'var(--app-gold)', lineHeight: 1 }}
                   >
                     {format(selectedDate, 'd')}
                   </span>

@@ -32,7 +32,7 @@ export default function HabitTracker({ habits }) {
   if (activeHabits.length === 0) {
     return (
       <div className="text-center py-6">
-        <Flame className="w-8 h-8 opacity-20 mx-auto mb-2 text-[#C9A962]" />
+        <Flame className="w-8 h-8 opacity-20 mx-auto mb-2 text-[color:var(--app-gold)]" />
         <div className="text-[color:var(--app-text-2)] text-sm">No habits yet</div>
       </div>
     );

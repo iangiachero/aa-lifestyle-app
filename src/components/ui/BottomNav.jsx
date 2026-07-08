@@ -16,9 +16,9 @@ export default function BottomNav() {
     gap: 'gap-8',
     
     // Icon colors
-    iconActive: 'text-[#e2ba8b]',
-    iconInactive: 'text-[#e2ba8b]/60',
-    iconHover: 'hover:text-[#e2ba8b]',
+    iconActive: 'text-[color:var(--app-gold-light)]',
+    iconInactive: 'text-[color:var(--app-gold-light)]/60',
+    iconHover: 'hover:text-[color:var(--app-gold-light)]',
     
     // Icon sizes and stroke
     iconSize: 'w-6 h-6',

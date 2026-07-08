@@ -33,7 +33,7 @@ export default function PwaUpdateBanner({ onUpdate }: PwaUpdateBannerProps) {
         <div className="flex items-center gap-2.5 min-w-0">
           <RefreshCw
             className="w-4 h-4 flex-shrink-0"
-            style={{ color: '#C9A962' }}
+            style={{ color: 'var(--app-gold)' }}
             strokeWidth={2}
           />
           <span

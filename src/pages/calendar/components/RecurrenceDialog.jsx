@@ -40,7 +40,7 @@ export default function RecurrenceDialog({ type, onConfirm, onCancel }) {
               className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: `${UI.gold}18` }}
             >
-              <Repeat className="w-5 h-5" style={{ color: UI.gold }} strokeWidth={1.5} />
+              <Repeat className="w-5 h-5" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
             </div>
             <div>
               <h3

@@ -32,7 +32,7 @@ export default function WorkoutViewModal({
       case 'Advanced':
         return 'text-red-400';
       default:
-        return 'text-[#C9A962]';
+        return 'text-[color:var(--app-gold)]';
     }
   };
 
@@ -60,7 +60,7 @@ export default function WorkoutViewModal({
               onClick={onClose}
               className="w-10 h-10 rounded-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] flex items-center justify-center hover:bg-[color:var(--app-bg)] transition-colors"
             >
-              <X className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+              <X className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
             </button>
           </div>
 
@@ -69,17 +69,17 @@ export default function WorkoutViewModal({
               <div className="flex items-start justify-between mb-3">
                 <h3 className="text-2xl text-[color:var(--app-text)] font-light">{workout.name}</h3>
                 {workout.is_favorite && (
-                  <Star className="w-6 h-6 text-[#C9A962] fill-[#C9A962]" strokeWidth={1.5} />
+                  <Star className="w-6 h-6 text-[color:var(--app-gold)] fill-[#C9A962]" strokeWidth={1.5} />
                 )}
               </div>
 
               <div className="flex flex-wrap gap-2 mb-4">
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-[color:var(--app-bg)] rounded-full border border-[rgba(201,169,98,0.3)]">
-                  <Clock className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                  <Clock className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                   <span className="text-sm text-[color:var(--app-text)]">{workout.duration} min</span>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-[color:var(--app-bg)] rounded-full border border-[rgba(201,169,98,0.3)]">
-                  <Dumbbell className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                  <Dumbbell className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                   <span className={`text-sm ${getDifficultyColor(workout.difficulty)}`}>
                     {workout.difficulty}
                   </span>
@@ -91,7 +91,7 @@ export default function WorkoutViewModal({
                   {workout.muscle_groups.map((group, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-[rgba(201,169,98,0.2)] text-[#C9A962] rounded-full text-xs"
+                      className="px-3 py-1 bg-[rgba(201,169,98,0.2)] text-[color:var(--app-gold)] rounded-full text-xs"
                     >
                       {group}
                     </span>
@@ -103,7 +103,7 @@ export default function WorkoutViewModal({
             <div className="h-px w-full bg-[rgba(201,169,98,0.2)]" />
 
             <div>
-              <h4 className="text-sm text-[#C9A962] mb-4 uppercase tracking-wide">
+              <h4 className="text-sm text-[color:var(--app-gold)] mb-4 uppercase tracking-wide">
                 Exercises ({workout.exercises?.length || 0})
               </h4>
               <div className="space-y-4">
@@ -156,7 +156,7 @@ export default function WorkoutViewModal({
               <div className="flex gap-3">
                 <button
                   onClick={onClose}
-                  className="flex-1 px-6 py-3 bg-[color:var(--app-bg)] text-[#C9A962] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors"
+                  className="flex-1 px-6 py-3 bg-[color:var(--app-bg)] text-[color:var(--app-gold)] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors"
                 >
                   Close
                 </button>
@@ -179,14 +179,14 @@ export default function WorkoutViewModal({
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     onClick={() => onEdit(workout)}
-                    className="px-4 py-3 bg-[color:var(--app-bg)] text-[#C9A962] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors flex items-center justify-center gap-2"
+                    className="px-4 py-3 bg-[color:var(--app-bg)] text-[color:var(--app-gold)] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors flex items-center justify-center gap-2"
                   >
                     <Edit2 className="w-4 h-4" strokeWidth={1.5} />
                     <span className="text-sm">Edit</span>
                   </button>
                   <button
                     onClick={() => onDuplicate(workout)}
-                    className="px-4 py-3 bg-[color:var(--app-bg)] text-[#C9A962] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors flex items-center justify-center gap-2"
+                    className="px-4 py-3 bg-[color:var(--app-bg)] text-[color:var(--app-gold)] rounded-xl border border-[rgba(201,169,98,0.3)] hover:bg-[color:var(--app-bg)] transition-colors flex items-center justify-center gap-2"
                   >
                     <Copy className="w-4 h-4" strokeWidth={1.5} />
                     <span className="text-sm">Copy</span>

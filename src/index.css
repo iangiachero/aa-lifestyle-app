@@ -8,6 +8,9 @@
   --app-text: #F5F1E8;
   --app-text-2: #B8B8B8;
   --app-text-3: #6B6B6B;
+  /* Gold accents: same as brand gold in dark; darkened in light for contrast on white */
+  --app-gold: #C9A962;
+  --app-gold-light: #e2ba8b;
   --app-wash-soft: rgba(255, 255, 255, 0.04);
   --app-wash: rgba(255, 255, 255, 0.06);
   --app-wash-2: rgba(255, 255, 255, 0.09);
@@ -21,8 +24,10 @@
 :root.light {
   --app-bg: #FDFCF9;
   --app-text: #2B241A;
-  --app-text-2: #6E6457;
-  --app-text-3: #9A9083;
+  --app-text-2: #5F5648;
+  --app-text-3: #857A6B;
+  --app-gold: #A0813A;
+  --app-gold-light: #A98C4B;
   --app-wash-soft: rgba(43, 36, 26, 0.035);
   --app-wash: rgba(43, 36, 26, 0.055);
   --app-wash-2: rgba(43, 36, 26, 0.09);

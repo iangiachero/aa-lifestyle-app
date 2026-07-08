@@ -12,10 +12,10 @@ import { Textarea } from '../components/ui/textarea';
 import CustomSelect from '../components/ui/CustomSelect';
 
 const GROCERY_BLOCKS = [
-  { id: 'produce',   label: 'Produce',        icon: Apple,        color: '#e2ba8b', image: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/grocery-icon/ChatGPT%20Image%20grocery%20produce.png' },
+  { id: 'produce',   label: 'Produce',        icon: Apple,        color: 'var(--app-gold-light)', image: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/grocery-icon/ChatGPT%20Image%20grocery%20produce.png' },
   { id: 'protein',   label: 'Protein',         icon: Drumstick,    color: '#d4ab77', image: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/grocery-icon/ChatGPT%20Image%20grocery%20protein.png' },
   { id: 'dairy',     label: 'Dairy',           icon: Milk,         color: '#edc9a0', image: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/grocery-icon/ChatGPT%20Image%20grocery%20dairy.png' },
-  { id: 'grains',    label: 'Grains & Bread',  icon: Wheat,        color: '#C9A962', image: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/grocery-icon/ChatGPT%20Image%20grocery%20bread.png' },
+  { id: 'grains',    label: 'Grains & Bread',  icon: Wheat,        color: 'var(--app-gold)', image: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/grocery-icon/ChatGPT%20Image%20grocery%20bread.png' },
   { id: 'frozen',    label: 'Frozen',          icon: Carrot,       color: '#b8a07a', image: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/grocery-icon/ChatGPT%20Image%20grocery%20frozen.png' },
   { id: 'pantry',    label: 'Pantry',          icon: Package,      color: '#d4b574', image: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/grocery-icon/ChatGPT%20Image%20grocery%20pantry.png' },
 ];
@@ -160,18 +160,18 @@ export default function GroceryList() {
 
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Grocery List</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Grocery List</h1>
         </div>
       </div>
 
       <div className="page-safe-x pt-4 space-y-6">
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <ShoppingCart className="w-5 h-5 text-[#e2ba8b]" strokeWidth={1.5} />
-            <h3 className="text-xs text-[#e2ba8b] uppercase tracking-wider font-light">Quick Add</h3>
+            <ShoppingCart className="w-5 h-5 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
+            <h3 className="text-xs text-[color:var(--app-gold-light)] uppercase tracking-wider font-light">Quick Add</h3>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {GROCERY_BLOCKS.map((block) => {
@@ -195,7 +195,7 @@ export default function GroceryList() {
                       <BlockIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: block.color }} strokeWidth={1.5} />
                       <span className="text-xs text-left leading-tight text-[color:var(--app-text)] font-light">{block.label}</span>
                     </div>
-                    <Plus className="w-4 h-4 self-end" style={{ color: '#C9A962' }} strokeWidth={1.5} />
+                    <Plus className="w-4 h-4 self-end" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                   </div>
                 </button>
               );
@@ -220,8 +220,8 @@ export default function GroceryList() {
                     <span className="text-xs text-[color:var(--app-text-2)]">({uncheckedCount})</span>
                   </div>
                   {isCollapsed
-                    ? <ChevronRight className="w-4 h-4 text-[#e2ba8b]" strokeWidth={1.5} />
-                    : <ChevronDown className="w-4 h-4 text-[#e2ba8b]" strokeWidth={1.5} />
+                    ? <ChevronRight className="w-4 h-4 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
+                    : <ChevronDown className="w-4 h-4 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
                   }
                 </button>
 
@@ -264,7 +264,7 @@ export default function GroceryList() {
 
         {checkedCount > 0 && (
           <button onClick={clearChecked}
-            className="w-full py-3 card-luxury text-sm text-[#e2ba8b] hover:bg-[rgba(226,186,139,0.05)] transition-colors font-light">
+            className="w-full py-3 card-luxury text-sm text-[color:var(--app-gold-light)] hover:bg-[rgba(226,186,139,0.05)] transition-colors font-light">
             Clear Checked Items ({checkedCount})
           </button>
         )}
@@ -276,18 +276,18 @@ export default function GroceryList() {
             onClick={e => e.stopPropagation()}>
             <div className="sticky top-0 bg-[color:var(--app-bg)] border-b border-[rgba(201,169,98,0.2)] px-6 py-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl text-[#e2ba8b] font-light">Add Grocery Item</h2>
+                <h2 className="text-xl text-[color:var(--app-gold-light)] font-light">Add Grocery Item</h2>
                 <p className="text-xs text-[color:var(--app-text-2)] mt-1">Add to your shopping list</p>
               </div>
               <button onClick={() => setShowDialog(false)}
                 className="w-8 h-8 rounded-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] flex items-center justify-center">
-                <X className="w-4 h-4 text-[#e2ba8b]" strokeWidth={1.5} />
+                <X className="w-4 h-4 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
               </button>
             </div>
 
             <div className="px-6 py-6 pb-32 space-y-4">
               <div>
-                <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Item Name</label>
+                <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Item Name</label>
                 <Input placeholder="e.g., Organic Spinach"
                   value={newItem.name}
                   onChange={e => setNewItem({ ...newItem, name: e.target.value })}
@@ -295,7 +295,7 @@ export default function GroceryList() {
               </div>
 
               <div>
-                <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Category</label>
+                <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Category</label>
                 <select
                   value={newItem.category}
                   onChange={e => setNewItem({ ...newItem, category: e.target.value })}
@@ -311,7 +311,7 @@ export default function GroceryList() {
               </div>
 
               <div>
-                <label className="text-xs text-[#e2ba8b]/70 font-light uppercase tracking-wider mb-2 block">Notes (Optional)</label>
+                <label className="text-xs text-[color:var(--app-gold-light)]/70 font-light uppercase tracking-wider mb-2 block">Notes (Optional)</label>
                 <Textarea placeholder="Quantity, brand, or other details..."
                   value={newItem.notes}
                   onChange={e => setNewItem({ ...newItem, notes: e.target.value })}

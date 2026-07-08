@@ -59,10 +59,10 @@ export default function Settings() {
     <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Settings</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Settings</h1>
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export default function Settings() {
                 className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: 'rgba(201,169,98,0.12)', border: '1px solid rgba(201,169,98,0.20)' }}
               >
-                <CalendarDays className="w-4 h-4" style={{ color: '#C9A962' }} strokeWidth={1.5} />
+                <CalendarDays className="w-4 h-4" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
               </div>
               <div className="min-w-0">
                 <div className="text-sm font-medium" style={{ color: 'var(--app-text)' }}>
@@ -139,7 +139,7 @@ export default function Settings() {
                       className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                       style={{ backgroundColor: 'rgba(201,169,98,0.12)', border: '1px solid rgba(201,169,98,0.20)' }}
                     >
-                      <Globe className="w-4 h-4" style={{ color: '#C9A962' }} strokeWidth={1.5} />
+                      <Globe className="w-4 h-4" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                     </div>
                     <div className="text-left">
                       <div className="text-sm font-medium" style={{ color: 'var(--app-text)' }}>
@@ -152,7 +152,7 @@ export default function Settings() {
                   </div>
                   <ChevronDown
                     className="w-4 h-4 transition-transform duration-200"
-                    style={{ color: '#C9A962', transform: showRegions ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                    style={{ color: 'var(--app-gold)', transform: showRegions ? 'rotate(180deg)' : 'rotate(0deg)' }}
                     strokeWidth={1.5}
                   />
                 </button>

@@ -143,17 +143,17 @@ export default function Tasks() {
             </div>
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               <span className="text-xs px-2 py-0.5 rounded-full uppercase tracking-wider" style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}>{categoryLabels[task.category] || task.category}</span>
-              {task.priority !== 'medium' && <span className="text-xs px-2 py-0.5 rounded-full uppercase tracking-wider bg-[rgba(201,169,98,0.2)] text-[#C9A962]">{task.priority}</span>}
+              {task.priority !== 'medium' && <span className="text-xs px-2 py-0.5 rounded-full uppercase tracking-wider bg-[rgba(201,169,98,0.2)] text-[color:var(--app-gold)]">{task.priority}</span>}
               {dueDateLabel && !task.completed && <span className={`text-xs ${isOverdue ? 'text-red-400' : 'text-[color:var(--app-text-2)]'}`}>{dueDateLabel}</span>}
               {!task.due_date && !task.completed && (
-                <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(201,169,98,0.12)', color: '#C9A962' }}>Ongoing</span>
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(201,169,98,0.12)', color: 'var(--app-gold)' }}>Ongoing</span>
               )}
             </div>
           </div>
           {!task.completed && (
             <div className="flex gap-1 flex-shrink-0">
               <button onClick={() => { setEditingTask(task); setTaskData({ title: task.title, category: task.category, priority: task.priority, due_date: task.due_date || null, color_tag: task.color_tag || '#C9A962' }); setShowAddTask(true); }}
-                className="p-2 rounded-lg transition-all text-[color:var(--app-text-2)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)]">
+                className="p-2 rounded-lg transition-all text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)] hover:bg-[rgba(201,169,98,0.1)]">
                 <Edit2 className="w-4 h-4" strokeWidth={1.5} />
               </button>
               <button onClick={() => deleteTask(task.id)} className="p-2 text-red-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
@@ -175,10 +175,10 @@ export default function Tasks() {
     <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6 flex items-center">
         <button onClick={() => navigate(-1)} className="absolute left-4 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Tasks</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Tasks</h1>
         </div>
       </div>
 
@@ -186,7 +186,7 @@ export default function Tasks() {
         {showBlockLibrary && (
           <div className="p-4">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm text-[#C9A962] font-light">Quick Add</h3>
+              <h3 className="text-sm text-[color:var(--app-gold)] font-light">Quick Add</h3>
               <button onClick={() => setShowBlockLibrary(false)}><X className="w-4 h-4 text-[color:var(--app-text-2)]" /></button>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -211,7 +211,7 @@ export default function Tasks() {
                         <BlockIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: block.color }} strokeWidth={1.5} />
                         <span className="text-xs text-left leading-tight text-[color:var(--app-text)]">{block.label}</span>
                       </div>
-                      <Plus className="w-4 h-4 self-end" style={{ color: '#C9A962' }} strokeWidth={1.5} />
+                      <Plus className="w-4 h-4 self-end" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                     </div>
                   </button>
                 );
@@ -222,7 +222,7 @@ export default function Tasks() {
 
         {!showBlockLibrary && (
           <button onClick={() => setShowBlockLibrary(true)}
-            className="w-full py-2 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.3)] text-sm text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-colors flex items-center justify-center gap-2">
+            className="w-full py-2 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.3)] text-sm text-[color:var(--app-gold)] hover:bg-[rgba(201,169,98,0.1)] transition-colors flex items-center justify-center gap-2">
             <Plus className="w-4 h-4" /> Show Quick Add
           </button>
         )}
@@ -250,7 +250,7 @@ export default function Tasks() {
 
         {todayTasks.length === 0 && upcomingTasks.length === 0 && noDueDateTasks.length === 0 && (
           <div className="p-12 text-center">
-            <CheckCircle2 className="w-12 h-12 text-[#C9A962]/20 mx-auto mb-3" strokeWidth={1.5} />
+            <CheckCircle2 className="w-12 h-12 text-[color:var(--app-gold)]/20 mx-auto mb-3" strokeWidth={1.5} />
             <div className="text-sm text-[color:var(--app-text-2)] mb-2">No active tasks</div>
             <div className="text-xs text-[color:var(--app-text-3)]">Use Quick Add blocks to create tasks</div>
           </div>
@@ -259,7 +259,7 @@ export default function Tasks() {
         {completedTasks.length > 0 && (
           <div className="pt-2">
             <button onClick={() => setShowCompleted(!showCompleted)}
-              className="flex items-center gap-2 text-sm text-[color:var(--app-text-2)] uppercase tracking-wider mb-3 hover:text-[#C9A962] transition-colors px-1">
+              className="flex items-center gap-2 text-sm text-[color:var(--app-text-2)] uppercase tracking-wider mb-3 hover:text-[color:var(--app-gold)] transition-colors px-1">
               <ChevronDown className={`w-4 h-4 transition-transform ${showCompleted ? 'rotate-180' : ''}`} strokeWidth={1.5} />
               Completed ({completedTasks.length})
             </button>
@@ -281,9 +281,9 @@ export default function Tasks() {
             onClick={(e) => e.stopPropagation()}>
             <div className="p-6">
               <button onClick={() => setShowAddTask(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)]">
-                <X className="w-5 h-5 text-[#C9A962]" />
+                <X className="w-5 h-5 text-[color:var(--app-gold)]" />
               </button>
-              <h2 className="text-xl text-[#C9A962] font-light mb-6">{editingTask ? 'Edit Task' : 'Create Task'}</h2>
+              <h2 className="text-xl text-[color:var(--app-gold)] font-light mb-6">{editingTask ? 'Edit Task' : 'Create Task'}</h2>
               <div className="space-y-4">
                 <div>
                   <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block">Task Name</label>

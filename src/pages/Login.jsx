@@ -73,7 +73,7 @@ export default function Login() {
               className="w-full h-full object-contain"
             />
           </div>
-          <h1 className="text-3xl font-semibold mb-1" style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A962' }}>
+          <h1 className="text-3xl font-semibold mb-1" style={{ fontFamily: "'Cormorant Garamond', serif", color: 'var(--app-gold)' }}>
             {mode === 'login' ? 'Welcome back' : 'Create account'}
           </h1>
           <p className="text-sm" style={{ color: 'rgba(226,186,139,0.5)' }}>
@@ -125,7 +125,7 @@ export default function Login() {
 
         <p className="text-center text-sm" style={{ color: 'rgba(138,126,114,0.7)' }}>
           {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-          <button onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); setFullName(''); }} className="font-medium transition-opacity hover:opacity-70" style={{ color: '#C9A962' }}>
+          <button onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); setFullName(''); }} className="font-medium transition-opacity hover:opacity-70" style={{ color: 'var(--app-gold)' }}>
             {mode === 'login' ? 'Sign up' : 'Sign in'}
           </button>
         </p>

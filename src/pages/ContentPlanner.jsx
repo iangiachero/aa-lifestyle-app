@@ -76,7 +76,7 @@ export default function ContentPlanner() {
   });
 
   const platformIcons = {
-    instagram: { icon: Instagram, color: ui.gold, label: 'Instagram' },
+    instagram: { icon: Instagram, color: 'var(--app-gold)', label: 'Instagram' },
     tiktok: { icon: FileText, color: '#8B7892', label: 'TikTok' },
     youtube: { icon: Youtube, color: '#E89B6C', label: 'YouTube' },
     twitter: { icon: Twitter, color: '#7BA3D4', label: 'Twitter' },
@@ -220,10 +220,10 @@ export default function ContentPlanner() {
       {/* Header */}
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Content Planner</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Content Planner</h1>
         </div>
       </div>
 
@@ -286,7 +286,7 @@ export default function ContentPlanner() {
             <button
               onClick={() => setShowFilterDropdown(!showFilterDropdown)}
               className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors hover:scale-110"
-              style={{ color: ui.gold }}
+              style={{ color: 'var(--app-gold)' }}
             >
               <SlidersHorizontal className="w-4 h-4" strokeWidth={1.5} />
             </button>
@@ -476,10 +476,10 @@ export default function ContentPlanner() {
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = ui.panel}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
-              <X className="w-5 h-5" style={{ color: ui.gold }} />
+              <X className="w-5 h-5" style={{ color: 'var(--app-gold)' }} />
             </button>
 
-            <h2 className="text-xl font-light mb-6" style={{ color: ui.gold }}>
+            <h2 className="text-xl font-light mb-6" style={{ color: 'var(--app-gold)' }}>
               {editingContent ? 'Edit Idea' : 'New Idea'}
             </h2>
 

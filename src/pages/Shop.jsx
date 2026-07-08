@@ -32,7 +32,7 @@ export default function Shop() {
   );
 
   const ui = useMemo(() => ({
-    gold: '#C9A962', bg: 'var(--app-bg)', panel: 'var(--app-bg)', panel2: 'var(--app-bg)',
+    gold: 'var(--app-gold)', bg: 'var(--app-bg)', panel: 'var(--app-bg)', panel2: 'var(--app-bg)',
     text: 'var(--app-text)', muted: 'var(--app-text-2)', muted2: 'var(--app-text-3)',
     border: 'rgba(201,169,98,0.30)', borderSoft: 'rgba(201,169,98,0.18)',
     borderSofter: 'rgba(201,169,98,0.10)', wash: 'rgba(201,169,98,0.06)', wash2: 'rgba(201,169,98,0.10)',
@@ -141,10 +141,10 @@ export default function Shop() {
     <div className="w-full">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Shop</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Shop</h1>
         </div>
       </div>
 
@@ -171,10 +171,10 @@ export default function Shop() {
                   </div>
                   <div className="flex-1 flex flex-col items-start justify-between px-2.5 py-2.5 h-full">
                     <div className="flex items-center gap-1.5">
-                      <BlockIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: ui.gold }} strokeWidth={1.5} />
+                      <BlockIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                       <span className="text-xs text-left leading-tight" style={{ color: ui.text }}>{block.label}</span>
                     </div>
-                    <Plus className="w-4 h-4 self-end" style={{ color: ui.gold }} strokeWidth={1.5} />
+                    <Plus className="w-4 h-4 self-end" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                   </div>
                 </button>
               );
@@ -202,13 +202,13 @@ export default function Shop() {
                   className="w-full px-4 py-3.5 flex items-center justify-between"
                   style={{ borderBottom: `1px solid ${ui.borderSoft}` }}>
                   <div className="flex items-center gap-2.5">
-                    <BlockIcon className="w-5 h-5" style={{ color: ui.gold }} strokeWidth={1.5} />
+                    <BlockIcon className="w-5 h-5" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                     <span className="text-sm font-light" style={{ color: ui.text }}>{block.label}</span>
                     <span className="text-xs" style={{ color: ui.muted }}>({uncheckedCount})</span>
                   </div>
                   {isCollapsed
-                    ? <ChevronRight className="w-4 h-4" style={{ color: ui.gold }} strokeWidth={1.5} />
-                    : <ChevronDown className="w-4 h-4" style={{ color: ui.gold }} strokeWidth={1.5} />
+                    ? <ChevronRight className="w-4 h-4" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
+                    : <ChevronDown className="w-4 h-4" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                   }
                 </button>
 
@@ -236,12 +236,12 @@ export default function Shop() {
                           <div className="flex items-center gap-2 mt-1 flex-wrap">
                             {item.priority === 'high' && !item.checked && (
                               <span className="text-xs px-2 py-0.5 rounded-full uppercase tracking-wider inline-block"
-                                style={{ backgroundColor: ui.wash2, color: ui.gold }}>High</span>
+                                style={{ backgroundColor: ui.wash2, color: 'var(--app-gold)' }}>High</span>
                             )}
                             {item.link && !item.checked && (
                               <a href={item.link} target="_blank" rel="noopener noreferrer"
                                 className="text-xs underline"
-                                style={{ color: ui.gold }}
+                                style={{ color: 'var(--app-gold)' }}
                                 onClick={e => e.stopPropagation()}>
                                 View Link
                               </a>
@@ -273,7 +273,7 @@ export default function Shop() {
         {checkedCount > 0 && (
           <button onClick={clearChecked}
             className="w-full py-3 rounded-full text-sm"
-            style={{ backgroundColor: ui.panel, border: `1px solid ${ui.border}`, color: ui.gold }}>
+            style={{ backgroundColor: ui.panel, border: `1px solid ${ui.border}`, color: 'var(--app-gold)' }}>
             Clear Checked Items ({checkedCount})
           </button>
         )}
@@ -289,9 +289,9 @@ export default function Shop() {
             onClick={e => e.stopPropagation()}>
             <button onClick={() => setShowDialog(false)}
               className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full">
-              <X className="w-5 h-5" style={{ color: ui.gold }} />
+              <X className="w-5 h-5" style={{ color: 'var(--app-gold)' }} />
             </button>
-            <h2 className="text-xl font-light mb-6" style={{ color: ui.gold }}>Add Shop Item</h2>
+            <h2 className="text-xl font-light mb-6" style={{ color: 'var(--app-gold)' }}>Add Shop Item</h2>
 
             <div className="space-y-4 pb-32">
               <div>

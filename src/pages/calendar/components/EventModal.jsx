@@ -77,7 +77,7 @@ export default function EventModal({
             >
               <h2
                 className="text-xl font-light"
-                style={{ color: UI.gold, fontFamily: 'Georgia, serif' }}
+                style={{ color: 'var(--app-gold)', fontFamily: 'Georgia, serif' }}
               >
                 {editingEvent ? 'Edit Event' : 'New Event'}
               </h2>
@@ -85,7 +85,7 @@ export default function EventModal({
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full transition-colors hover:bg-[rgba(201,169,98,0.1)]"
               >
-                <X className="w-5 h-5" style={{ color: UI.gold }} strokeWidth={1.5} />
+                <X className="w-5 h-5" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
               </button>
             </div>
 

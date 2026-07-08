@@ -112,10 +112,10 @@ export default function Fitness() {
     <div className="min-h-full pb-36 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Fitness</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Fitness</h1>
         </div>
       </div>
 
@@ -123,7 +123,7 @@ export default function Fitness() {
         <div className="w-full flex gap-2">
           {[{ id: 'library', label: 'Library' }, { id: 'myworkouts', label: 'My Workouts' }].map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-2.5 px-2 rounded-xl text-xs font-light tracking-wide transition-all ${activeTab === tab.id ? 'bg-[#C9A962] text-[#000000]' : 'text-[#C9A962] border border-[rgba(201,169,98,0.3)]'}`}>
+              className={`flex-1 py-2.5 px-2 rounded-xl text-xs font-light tracking-wide transition-all ${activeTab === tab.id ? 'bg-[#C9A962] text-[#000000]' : 'text-[color:var(--app-gold)] border border-[rgba(201,169,98,0.3)]'}`}>
               {tab.label}
             </button>
           ))}
@@ -132,7 +132,7 @@ export default function Fitness() {
         {activeTab === 'library' && (
           <>
             <div className="bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.3)] p-5">
-              <h2 className="text-sm text-[#C9A962] font-light mb-4 tracking-wide">CURATED WORKOUTS</h2>
+              <h2 className="text-sm text-[color:var(--app-gold)] font-light mb-4 tracking-wide">CURATED WORKOUTS</h2>
               <div className="grid grid-cols-3 gap-3">
                 {MUSCLE_GROUPS.map((group) => (
                   <button key={group.id} onClick={() => setSelectedMuscleGroup(group.id)}
@@ -174,13 +174,13 @@ export default function Fitness() {
         {activeTab === 'myworkouts' && (
           <div className="space-y-4">
             <div className="bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.3)] p-4">
-              <h2 className="text-sm text-[#C9A962] font-light mb-1 tracking-wide">MY CUSTOM WORKOUTS</h2>
+              <h2 className="text-sm text-[color:var(--app-gold)] font-light mb-1 tracking-wide">MY CUSTOM WORKOUTS</h2>
               <p className="text-xs text-[color:var(--app-text-2)]">Create and manage your personal workouts</p>
             </div>
 
             {workouts.length === 0 ? (
               <div className="bg-[color:var(--app-bg)] rounded-2xl border border-[rgba(201,169,98,0.3)] text-center py-16 px-6">
-                <Dumbbell className="w-16 h-16 text-[#C9A962] opacity-20 mx-auto mb-4" strokeWidth={1} />
+                <Dumbbell className="w-16 h-16 text-[color:var(--app-gold)] opacity-20 mx-auto mb-4" strokeWidth={1} />
                 <h3 className="text-lg text-[color:var(--app-text)] font-light mb-2">No workouts yet</h3>
                 <p className="text-sm text-[color:var(--app-text-2)] mb-6 max-w-sm mx-auto">Start building your perfect workout routine with custom exercises</p>
                 <button onClick={handleCreateWorkout} className="px-6 py-3 bg-[#C9A962] text-[#000000] rounded-full text-sm font-light flex items-center gap-2 mx-auto hover:bg-[#D4B574] transition-colors">
@@ -203,10 +203,10 @@ export default function Fitness() {
                       </div>
                       <div className="flex gap-1">
                         <button onClick={() => handleToggleFavorite(workout)} className="p-2 rounded-xl hover:bg-[color:var(--app-bg)] transition-colors">
-                          <Star className={`w-4 h-4 ${workout.is_favorite ? 'text-[#C9A962] fill-[#C9A962]' : 'text-[color:var(--app-text-3)]'}`} strokeWidth={1.5} />
+                          <Star className={`w-4 h-4 ${workout.is_favorite ? 'text-[color:var(--app-gold)] fill-[#C9A962]' : 'text-[color:var(--app-text-3)]'}`} strokeWidth={1.5} />
                         </button>
                         <button onClick={() => handleEditWorkout(workout)} className="p-2 rounded-xl hover:bg-[color:var(--app-bg)] transition-colors">
-                          <Edit2 className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                          <Edit2 className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                         </button>
                         <button onClick={() => { if (window.confirm('Delete this workout?')) handleDeleteWorkout(workout); }} className="p-2 rounded-xl hover:bg-[color:var(--app-bg)] transition-colors">
                           <Trash2 className="w-4 h-4 text-red-400" strokeWidth={1.5} />
@@ -215,7 +215,7 @@ export default function Fitness() {
                     </div>
                     {workout.muscle_groups?.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-3">
-                        {workout.muscle_groups.map((group, i) => <span key={i} className="px-2 py-0.5 bg-[rgba(201,169,98,0.2)] text-[#C9A962] rounded-full text-xs">{group}</span>)}
+                        {workout.muscle_groups.map((group, i) => <span key={i} className="px-2 py-0.5 bg-[rgba(201,169,98,0.2)] text-[color:var(--app-gold)] rounded-full text-xs">{group}</span>)}
                       </div>
                     )}
                     {workout.exercises?.length > 0 && (

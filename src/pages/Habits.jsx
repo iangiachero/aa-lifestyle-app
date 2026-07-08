@@ -26,7 +26,7 @@ export default function Habits() {
       return () => closeModal();
     }
   }, [showModal, openModal, closeModal]);
-  const [form, setForm] = useState({ name: '', icon: '✦', color: '#C9A962' });
+  const [form, setForm] = useState({ name: '', icon: '✦', color: 'var(--app-gold)' });
 
   const { data: habits = [], isLoading } = useQuery({
     queryKey: ['habits', user?.id],
@@ -71,7 +71,7 @@ export default function Habits() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['habits', user?.id] });
       setShowModal(false);
-      setForm({ name: '', icon: '✦', color: '#C9A962' });
+      setForm({ name: '', icon: '✦', color: 'var(--app-gold)' });
     },
   });
 
@@ -97,10 +97,10 @@ export default function Habits() {
           onClick={() => navigate(-1)}
           className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity"
         >
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Habits</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Habits</h1>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ export default function Habits() {
           <div className="mb-5 bg-gradient-to-br from-[rgba(0,0,0,0.9)] to-[rgba(0,0,0,0.7)] border border-[rgba(201,169,98,0.25)] rounded-2xl px-5 py-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-light text-[color:var(--app-text)]">Today's Progress</span>
-              <span className="text-sm text-[#C9A962]">{completedCount}/{habits.length}</span>
+              <span className="text-sm text-[color:var(--app-gold)]">{completedCount}/{habits.length}</span>
             </div>
             <div className="h-1.5 bg-[color:var(--app-wash)] rounded-full overflow-hidden">
               <motion.div
@@ -130,7 +130,7 @@ export default function Habits() {
           </div>
         ) : habits.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <Flame className="w-12 h-12 text-[#C9A962] opacity-20 mb-4" />
+            <Flame className="w-12 h-12 text-[color:var(--app-gold)] opacity-20 mb-4" />
             <p className="text-[color:var(--app-text-3)] text-sm font-light">No habits yet</p>
             <p className="text-[color:var(--app-text-3)] text-xs mt-1">Tap + to build your first streak</p>
           </div>

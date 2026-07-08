@@ -17,7 +17,7 @@ const QUICK_ADD_TYPES = [
   { category: 'work', label: 'Meeting', defaultTitle: 'Meeting', color: '#8B7355' },
   { category: 'work', label: 'Work Block', defaultTitle: 'Work Block', color: '#8B7355' },
   { category: 'health', label: 'Gym', defaultTitle: 'Gym', color: '#A67C52' },
-  { category: 'personal', label: 'Personal', defaultTitle: 'Personal', color: '#C9A962' },
+  { category: 'personal', label: 'Personal', defaultTitle: 'Personal', color: 'var(--app-gold)' },
   { category: 'social', label: 'Social', defaultTitle: 'Social', color: '#B8956A' },
   { category: 'school', label: 'Study Session', defaultTitle: 'Study Session', color: '#D4AF37' },
 ];
@@ -129,12 +129,12 @@ function LeftDrawer({ open, onClose, onQuickAdd, birthdays, onAddBirthday, onDel
                     border: `1px solid rgba(201,169,98,0.35)`,
                   }}
                 >
-                  <span style={{ color: UI.gold, fontSize: 13, fontFamily: 'Georgia, serif', fontWeight: 400 }}>C</span>
+                  <span style={{ color: 'var(--app-gold)', fontSize: 13, fontFamily: 'Georgia, serif', fontWeight: 400 }}>C</span>
                 </div>
                 <div>
                   <p
                     style={{
-                      color: UI.gold,
+                      color: 'var(--app-gold)',
                       fontSize: 17,
                       fontFamily: 'Georgia, "Times New Roman", serif',
                       fontWeight: 300,
@@ -162,7 +162,7 @@ function LeftDrawer({ open, onClose, onQuickAdd, birthdays, onAddBirthday, onDel
               <div className="px-5 pt-5 pb-4">
                 <p
                   className="text-xs uppercase tracking-widest mb-4"
-                  style={{ color: UI.gold, fontWeight: 400, letterSpacing: '0.20em', opacity: 0.85 }}
+                  style={{ color: 'var(--app-gold)', fontWeight: 400, letterSpacing: '0.20em', opacity: 0.85 }}
                 >
                   Quick Add Event
                 </p>
@@ -449,12 +449,12 @@ export default function CalendarHeader({
             onClick={() => navigate(-1)}
             className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity"
           >
-            <ChevronLeft className="w-6 h-6" style={{ color: UI.gold }} strokeWidth={1.5} />
+            <ChevronLeft className="w-6 h-6" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
           </button>
           <h1
             className="text-center"
             style={{
-              color: UI.gold,
+              color: 'var(--app-gold)',
               fontSize: 22,
               fontWeight: 300,
               letterSpacing: '0.18em',

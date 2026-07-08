@@ -145,7 +145,7 @@ export default function Notes() {
               onClick={() => { setSelectedNote(null); setEditingNote(null); }}
               className="w-10 h-10 rounded-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] flex items-center justify-center hover:bg-[rgba(201,169,98,0.1)] transition-colors"
             >
-              <ArrowLeft className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+              <ArrowLeft className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
             </button>
             <div className="flex items-center gap-2">
               <button
@@ -154,7 +154,7 @@ export default function Notes() {
                   selectedNote.pinned ? 'bg-[#C9A962] border-[#C9A962]' : 'bg-[color:var(--app-bg)] border-[rgba(201,169,98,0.3)]'
                 } hover:scale-105`}
               >
-                <Pin className={`w-5 h-5 ${selectedNote.pinned ? 'text-[#000000]' : 'text-[#C9A962]'}`} strokeWidth={1.5} />
+                <Pin className={`w-5 h-5 ${selectedNote.pinned ? 'text-[#000000]' : 'text-[color:var(--app-gold)]'}`} strokeWidth={1.5} />
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(true)}
@@ -165,9 +165,9 @@ export default function Notes() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <h2 className="text-xl text-[#C9A962] font-light">Edit Note</h2>
+            <h2 className="text-xl text-[color:var(--app-gold)] font-light">Edit Note</h2>
             {selectedNote.pinned && (
-              <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(201,169,98,0.2)] text-[#C9A962]">Pinned</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(201,169,98,0.2)] text-[color:var(--app-gold)]">Pinned</span>
             )}
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function Notes() {
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6" onClick={() => setShowDeleteConfirm(false)}>
             <div className="w-full max-w-md bg-[color:var(--app-bg)] rounded-2xl p-6 border-2 border-[rgba(201,169,98,0.3)]" onClick={(e) => e.stopPropagation()}>
-              <h3 className="text-xl text-[#C9A962] font-light mb-2">Delete Note?</h3>
+              <h3 className="text-xl text-[color:var(--app-gold)] font-light mb-2">Delete Note?</h3>
               <p className="text-sm text-[color:var(--app-text-2)] mb-6">Are you sure you want to delete "{selectedNote.title || 'Untitled Note'}"? This cannot be undone.</p>
               <div className="flex gap-3">
                 <button onClick={() => setShowDeleteConfirm(false)} className="flex-1 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors">Cancel</button>
@@ -210,10 +210,10 @@ export default function Notes() {
     <div className="bg-[color:var(--app-bg)] pb-4">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Notes</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Notes</h1>
         </div>
       </div>
 
@@ -227,12 +227,12 @@ export default function Notes() {
               <h3 className="text-base text-[color:var(--app-text)] font-light">Passwords Vault</h3>
               <p className="text-xs text-[color:var(--app-text-2)]">Secure password storage</p>
             </div>
-            <ChevronRight className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+            <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
         </motion.div>
 
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           <input
             placeholder="Search notes..."
             value={searchQuery}
@@ -244,7 +244,7 @@ export default function Notes() {
         <div className="space-y-3">
           {filteredNotes.length === 0 ? (
             <div className="text-center py-16">
-              <Edit3 className="w-12 h-12 mx-auto mb-3 text-[#C9A962]/20" strokeWidth={1.5} />
+              <Edit3 className="w-12 h-12 mx-auto mb-3 text-[color:var(--app-gold)]/20" strokeWidth={1.5} />
               <div className="text-sm text-[color:var(--app-text-2)] mb-5">
                 {searchQuery ? 'No notes found' : 'No notes yet'}
               </div>
@@ -260,7 +260,7 @@ export default function Notes() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="text-base text-[color:var(--app-text)] font-light line-clamp-1">{note.title || 'Untitled Note'}</h3>
-                        {note.pinned && <Pin className="w-4 h-4 flex-shrink-0 ml-2 text-[#C9A962]" strokeWidth={1.5} />}
+                        {note.pinned && <Pin className="w-4 h-4 flex-shrink-0 ml-2 text-[color:var(--app-gold)]" strokeWidth={1.5} />}
                       </div>
                       {note.content && (
                         <p className="text-sm text-[color:var(--app-text-2)] line-clamp-2 mb-2 leading-relaxed">{note.content}</p>
@@ -269,7 +269,7 @@ export default function Notes() {
                         {new Date(note.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 flex-shrink-0 mt-1 text-[#C9A962]" strokeWidth={1.5} />
+                    <ChevronRight className="w-5 h-5 flex-shrink-0 mt-1 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                   </div>
                 </button>
               </motion.div>
@@ -286,13 +286,13 @@ export default function Notes() {
         <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-6" onClick={() => setShowPinModal(false)}>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md bg-[color:var(--app-bg)] rounded-2xl p-6 border-2 border-[rgba(201,169,98,0.3)]" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setShowPinModal(false)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors">
-              <X className="w-5 h-5 text-[#C9A962]" />
+              <X className="w-5 h-5 text-[color:var(--app-gold)]" />
             </button>
             <div className="text-center mb-6">
               <div className="w-16 h-16 rounded-full bg-[color:var(--app-bg)] flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-[#C9A962]" strokeWidth={1.5} />
+                <Shield className="w-8 h-8 text-[color:var(--app-gold)]" strokeWidth={1.5} />
               </div>
-              <h3 className="text-xl text-[#C9A962] font-light mb-2">Create PIN</h3>
+              <h3 className="text-xl text-[color:var(--app-gold)] font-light mb-2">Create PIN</h3>
               <p className="text-sm text-[color:var(--app-text-2)]">Set a 4-6 digit PIN to secure your vault</p>
             </div>
             <div className="space-y-4 pb-32">
@@ -309,9 +309,9 @@ export default function Notes() {
               </button>
               <div className="bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-xl p-3">
                 <div className="flex gap-2">
-                  <Shield className="w-4 h-4 text-[#C9A962] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <Shield className="w-4 h-4 text-[color:var(--app-gold)] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                   <p className="text-xs text-[color:var(--app-text-2)] leading-relaxed">
-                    <span className="text-[#C9A962] font-medium">Security Note:</span> Your PIN is required to access your passwords. If you forget it, you'll need to reset the vault.
+                    <span className="text-[color:var(--app-gold)] font-medium">Security Note:</span> Your PIN is required to access your passwords. If you forget it, you'll need to reset the vault.
                   </p>
                 </div>
               </div>

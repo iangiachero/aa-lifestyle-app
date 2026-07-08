@@ -51,7 +51,7 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
         <div className="mb-8 text-center">
           <h2
             className="text-3xl font-semibold mb-1"
-            style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A962' }}
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: 'var(--app-gold)' }}
           >
             Your schedule
           </h2>
@@ -101,7 +101,7 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
                     {desc}
                   </p>
                 </div>
-                {isSelected && <Check size={16} style={{ color: '#C9A962' }} />}
+                {isSelected && <Check size={16} style={{ color: 'var(--app-gold)' }} />}
               </button>
             );
           })}

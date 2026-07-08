@@ -15,7 +15,7 @@ export default function DatePicker({ value, onChange, placeholder = 'Select date
   };
 
   const ui = {
-    gold: '#C9A962', bg: 'var(--app-bg)', panel: 'var(--app-bg)', text: 'var(--app-text)',
+    gold: 'var(--app-gold)', bg: 'var(--app-bg)', panel: 'var(--app-bg)', text: 'var(--app-text)',
     muted: 'var(--app-text-2)', muted2: 'var(--app-text-3)', border: 'rgba(201,169,98,0.3)',
     borderSoft: 'rgba(201,169,98,0.18)', wash: 'rgba(201,169,98,0.1)',
   };
@@ -60,7 +60,7 @@ export default function DatePicker({ value, onChange, placeholder = 'Select date
         className="w-full px-4 py-3 rounded-xl font-light flex items-center gap-3 transition-colors"
         style={{ backgroundColor: ui.panel, border: `1px solid ${ui.border}`, color: displayValue ? ui.text : ui.muted }}
       >
-        <Calendar className="w-4 h-4" style={{ color: ui.gold }} strokeWidth={1.5} />
+        <Calendar className="w-4 h-4" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
         <span className="flex-1 text-left">{displayValue || placeholder}</span>
       </button>
 
@@ -79,12 +79,12 @@ export default function DatePicker({ value, onChange, placeholder = 'Select date
               <div className="flex items-center justify-between mb-4">
                 <button type="button" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
                   className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-[rgba(201,169,98,0.1)]">
-                  <ChevronLeft className="w-5 h-5" style={{ color: ui.gold }} strokeWidth={1.5} />
+                  <ChevronLeft className="w-5 h-5" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                 </button>
                 <h3 className="text-sm font-light" style={{ color: ui.text }}>{format(currentMonth, 'MMMM yyyy')}</h3>
                 <button type="button" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
                   className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-[rgba(201,169,98,0.1)]">
-                  <ChevronRight className="w-5 h-5" style={{ color: ui.gold }} strokeWidth={1.5} />
+                  <ChevronRight className="w-5 h-5" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
                 </button>
               </div>
 

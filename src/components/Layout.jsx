@@ -315,8 +315,8 @@ export default function Layout({ children, currentPageName }) {
                     <Icon
                       className={`w-6 h-6 transition-colors duration-200 ${
                         isActive
-                          ? 'text-[#C9A962]'
-                          : 'text-[#C9A962]/60 hover:text-[#C9A962]'
+                          ? 'text-[color:var(--app-gold)]'
+                          : 'text-[color:var(--app-gold)]/60 hover:text-[color:var(--app-gold)]'
                       }`}
                       strokeWidth={isActive ? 2.5 : 1.5}
                     />
@@ -324,8 +324,8 @@ export default function Layout({ children, currentPageName }) {
                   <span
                     className={`text-[11px] font-medium transition-colors duration-200 ${
                       isActive
-                        ? 'text-[#C9A962]'
-                        : 'text-[#C9A962]/60'
+                        ? 'text-[color:var(--app-gold)]'
+                        : 'text-[color:var(--app-gold)]/60'
                     }`}
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >

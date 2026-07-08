@@ -38,7 +38,7 @@ export default function SplashScreen() {
       </div>
       <h1
         style={{
-          color: '#C9A962',
+          color: 'var(--app-gold)',
           fontFamily: "'Cormorant Garamond', Georgia, serif",
           fontSize: 22,
           fontWeight: 300,

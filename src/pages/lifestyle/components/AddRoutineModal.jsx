@@ -9,7 +9,7 @@ const MODAL_STYLE = {
   overlay: 'fixed inset-0 bg-black/60 z-50 flex items-end',
   sheet: 'w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90vh] flex flex-col',
   header: 'sticky top-0 bg-[color:var(--app-bg)] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
-  title: 'text-xl text-[#C9A962] font-light',
+  title: 'text-xl text-[color:var(--app-gold)] font-light',
   input: 'w-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl px-4 py-3 text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm',
   label: 'text-xs text-[color:var(--app-text-2)] font-light uppercase tracking-wider mb-2 block',
 };
@@ -157,7 +157,7 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
           >
             <div className={MODAL_STYLE.header}>
               <h2 className={MODAL_STYLE.title}>{isEditing ? 'Edit Routine' : 'Add Routine'}</h2>
-              <button onClick={handleClose} className="text-[#C9A962] hover:text-[#e2ba8b] transition-colors">
+              <button onClick={handleClose} className="text-[color:var(--app-gold)] hover:text-[color:var(--app-gold-light)] transition-colors">
                 <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
               </button>
             </div>
@@ -184,7 +184,7 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
                       onClick={() => setForm(prev => ({ ...prev, cycle: option }))}
                       className={`py-2 px-1 rounded-xl text-xs font-light transition-all border ${
                         form.cycle === option
-                          ? 'bg-[rgba(201,169,98,0.15)] border-[#C9A962] text-[#C9A962]'
+                          ? 'bg-[rgba(201,169,98,0.15)] border-[#C9A962] text-[color:var(--app-gold)]'
                           : 'bg-[color:var(--app-bg)] border-[rgba(201,169,98,0.3)] text-[color:var(--app-text-2)] hover:border-[rgba(201,169,98,0.5)]'
                       }`}
                     >
@@ -232,11 +232,11 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className={`${MODAL_STYLE.label} mb-0`}>
-                    Steps{form.steps.length > 0 && <span className="text-[#C9A962] normal-case ml-1">({form.steps.length})</span>}
+                    Steps{form.steps.length > 0 && <span className="text-[color:var(--app-gold)] normal-case ml-1">({form.steps.length})</span>}
                   </label>
                   <button
                     onClick={addStep}
-                    className="flex items-center gap-1.5 text-xs text-[#C9A962] hover:text-[#e2ba8b] transition-colors bg-[rgba(201,169,98,0.1)] hover:bg-[rgba(201,169,98,0.15)] px-3 py-1.5 rounded-lg border border-[rgba(201,169,98,0.25)]"
+                    className="flex items-center gap-1.5 text-xs text-[color:var(--app-gold)] hover:text-[color:var(--app-gold-light)] transition-colors bg-[rgba(201,169,98,0.1)] hover:bg-[rgba(201,169,98,0.15)] px-3 py-1.5 rounded-lg border border-[rgba(201,169,98,0.25)]"
                   >
                     <Plus className="w-3.5 h-3.5" strokeWidth={2} />
                     Add Step
@@ -260,7 +260,7 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
                             onClick={() => setExpandedStep(isExp ? null : step.id)}
                           >
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-[#C9A962] w-5 h-5 rounded-full border border-[rgba(201,169,98,0.4)] flex items-center justify-center font-light flex-shrink-0">
+                              <span className="text-xs text-[color:var(--app-gold)] w-5 h-5 rounded-full border border-[rgba(201,169,98,0.4)] flex items-center justify-center font-light flex-shrink-0">
                                 {index + 1}
                               </span>
                               <span className={`text-sm font-light ${step.title ? 'text-[color:var(--app-text)]' : 'text-[color:var(--app-text-3)]'}`}>
@@ -275,8 +275,8 @@ export default function AddRoutineModal({ visible, onClose, onSaved, moduleId, e
                                 <X className="w-3.5 h-3.5" strokeWidth={1.5} />
                               </button>
                               {isExp
-                                ? <ChevronUp className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
-                                : <ChevronDown className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                                ? <ChevronUp className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+                                : <ChevronDown className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                               }
                             </div>
                           </div>

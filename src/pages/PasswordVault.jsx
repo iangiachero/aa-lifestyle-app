@@ -19,7 +19,7 @@ const CATEGORIES = [
   { id: 'all', label: 'All' },
   { id: 'work', label: 'Work', icon: Briefcase, color: '#8B7355' },
   { id: 'social', label: 'Social', icon: Users, color: '#A67C52' },
-  { id: 'banking', label: 'Banking', icon: CreditCard, color: '#C9A962' },
+  { id: 'banking', label: 'Banking', icon: CreditCard, color: 'var(--app-gold)' },
   { id: 'shopping', label: 'Shopping', icon: ShoppingBag, color: '#B8956A' },
   { id: 'other', label: 'Other', icon: Globe, color: '#6B8A7A' },
 ];
@@ -27,7 +27,7 @@ const CATEGORIES = [
 const CATEGORY_META = {
   work: { icon: Briefcase, color: '#8B7355' },
   social: { icon: Users, color: '#A67C52' },
-  banking: { icon: CreditCard, color: '#C9A962' },
+  banking: { icon: CreditCard, color: 'var(--app-gold)' },
   shopping: { icon: ShoppingBag, color: '#B8956A' },
   other: { icon: Globe, color: '#6B8A7A' },
 };
@@ -223,7 +223,7 @@ function VaultContent() {
     if (score <= 1) return { score, label: 'Weak', color: '#EF4444' };
     if (score <= 2) return { score, label: 'Fair', color: '#F59E0B' };
     if (score <= 3) return { score, label: 'Good', color: '#10B981' };
-    return { score, label: 'Strong', color: '#C9A962' };
+    return { score, label: 'Strong', color: 'var(--app-gold)' };
   };
 
   const strength = getPasswordStrength(formData.password);
@@ -233,12 +233,12 @@ function VaultContent() {
     <div className="min-h-full pb-32">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6 flex items-center">
         <button onClick={() => navigate(-1)} className="absolute left-4 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
           <div className="flex items-center justify-center gap-2">
-            <Shield className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
-            <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Password Vault</h1>
+            <Shield className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+            <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Password Vault</h1>
           </div>
         </div>
         <button
@@ -246,7 +246,7 @@ function VaultContent() {
           className="absolute right-4 hover:opacity-70 transition-opacity"
           title="Change PIN"
         >
-          <KeyRound className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+          <KeyRound className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
       </div>
 
@@ -270,7 +270,7 @@ function VaultContent() {
               className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium uppercase tracking-wider transition-all ${
                 activeCategory === cat.id
                   ? 'bg-[#C9A962] text-[#000000]'
-                  : 'bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] text-[color:var(--app-text-2)] hover:border-[#C9A962] hover:text-[#C9A962]'
+                  : 'bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] text-[color:var(--app-text-2)] hover:border-[#C9A962] hover:text-[color:var(--app-gold)]'
               }`}
             >
               {cat.label}
@@ -291,7 +291,7 @@ function VaultContent() {
             className="flex flex-col items-center justify-center py-20 text-center"
           >
             <div className="w-20 h-20 rounded-full bg-[rgba(201,169,98,0.08)] border border-[rgba(201,169,98,0.15)] flex items-center justify-center mb-4">
-              <Lock className="w-9 h-9 text-[#C9A962]/40" strokeWidth={1.5} />
+              <Lock className="w-9 h-9 text-[color:var(--app-gold)]/40" strokeWidth={1.5} />
             </div>
             <p className="text-[color:var(--app-text-2)] text-sm mb-1">
               {searchQuery || activeCategory !== 'all' ? 'No passwords found' : 'Your vault is empty'}
@@ -351,7 +351,7 @@ function VaultContent() {
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <button
                           onClick={() => togglePasswordVisible(entry.id, entry.encrypted_password)}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)] hover:bg-[rgba(201,169,98,0.1)] transition-all"
                         >
                           {isVisible
                             ? <EyeOff className="w-4 h-4" strokeWidth={1.5} />
@@ -359,7 +359,7 @@ function VaultContent() {
                         </button>
                         <button
                           onClick={() => handleCopy(entry)}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)] hover:bg-[rgba(201,169,98,0.1)] transition-all"
                         >
                           {isCopied
                             ? <Check className="w-4 h-4 text-emerald-400" strokeWidth={2} />
@@ -367,7 +367,7 @@ function VaultContent() {
                         </button>
                         <button
                           onClick={() => openEdit(entry)}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.1)] transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-lg text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)] hover:bg-[rgba(201,169,98,0.1)] transition-all"
                         >
                           <Pencil className="w-4 h-4" strokeWidth={1.5} />
                         </button>
@@ -417,14 +417,14 @@ function VaultContent() {
             >
               <div className="sticky top-0 bg-[color:var(--app-bg)] pt-4 pb-2 px-6 z-10 border-b border-[rgba(201,169,98,0.1)]">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl text-[#C9A962] font-light">
+                  <h2 className="text-xl text-[color:var(--app-gold)] font-light">
                     {editingEntry ? 'Edit Entry' : 'New Entry'}
                   </h2>
                   <button
                     onClick={closeModal}
                     className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors"
                   >
-                    <X className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+                    <X className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                   </button>
                 </div>
               </div>
@@ -467,7 +467,7 @@ function VaultContent() {
                     <button
                       type="button"
                       onClick={() => setShowFormPassword(!showFormPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--app-text-3)] hover:text-[#C9A962] transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[color:var(--app-text-3)] hover:text-[color:var(--app-gold)] transition-colors"
                     >
                       {showFormPassword
                         ? <EyeOff className="w-4 h-4" strokeWidth={1.5} />
@@ -518,7 +518,7 @@ function VaultContent() {
                           onClick={() => setFormData({ ...formData, category: cat.id })}
                           className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-xs transition-all ${
                             formData.category === cat.id
-                              ? 'border-[#C9A962] bg-[rgba(201,169,98,0.12)] text-[#C9A962]'
+                              ? 'border-[#C9A962] bg-[rgba(201,169,98,0.12)] text-[color:var(--app-gold)]'
                               : 'border-[rgba(201,169,98,0.2)] bg-[color:var(--app-bg)] text-[color:var(--app-text-2)] hover:border-[rgba(201,169,98,0.4)]'
                           }`}
                         >

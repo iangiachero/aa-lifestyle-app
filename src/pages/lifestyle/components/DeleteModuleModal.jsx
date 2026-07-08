@@ -47,7 +47,7 @@ export default function DeleteModuleModal({ visible, moduleName, onConfirm, onCa
               <h3 className="text-[color:var(--app-text)] text-base font-light mb-1.5">Delete Module</h3>
               <p className="text-sm text-[color:var(--app-text-3)] leading-relaxed">
                 Are you sure you want to delete{' '}
-                <span className="text-[#C9A962]">{moduleName}</span>?
+                <span className="text-[color:var(--app-gold)]">{moduleName}</span>?
                 All routines and steps inside will be permanently removed.
               </p>
 

@@ -209,10 +209,10 @@ export default function Lifestyle() {
       <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
         <div className="border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-5 relative">
           <button onClick={handleBack} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-            <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+            <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
           <div className="w-full text-center">
-            <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Lifestyle</h1>
+            <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Lifestyle</h1>
           </div>
         </div>
         <div className="page-safe-x pt-5 pb-28">
@@ -230,10 +230,10 @@ export default function Lifestyle() {
     <div className="min-h-full pb-8 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-5">
         <button onClick={handleBack} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">
             {selectedModule ? selectedModule.name : 'Lifestyle'}
           </h1>
         </div>
@@ -334,7 +334,7 @@ export default function Lifestyle() {
                               <div className="flex items-center gap-1.5 flex-shrink-0">
                                 <button
                                   onClick={() => openEditRoutine(routine)}
-                                  className="w-7 h-7 rounded-lg bg-[rgba(201,169,98,0.08)] border border-[rgba(201,169,98,0.2)] flex items-center justify-center text-[#C9A962] hover:bg-[rgba(201,169,98,0.15)] transition-colors"
+                                  className="w-7 h-7 rounded-lg bg-[rgba(201,169,98,0.08)] border border-[rgba(201,169,98,0.2)] flex items-center justify-center text-[color:var(--app-gold)] hover:bg-[rgba(201,169,98,0.15)] transition-colors"
                                 >
                                   <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} />
                                 </button>
@@ -349,7 +349,7 @@ export default function Lifestyle() {
                           </div>
                           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                             {routine.cycle && (
-                              <span className="text-[10px] text-[#C9A962] bg-[rgba(201,169,98,0.12)] px-2 py-0.5 rounded-full border border-[rgba(201,169,98,0.2)]">
+                              <span className="text-[10px] text-[color:var(--app-gold)] bg-[rgba(201,169,98,0.12)] px-2 py-0.5 rounded-full border border-[rgba(201,169,98,0.2)]">
                                 {routine.cycle}
                               </span>
                             )}
@@ -368,7 +368,7 @@ export default function Lifestyle() {
                           {(routine.steps || []).map((step, stepIdx) => (
                             <div key={step.id} className="flex items-center gap-2.5 group">
                               <div className="flex-shrink-0 w-5 h-5 rounded-full border border-[rgba(201,169,98,0.35)] flex items-center justify-center">
-                                <span className="text-[9px] text-[#C9A962]">{stepIdx + 1}</span>
+                                <span className="text-[9px] text-[color:var(--app-gold)]">{stepIdx + 1}</span>
                               </div>
                               <div className="flex-1 h-px bg-[rgba(201,169,98,0.1)]" />
                               <span className="text-xs text-[color:var(--app-text-2)] font-light flex-shrink-0 max-w-[55%] text-right">{step.title}</span>

@@ -188,17 +188,17 @@ export default function HomeOrganization() {
             onClick={() => navigate(-1)}
             className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity"
           >
-            <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+            <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
           <div className="w-full text-center">
-            <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Home Organization</h1>
+            <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Home Organization</h1>
           </div>
         </div>
 
         <div className="px-4 pt-6 pb-24">
           {activeSections.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
-              <Home className="w-16 h-16 text-[#C9A962] opacity-30 mb-4" strokeWidth={1} />
+              <Home className="w-16 h-16 text-[color:var(--app-gold)] opacity-30 mb-4" strokeWidth={1} />
               <p className="text-[color:var(--app-text-2)] font-light text-base mb-1">Setting up your home organization...</p>
               <p className="text-[color:var(--app-text-3)] text-sm font-light">Your 21 categories are being loaded</p>
             </div>
@@ -244,7 +244,7 @@ export default function HomeOrganization() {
 
                     <div className="flex-1 min-w-0">
                       <h3
-                        className="text-[#C9A962] font-light text-base leading-snug mb-1 truncate"
+                        className="text-[color:var(--app-gold)] font-light text-base leading-snug mb-1 truncate"
                         style={{ fontFamily: 'Cormorant Garamond, serif' }}
                       >
                         {section.title}
@@ -254,7 +254,7 @@ export default function HomeOrganization() {
                       </p>
                     </div>
 
-                    <ChevronRight className="w-5 h-5 text-[#C9A962] opacity-40 flex-shrink-0" />
+                    <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)] opacity-40 flex-shrink-0" />
                   </motion.div>
                 );
               })}

@@ -15,7 +15,7 @@ export default function CustomSelect({
   const containerRef = useRef(null);
   
   const ui = {
-    gold: '#C9A962',
+    gold: 'var(--app-gold)',
     panel: 'var(--app-bg)',
     text: 'var(--app-text)',
     muted: 'var(--app-text-2)',
@@ -60,7 +60,7 @@ export default function CustomSelect({
           transition={{ duration: 0.2 }}
           className="flex-shrink-0"
         >
-          <ChevronDown className="w-4 h-4" style={{ color: ui.gold }} strokeWidth={1.5} />
+          <ChevronDown className="w-4 h-4" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
         </motion.span>
       </button>
       

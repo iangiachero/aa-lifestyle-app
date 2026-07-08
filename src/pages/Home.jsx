@@ -24,7 +24,7 @@ export default function Home() {
     <div className="page-safe-x pt-safe pt-6 pb-24 bg-[color:var(--app-bg)]">
       <div className="flex items-start justify-between mb-5">
         <div className="flex-1 pb-3 border-b-2 border-[rgba(226,186,139,0.25)] mr-4">
-          <h1 className="font-serif text-3xl font-semibold text-[#C9A962] tracking-wide leading-tight">
+          <h1 className="font-serif text-3xl font-semibold text-[color:var(--app-gold)] tracking-wide leading-tight">
             {greeting()}{firstName ? ` ${firstName}` : ''}
           </h1>
         </div>
@@ -33,7 +33,7 @@ export default function Home() {
             {userProfile?.pfp_url ? (
               <img src={userProfile.pfp_url} alt="profile" loading="lazy" decoding="async" className="w-full h-full object-cover" />
             ) : (
-              <User className="w-6 h-6 text-[#e2ba8b]" strokeWidth={1.5} />
+              <User className="w-6 h-6 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
             )}
           </div>
         </Link>

@@ -29,13 +29,13 @@ export default function WelcomeScreen() {
 
         <div className="space-y-2">
           <h1
-            className="text-4xl text-[#C9A962] font-light"
+            className="text-4xl text-[color:var(--app-gold)] font-light"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
             Welcome Back
           </h1>
           <p
-            className="text-2xl text-[#C9A962]/70 font-light"
+            className="text-2xl text-[color:var(--app-gold)]/70 font-light"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
             to All Access Lifestyle
@@ -44,7 +44,7 @@ export default function WelcomeScreen() {
 
         <button
           onClick={() => navigate('/')}
-          className="text-sm text-[#C9A962]/50 mt-6 hover:text-[#C9A962] transition-colors duration-200"
+          className="text-sm text-[color:var(--app-gold)]/50 mt-6 hover:text-[color:var(--app-gold)] transition-colors duration-200"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
           Tap to continue

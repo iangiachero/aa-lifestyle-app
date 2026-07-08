@@ -103,12 +103,12 @@ export default function PinSetup({ onComplete }) {
             onClick={() => { setStep(1); setConfirmPin(''); setError(''); }}
             className="absolute left-4 hover:opacity-70 transition-opacity"
           >
-            <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+            <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
         )}
         <div className="w-full text-center">
           <h1
-            className="text-3xl text-[#C9A962] font-light tracking-wide"
+            className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
             Password Vault
@@ -133,12 +133,12 @@ export default function PinSetup({ onComplete }) {
               className="w-20 h-20 mx-auto mb-5 rounded-full flex items-center justify-center"
               style={{ backgroundColor: 'rgba(201,169,98,0.1)', border: '1px solid rgba(201,169,98,0.2)' }}
             >
-              <Lock className="w-9 h-9" style={{ color: '#C9A962' }} strokeWidth={1.5} />
+              <Lock className="w-9 h-9" style={{ color: 'var(--app-gold)' }} strokeWidth={1.5} />
             </div>
 
             <h2
               className="text-2xl mb-2 font-light"
-              style={{ color: '#C9A962', fontFamily: "'Cormorant Garamond', serif" }}
+              style={{ color: 'var(--app-gold)', fontFamily: "'Cormorant Garamond', serif" }}
             >
               {step === 1 ? 'Create a PIN' : 'Confirm PIN'}
             </h2>

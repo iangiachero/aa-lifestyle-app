@@ -44,7 +44,7 @@ export default function Step1Welcome({ onNext }) {
         </div>
         <h2
           className="text-3xl font-semibold mb-8"
-          style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A962' }}
+          style={{ fontFamily: "'Cormorant Garamond', serif", color: 'var(--app-gold)' }}
         >
           Welcome to All Access Lifestyle
         </h2>
@@ -55,7 +55,7 @@ export default function Step1Welcome({ onNext }) {
                 className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ border: '1.5px solid rgba(201,169,98,0.35)', background: 'rgba(201,169,98,0.07)' }}
               >
-                <Check size={11} style={{ color: '#C9A962' }} />
+                <Check size={11} style={{ color: 'var(--app-gold)' }} />
               </div>
               <span
                 className="text-sm"

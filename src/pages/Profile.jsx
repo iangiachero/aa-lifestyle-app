@@ -197,9 +197,9 @@ export default function Profile() {
     <div className="min-h-full pb-32 bg-[color:var(--app-bg)]">
       <div className="relative border-b-2 border-[rgba(201,169,98,0.2)] page-safe-x py-5 flex items-center">
         <button onClick={() => navigate(-1)} className="hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
-        <h1 className="flex-1 text-center text-3xl text-[#C9A962] font-light tracking-wide"
+        <h1 className="flex-1 text-center text-3xl text-[color:var(--app-gold)] font-light tracking-wide"
           style={{ fontFamily: "'Cormorant Garamond', serif" }}>Profile</h1>
         <div className="w-6" />
       </div>
@@ -220,15 +220,15 @@ export default function Profile() {
                 </>
               ) : (
                 <div className="flex flex-col items-center">
-                  <User className="w-10 h-10 text-[#C9A962] mb-1" strokeWidth={1} />
-                  <span className="text-xs text-[#C9A962]">Add photo</span>
+                  <User className="w-10 h-10 text-[color:var(--app-gold)] mb-1" strokeWidth={1} />
+                  <span className="text-xs text-[color:var(--app-gold)]">Add photo</span>
                 </div>
               )}
             </button>
             {pfpUrl && !uploading && (
               <button onClick={handleRemovePicture}
                 className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-[rgba(0,0,0,0.95)] border border-[rgba(201,169,98,0.3)] flex items-center justify-center hover:border-red-400 hover:text-red-400 transition-all"
-                style={{ color: '#C9A962' }}>
+                style={{ color: 'var(--app-gold)' }}>
                 <X size={12} />
               </button>
             )}
@@ -246,7 +246,7 @@ export default function Profile() {
           {uploadError && <p className="text-xs text-center mt-1" style={{ color: '#C0392B' }}>{uploadError}</p>}
           <button onClick={() => !uploading && fileInputRef.current?.click()} disabled={uploading}
             className="text-sm mt-1 transition-opacity hover:opacity-70"
-            style={{ color: '#C9A962', fontFamily: "'Cormorant Garamond', serif", opacity: uploading ? 0.4 : 1 }}>
+            style={{ color: 'var(--app-gold)', fontFamily: "'Cormorant Garamond', serif", opacity: uploading ? 0.4 : 1 }}>
             {pfpUrl ? 'Change photo' : ''}
           </button>
           <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/jpg,image/webp" onChange={handleFileChange} className="hidden" />
@@ -313,7 +313,7 @@ export default function Profile() {
                   }}>
                   <Icon size={15} />
                   <span>{label}</span>
-                  {formData.focus === key && <Check size={13} className="ml-auto" style={{ color: '#C9A962' }} />}
+                  {formData.focus === key && <Check size={13} className="ml-auto" style={{ color: 'var(--app-gold)' }} />}
                 </button>
               ))}
             </div>
@@ -332,7 +332,7 @@ export default function Profile() {
                   <Icon size={15} />
                   <span>{label}</span>
                   <span className="text-xs ml-1 opacity-60">{desc}</span>
-                  {formData.schedule_type === key && <Check size={13} className="ml-auto" style={{ color: '#C9A962' }} />}
+                  {formData.schedule_type === key && <Check size={13} className="ml-auto" style={{ color: 'var(--app-gold)' }} />}
                 </button>
               ))}
             </div>
@@ -359,9 +359,9 @@ export default function Profile() {
           <div className="w-full flex items-center justify-between px-5 py-4">
             <div className="flex items-center gap-2.5">
               {theme === 'light'
-                ? <Sun className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
-                : <Moon className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />}
-              <span className="text-base text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Appearance</span>
+                ? <Sun className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+                : <Moon className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />}
+              <span className="text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Appearance</span>
             </div>
             <div className="flex rounded-full p-0.5" style={{ border: '1px solid rgba(201,169,98,0.3)', backgroundColor: 'var(--app-wash-soft)' }}>
               <button
@@ -391,17 +391,17 @@ export default function Profile() {
           <button onClick={() => navigate('/subscription')}
             className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-70"
             style={{ borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
-            <span className="text-base text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Manage Subscription</span>
-            <ChevronRight className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+            <span className="text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Manage Subscription</span>
+            <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
           <button onClick={() => navigate('/pwa-tutorial')}
             className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-70"
             style={{ borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
             <div className="flex items-center gap-2.5">
-              <Download className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
-              <span className="text-base text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>How to Install App</span>
+              <Download className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+              <span className="text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>How to Install App</span>
             </div>
-            <ChevronRight className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+            <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
           <button
             onClick={handleCheckUpdates}
@@ -410,11 +410,11 @@ export default function Profile() {
             style={{ borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
             <div className="flex items-center gap-2.5">
               <RefreshCw
-                className={`w-4 h-4 text-[#C9A962] ${updateStatus && updateStatus !== 'updating' ? 'animate-spin' : ''}`}
+                className={`w-4 h-4 text-[color:var(--app-gold)] ${updateStatus && updateStatus !== 'updating' ? 'animate-spin' : ''}`}
                 strokeWidth={1.5}
               />
               <div className="text-left">
-                <span className="block text-base text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+                <span className="block text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                   {updateStatus === 'checking' ? 'Checking...' : updateStatus === 'clearing' ? 'Clearing cache...' : updateStatus === 'updating' ? 'Reloading...' : 'Check for Updates'}
                 </span>
                 <span className="block text-xs" style={{ color: 'var(--app-wash-3)' }}>
@@ -422,13 +422,13 @@ export default function Profile() {
                 </span>
               </div>
             </div>
-            {!updateStatus && <ChevronRight className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />}
-            {updateStatus === 'updating' && <Check className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />}
+            {!updateStatus && <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />}
+            {updateStatus === 'updating' && <Check className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />}
           </button>
           <button onClick={handleSignOut}
             className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-70">
-            <span className="text-base text-[#C9A962]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Sign out</span>
-            <LogOut className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+            <span className="text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Sign out</span>
+            <LogOut className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
         </div>
       </div>

@@ -12,11 +12,11 @@ const STYLE = {
   overlay: 'fixed inset-0 bg-black/60 z-[100] flex items-end',
   sheet: 'w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90vh] flex flex-col',
   header: 'sticky top-0 bg-[color:var(--app-bg)] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
-  title: 'text-xl text-[#C9A962] font-light',
+  title: 'text-xl text-[color:var(--app-gold)] font-light',
   subtitle: 'text-xs text-[color:var(--app-text-2)] mt-0.5',
   label: 'text-xs text-[color:var(--app-text-2)] font-light uppercase tracking-wider mb-2 block',
   input: 'w-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl px-4 py-3 text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm',
-  chipActive: 'bg-[rgba(201,169,98,0.15)] border-[#C9A962] text-[#C9A962]',
+  chipActive: 'bg-[rgba(201,169,98,0.15)] border-[#C9A962] text-[color:var(--app-gold)]',
   chipInactive: 'bg-[color:var(--app-bg)] border-[rgba(201,169,98,0.3)] text-[color:var(--app-text-2)] hover:border-[rgba(201,169,98,0.5)]',
 };
 /* === END STYLING CONFIGURATION === */
@@ -201,7 +201,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                 <h2 className={STYLE.title}>Create Task</h2>
                 <p className={STYLE.subtitle}>Add a new home organization task</p>
               </div>
-              <button onClick={handleClose} className="text-[#C9A962] hover:text-[#e2ba8b] transition-colors">
+              <button onClick={handleClose} className="text-[color:var(--app-gold)] hover:text-[color:var(--app-gold-light)] transition-colors">
                 <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
               </button>
             </div>
@@ -257,7 +257,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                         className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.4)] rounded-full flex items-center justify-center hover:bg-[rgba(201,169,98,0.15)] transition-colors z-10"
                         title="Clear icon"
                       >
-                        <X className="w-2.5 h-2.5 text-[#C9A962]" strokeWidth={2} />
+                        <X className="w-2.5 h-2.5 text-[color:var(--app-gold)]" strokeWidth={2} />
                       </button>
                     )}
 
@@ -394,12 +394,12 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                   <label className={`${STYLE.label} mb-0`}>
                     Sub-Tasks{' '}
                     {form.tasks.length > 0 && (
-                      <span className="text-[#C9A962] normal-case">({form.tasks.length})</span>
+                      <span className="text-[color:var(--app-gold)] normal-case">({form.tasks.length})</span>
                     )}
                   </label>
                   <button
                     onClick={addTask}
-                    className="flex items-center gap-1.5 text-xs text-[#C9A962] hover:text-[#e2ba8b] transition-colors bg-[rgba(201,169,98,0.1)] hover:bg-[rgba(201,169,98,0.15)] px-3 py-1.5 rounded-lg border border-[rgba(201,169,98,0.25)]"
+                    className="flex items-center gap-1.5 text-xs text-[color:var(--app-gold)] hover:text-[color:var(--app-gold-light)] transition-colors bg-[rgba(201,169,98,0.1)] hover:bg-[rgba(201,169,98,0.15)] px-3 py-1.5 rounded-lg border border-[rgba(201,169,98,0.25)]"
                   >
                     <Plus className="w-3.5 h-3.5" strokeWidth={2} />
                     Add Task
@@ -423,7 +423,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                             onClick={() => setExpandedTask(isExp ? null : task.id)}
                           >
                             <div className="flex items-center gap-2 flex-1 min-w-0">
-                              <span className="text-xs text-[#C9A962] w-5 h-5 rounded-full border border-[rgba(201,169,98,0.4)] flex items-center justify-center font-light flex-shrink-0">
+                              <span className="text-xs text-[color:var(--app-gold)] w-5 h-5 rounded-full border border-[rgba(201,169,98,0.4)] flex items-center justify-center font-light flex-shrink-0">
                                 {index + 1}
                               </span>
                               <span className={`text-sm font-light truncate ${task.name ? 'text-[color:var(--app-text)]' : 'text-[color:var(--app-text-3)]'}`}>
@@ -438,8 +438,8 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                                 <X className="w-3.5 h-3.5" strokeWidth={1.5} />
                               </button>
                               {isExp
-                                ? <ChevronUp className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
-                                : <ChevronDown className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                                ? <ChevronUp className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+                                : <ChevronDown className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                               }
                             </div>
                           </div>

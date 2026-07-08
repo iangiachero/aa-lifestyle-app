@@ -107,7 +107,7 @@ export default function TodayTasks({ tasks }) {
   if (sortedTasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80px] py-3">
-        <Target className="w-8 h-8 opacity-20 mb-2 text-[#C9A962]" strokeWidth={1.3} />
+        <Target className="w-8 h-8 opacity-20 mb-2 text-[color:var(--app-gold)]" strokeWidth={1.3} />
         <div className="text-xs text-[color:var(--app-text-2)] font-light">No priorities</div>
       </div>
     );
@@ -126,9 +126,9 @@ export default function TodayTasks({ tasks }) {
               className="flex-shrink-0 transition-transform hover:scale-110 active:scale-95 p-0.5"
             >
               {task.completed ? (
-                <CheckCircle2 className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                <CheckCircle2 className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
               ) : (
-                <Circle className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+                <Circle className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
               )}
             </button>
 
@@ -141,7 +141,7 @@ export default function TodayTasks({ tasks }) {
                 {task.title}
               </span>
               {!task.due_date && !task.completed && (
-                <span className="flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(201,169,98,0.12)', color: '#C9A962' }}>Ongoing</span>
+                <span className="flex-shrink-0 text-[10px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(201,169,98,0.12)', color: 'var(--app-gold)' }}>Ongoing</span>
               )}
             </div>
 
@@ -152,7 +152,7 @@ export default function TodayTasks({ tasks }) {
               />
               <button
                 onClick={(e) => handleEditTask(e, task)}
-                className="p-1.5 rounded-lg transition-all text-[color:var(--app-text-3)] hover:text-[#C9A962] hover:bg-[rgba(201,169,98,0.12)]"
+                className="p-1.5 rounded-lg transition-all text-[color:var(--app-text-3)] hover:text-[color:var(--app-gold)] hover:bg-[rgba(201,169,98,0.12)]"
               >
                 <Edit2 className="w-3.5 h-3.5" strokeWidth={1.5} />
               </button>
@@ -256,7 +256,7 @@ export default function TodayTasks({ tasks }) {
                       onClick={() => setEditingTask(null)}
                       className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors"
                     >
-                      <X className="w-5 h-5 text-[#C9A962]" />
+                      <X className="w-5 h-5 text-[color:var(--app-gold)]" />
                     </button>
                     <h2 className="text-xl text-[color:var(--app-text)] font-light mb-6">Edit Task</h2>
                     <div className="space-y-4">

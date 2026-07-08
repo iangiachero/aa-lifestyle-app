@@ -14,7 +14,7 @@ function HolidayRow({ event }) {
     >
       <div
         className="text-xs flex-shrink-0 tracking-wide"
-        style={{ color: UI.gold, minWidth: 44, fontWeight: 300, fontSize: 20 }}
+        style={{ color: 'var(--app-gold)', minWidth: 44, fontWeight: 300, fontSize: 20 }}
       >
         {event.holidayEmoji}
       </div>
@@ -23,7 +23,7 @@ function HolidayRow({ event }) {
         style={{ backgroundColor: UI.gold, minHeight: 28 }}
       />
       <div className="flex-1 min-w-0 overflow-hidden">
-        <div className="text-sm font-medium truncate" style={{ color: UI.gold }}>
+        <div className="text-sm font-medium truncate" style={{ color: 'var(--app-gold)' }}>
           {event.holidayName}
         </div>
         <div className="text-xs mt-0.5" style={{ color: UI.muted2, fontWeight: 300 }}>

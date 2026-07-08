@@ -111,10 +111,10 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
       >
         <div className="px-6 pt-6 pb-10">
           <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[rgba(201,169,98,0.1)] transition-colors">
-            <X className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+            <X className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
 
-          <h2 className="text-xl text-[#C9A962] font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <h2 className="text-xl text-[color:var(--app-gold)] font-light mb-1" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             Change PIN
           </h2>
           <p className="text-xs text-[color:var(--app-text-3)] mb-5">

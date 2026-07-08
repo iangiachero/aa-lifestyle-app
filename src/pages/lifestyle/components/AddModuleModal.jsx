@@ -9,7 +9,7 @@ const MODAL_STYLE = {
   overlay: 'fixed inset-0 bg-black/60 z-50 flex items-end',
   sheet: 'w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90vh] flex flex-col',
   header: 'sticky top-0 bg-[color:var(--app-bg)] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
-  title: 'text-xl text-[#C9A962] font-light',
+  title: 'text-xl text-[color:var(--app-gold)] font-light',
   input: 'w-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl px-4 py-3 text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm',
   label: 'text-xs text-[color:var(--app-text-2)] font-light uppercase tracking-wider mb-2 block',
 };
@@ -130,7 +130,7 @@ export default function AddModuleModal({ visible, onClose, onAdd }) {
           >
             <div className={MODAL_STYLE.header}>
               <h2 className={MODAL_STYLE.title}>New Module</h2>
-              <button onClick={handleClose} className="text-[#C9A962] hover:text-[#e2ba8b] transition-colors">
+              <button onClick={handleClose} className="text-[color:var(--app-gold)] hover:text-[color:var(--app-gold-light)] transition-colors">
                 <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
               </button>
             </div>
@@ -176,7 +176,7 @@ export default function AddModuleModal({ visible, onClose, onAdd }) {
                     onClick={() => fileInputRef.current?.click()}
                     className="w-full aspect-video rounded-xl border-2 border-dashed border-[rgba(201,169,98,0.3)] flex flex-col items-center justify-center gap-2 hover:border-[rgba(201,169,98,0.5)] hover:bg-[rgba(201,169,98,0.04)] transition-all"
                   >
-                    <ImagePlus className="w-7 h-7 text-[#C9A962] opacity-60" strokeWidth={1.5} />
+                    <ImagePlus className="w-7 h-7 text-[color:var(--app-gold)] opacity-60" strokeWidth={1.5} />
                     <span className="text-xs text-[color:var(--app-text-3)]">Tap to upload image</span>
                     <span className="text-[10px] text-[color:var(--app-text-3)]">Optional — a pattern will be used if none</span>
                   </button>

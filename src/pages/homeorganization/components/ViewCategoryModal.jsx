@@ -35,10 +35,10 @@ function QuickAddModal({ sectionId, onClose, onAdd }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-lg text-[#e2ba8b] font-light tracking-wide">Add Task</h3>
+          <h3 className="text-lg text-[color:var(--app-gold-light)] font-light tracking-wide">Add Task</h3>
           <button
             onClick={onClose}
-            className="text-[color:var(--app-text-3)] hover:text-[#C9A962] transition-colors"
+            className="text-[color:var(--app-text-3)] hover:text-[color:var(--app-gold)] transition-colors"
           >
             <X className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -144,7 +144,7 @@ export default function ViewCategoryModal({
 
                   <div className="flex-1 min-w-0">
                     <h2
-                      className="text-xl text-[#C9A962] font-light tracking-wide leading-snug truncate"
+                      className="text-xl text-[color:var(--app-gold)] font-light tracking-wide leading-snug truncate"
                       style={{ fontFamily: 'Cormorant Garamond, serif' }}
                     >
                       {section.title}
@@ -157,7 +157,7 @@ export default function ViewCategoryModal({
 
                 <button
                   onClick={onClose}
-                  className="text-[#C9A962] hover:text-[#e2ba8b] transition-colors flex-shrink-0 ml-2"
+                  className="text-[color:var(--app-gold)] hover:text-[color:var(--app-gold-light)] transition-colors flex-shrink-0 ml-2"
                 >
                   <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
                 </button>
@@ -251,8 +251,8 @@ export default function ViewCategoryModal({
                 className="w-full flex items-center justify-center gap-2 px-4 py-4 rounded-xl border border-[rgba(201,169,98,0.25)] hover:border-[rgba(201,169,98,0.45)] transition-all"
                 style={{ backgroundColor: 'rgba(201,169,98,0.06)' }}
               >
-                <Plus className="w-5 h-5 text-[#C9A962]" strokeWidth={2} />
-                <span className="text-sm font-light text-[#C9A962]">Add Task</span>
+                <Plus className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={2} />
+                <span className="text-sm font-light text-[color:var(--app-gold)]">Add Task</span>
               </motion.button>
             </div>
           </motion.div>

@@ -109,7 +109,7 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
       <div className="border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <div className="w-full text-center">
           <h1
-            className="text-3xl text-[#C9A962] font-light tracking-wide"
+            className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
             Password Vault
@@ -142,7 +142,7 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
 
             <h2
               className="text-2xl mb-2 font-light"
-              style={{ color: '#C9A962', fontFamily: "'Cormorant Garamond', serif" }}
+              style={{ color: 'var(--app-gold)', fontFamily: "'Cormorant Garamond', serif" }}
             >
               Enter PIN
             </h2>

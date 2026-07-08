@@ -261,22 +261,22 @@ export default function Student() {
   }
 
   const academicBlocks = [
-    { id: 'class', label: 'Class', icon: <BookOpen className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
-    { id: 'assignment', label: 'Assignment', icon: <ClipboardList className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
-    { id: 'exam', label: 'Exam', icon: <FileText className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
-    { id: 'study', label: 'Session', icon: <Clock className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
-    { id: 'project', label: 'Project', icon: <Layers className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
-    { id: 'custom', label: 'Custom', icon: <SlidersHorizontal className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} /> },
+    { id: 'class', label: 'Class', icon: <BookOpen className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} /> },
+    { id: 'assignment', label: 'Assignment', icon: <ClipboardList className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} /> },
+    { id: 'exam', label: 'Exam', icon: <FileText className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} /> },
+    { id: 'study', label: 'Session', icon: <Clock className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} /> },
+    { id: 'project', label: 'Project', icon: <Layers className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} /> },
+    { id: 'custom', label: 'Custom', icon: <SlidersHorizontal className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} /> },
   ];
 
   return (
     <div className="min-h-full bg-[color:var(--app-bg)]" style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}>
       <div className="relative border-b-2 border-[rgba(201,169,98,0.25)] page-safe-x py-6">
         <button onClick={() => navigate(-1)} className="absolute left-4 top-1/2 -translate-y-1/2 hover:opacity-70 transition-opacity">
-          <ChevronLeft className="w-6 h-6 text-[#C9A962]" strokeWidth={1.5} />
+          <ChevronLeft className="w-6 h-6 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         </button>
         <div className="w-full text-center">
-          <h1 className="text-3xl text-[#C9A962] font-light tracking-wide">Student</h1>
+          <h1 className="text-3xl text-[color:var(--app-gold)] font-light tracking-wide">Student</h1>
         </div>
       </div>
 
@@ -293,7 +293,7 @@ export default function Student() {
         {/* Academic Blocks — horizontal scroll */}
         <div>
           <div className="page-safe-x mb-3">
-            <p className="text-[10px] text-[#C9A962] font-light tracking-widest uppercase">Academic Blocks</p>
+            <p className="text-[10px] text-[color:var(--app-gold)] font-light tracking-widest uppercase">Academic Blocks</p>
           </div>
           <div className="flex gap-2.5 overflow-x-auto scrollbar-hide px-4 pb-1">
             {academicBlocks.map(block => (
@@ -307,7 +307,7 @@ export default function Student() {
                 </div>
                 <span className="text-[11px] text-[color:var(--app-text)] font-light text-center leading-tight">{block.label}</span>
                 <div className="w-5 h-5 rounded-full bg-[rgba(201,169,98,0.12)] flex items-center justify-center">
-                  <Plus className="w-3 h-3 text-[#C9A962]" strokeWidth={2.5} />
+                  <Plus className="w-3 h-3 text-[color:var(--app-gold)]" strokeWidth={2.5} />
                 </div>
               </button>
             ))}
@@ -317,7 +317,7 @@ export default function Student() {
         {/* Classes — horizontal scroll cards */}
         <div>
           <div className="page-safe-x mb-3">
-            <p className="text-[10px] text-[#C9A962] font-light tracking-widest uppercase">Classes</p>
+            <p className="text-[10px] text-[color:var(--app-gold)] font-light tracking-widest uppercase">Classes</p>
           </div>
           {loadingClasses ? (
             <div className="page-safe-x"><p className="text-xs text-[color:var(--app-text-3)]">Loading...</p></div>
@@ -336,7 +336,7 @@ export default function Student() {
                       <p className="text-sm text-[color:var(--app-text)] font-medium leading-snug">{cls.class_name}</p>
                     </div>
                     {cls.is_online ? (
-                      <span className="inline-block text-[10px] px-1.5 py-0.5 rounded-full bg-[rgba(201,169,98,0.15)] text-[#C9A962] border border-[rgba(201,169,98,0.3)]">Online</span>
+                      <span className="inline-block text-[10px] px-1.5 py-0.5 rounded-full bg-[rgba(201,169,98,0.15)] text-[color:var(--app-gold)] border border-[rgba(201,169,98,0.3)]">Online</span>
                     ) : (cls.meeting_days?.length > 0 || cls.meeting_start_time) ? (
                       <p className="text-[11px] text-[color:var(--app-text-3)] leading-tight">
                         {cls.meeting_days?.join(' ')}
@@ -345,7 +345,7 @@ export default function Student() {
                     ) : null}
                     <div className="flex gap-1.5 mt-3">
                       <button onClick={() => openEditClass(cls)} className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-[rgba(201,169,98,0.08)] hover:bg-[rgba(201,169,98,0.15)] transition-colors">
-                        <Pencil className="w-3 h-3 text-[#C9A962]" strokeWidth={1.5} />
+                        <Pencil className="w-3 h-3 text-[color:var(--app-gold)]" strokeWidth={1.5} />
                       </button>
                       <button onClick={() => deleteClass(cls.id)} className="flex-1 flex items-center justify-center py-1.5 rounded-lg bg-[rgba(255,60,60,0.06)] hover:bg-[rgba(255,60,60,0.15)] transition-colors">
                         <Trash2 className="w-3 h-3 text-red-400" strokeWidth={1.5} />
@@ -361,7 +361,7 @@ export default function Student() {
         {/* Assignments — full-width rows */}
         <div className="page-safe-x">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-[10px] text-[#C9A962] font-light tracking-widest uppercase">Upcoming Assignments</p>
+            <p className="text-[10px] text-[color:var(--app-gold)] font-light tracking-widest uppercase">Upcoming Assignments</p>
             {completedAssignments.length > 0 && (
               <button
                 onClick={() => setShowCompleted(v => !v)}
@@ -408,7 +408,7 @@ export default function Student() {
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl text-[#C9A962] font-light">
+              <h2 className="text-xl text-[color:var(--app-gold)] font-light">
                 {activeModal === 'class' && (editingItem ? 'Edit Class' : 'Add Class')}
                 {activeModal === 'assignment' && 'Add Assignment'}
                 {activeModal === 'exam' && 'Add Exam'}
@@ -417,7 +417,7 @@ export default function Student() {
                 {activeModal === 'custom' && 'Add Custom Block'}
               </h2>
               <button onClick={closeModal} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors">
-                <X className="w-5 h-5 text-[#C9A962]" strokeWidth={1.5} />
+                <X className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
               </button>
             </div>
 
@@ -438,7 +438,7 @@ export default function Student() {
                           }))}
                           className={`py-2.5 px-2 rounded-xl text-xs border transition-colors ${
                             classForm.category === cat
-                              ? 'bg-[rgba(201,169,98,0.2)] border-[#C9A962] text-[#C9A962]'
+                              ? 'bg-[rgba(201,169,98,0.2)] border-[#C9A962] text-[color:var(--app-gold)]'
                               : 'bg-[color:var(--app-bg)] border-[rgba(201,169,98,0.3)] text-[color:var(--app-text)] hover:border-[#C9A962]'
                           }`}
                         >{cat}</button>
@@ -494,7 +494,7 @@ export default function Student() {
                         </svg>
                       )}
                     </div>
-                    <span className={`text-sm ${classForm.is_online ? 'text-[#C9A962]' : 'text-[color:var(--app-text-2)]'}`}>
+                    <span className={`text-sm ${classForm.is_online ? 'text-[color:var(--app-gold)]' : 'text-[color:var(--app-text-2)]'}`}>
                       Online class
                     </span>
                   </button>
@@ -737,8 +737,8 @@ function Collapsible({ label, expanded, onToggle, children }) {
       <button onClick={onToggle} className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-[rgba(201,169,98,0.05)] transition-colors">
         <span className="text-xs text-[color:var(--app-text-2)] uppercase">{label}</span>
         {expanded
-          ? <ChevronUp className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
-          : <ChevronDown className="w-4 h-4 text-[#C9A962]" strokeWidth={1.5} />
+          ? <ChevronUp className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+          : <ChevronDown className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
         }
       </button>
       {expanded && children}

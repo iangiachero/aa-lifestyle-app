@@ -220,7 +220,7 @@ export default function DayView({ selectedDate, events, tasks, birthdays, onEdit
                 }}
               >
                 <div className="px-4 py-2">
-                  <div className="text-xs font-medium" style={{ color: UI.gold }}>
+                  <div className="text-xs font-medium" style={{ color: 'var(--app-gold)' }}>
                     {formatTime(dropTarget.newStart)} – {formatTime(dropTarget.newEnd)}
                   </div>
                 </div>
@@ -231,7 +231,7 @@ export default function DayView({ selectedDate, events, tasks, birthdays, onEdit
           {dayEvents.length === 0 && dayTasks.length === 0 && dayBirthdays.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="text-center">
-                <Calendar className="w-10 h-10 mx-auto mb-2 opacity-20" style={{ color: UI.gold }} />
+                <Calendar className="w-10 h-10 mx-auto mb-2 opacity-20" style={{ color: 'var(--app-gold)' }} />
                 <p className="text-xs" style={{ color: UI.muted2 }}>No events scheduled</p>
               </div>
             </div>

@@ -8,7 +8,7 @@ export default function QuickStats({ tasks, habits, events }) {
   const activeStreak = habits?.reduce((max, h) => Math.max(max, h.current_streak || 0), 0) || 0;
 
   const stats = [
-    { label: 'Tasks', value: todayTasks, icon: CheckCircle2, color: '#C9A962' },
+    { label: 'Tasks', value: todayTasks, icon: CheckCircle2, color: 'var(--app-gold)' },
     { label: 'Done', value: completedToday, icon: Target, color: '#6BBF8A' },
     { label: 'Events', value: todayEvents, icon: Calendar, color: '#7BA3D4' },
     { label: 'Streak', value: activeStreak, icon: Flame, color: '#E89B6C' },
