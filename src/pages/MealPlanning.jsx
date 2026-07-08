@@ -623,7 +623,7 @@ export default function MealPlanning() {
                     {RECIPE_CATEGORIES.map(cat => (
                       <button key={cat.id} onClick={() => { setActiveRecipeCategory(cat.id); setShowFilterDropdown(false); }}
                         className="w-full px-4 py-2.5 text-left text-sm font-light transition-colors flex items-center justify-between"
-                        style={{ color: activeRecipeCategory === cat.id ? '#C9A962' : '#B8B8B8', backgroundColor: activeRecipeCategory === cat.id ? 'rgba(201,169,98,0.08)' : 'transparent' }}>
+                        style={{ color: activeRecipeCategory === cat.id ? '#C9A962' : 'var(--app-text-2)', backgroundColor: activeRecipeCategory === cat.id ? 'rgba(201,169,98,0.08)' : 'transparent' }}>
                         <span>{cat.label}</span>
                         {activeRecipeCategory === cat.id && <span className="w-1.5 h-1.5 rounded-full bg-[#C9A962]" />}
                       </button>

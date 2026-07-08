@@ -314,7 +314,7 @@ export default function TodayTasks({ tasks }) {
                               }
                             }}
                             className="flex items-center gap-1.5 text-xs transition-colors"
-                            style={{ color: taskData.due_date ? '#C9A962' : '#6B6B6B' }}
+                            style={{ color: taskData.due_date ? '#C9A962' : 'var(--app-text-3)' }}
                           >
                             <span className="w-4 h-4 rounded border flex items-center justify-center transition-colors"
                               style={{ borderColor: taskData.due_date ? '#C9A962' : '#4A4A4A', backgroundColor: taskData.due_date ? 'rgba(201,169,98,0.15)' : 'transparent' }}>

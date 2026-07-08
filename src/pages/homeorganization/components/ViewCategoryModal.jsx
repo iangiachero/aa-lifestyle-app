@@ -212,7 +212,7 @@ export default function ViewCategoryModal({
                   <span
                     className="flex-1 text-sm font-light"
                     style={{
-                      color: task.completed ? '#6B6B6B' : '#F5F1E8',
+                      color: task.completed ? 'var(--app-text-3)' : 'var(--app-text)',
                       textDecoration: task.completed ? 'line-through' : 'none',
                     }}
                   >

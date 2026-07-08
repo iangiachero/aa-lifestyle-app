@@ -119,7 +119,7 @@ export default function Settings() {
                   width: 22,
                   height: 22,
                   borderRadius: '50%',
-                  backgroundColor: showHolidays ? '#1A1612' : '#B8B8B8',
+                  backgroundColor: showHolidays ? '#1A1612' : 'var(--app-text-2)',
                   left: showHolidays ? 'calc(100% - 24px)' : 2,
                 }}
               />
@@ -173,7 +173,7 @@ export default function Settings() {
                             border: active
                               ? '1px solid rgba(201,169,98,0.45)'
                               : '1px solid var(--app-wash-2)',
-                            color: active ? '#C9A962' : '#6B6B6B',
+                            color: active ? '#C9A962' : 'var(--app-text-3)',
                           }}
                         >
                           <span>{region.emoji}</span>
