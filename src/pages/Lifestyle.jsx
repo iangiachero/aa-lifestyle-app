@@ -271,9 +271,10 @@ export default function Lifestyle() {
                       <div className="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.82)] via-[rgba(0,0,0,0.25)] to-[rgba(0,0,0,0.1)]" />
                     </>
                   )}
+                  {/* Text sits on a dark image scrim in both themes — fixed light color, not theme vars */}
                   <div className="absolute bottom-0 left-0 right-0 px-3 pb-3 pt-6">
-                    <p className="text-sm text-[color:var(--app-text)] font-light tracking-wide">{module.name}</p>
-                    <p className="text-xs text-[color:var(--app-text-2)] mt-0.5">{(module.routines || []).length} {(module.routines || []).length === 1 ? 'routine' : 'routines'}</p>
+                    <p className="text-sm text-[#F5F1E8] font-light tracking-wide">{module.name}</p>
+                    <p className="text-xs text-[rgba(245,241,232,0.75)] mt-0.5">{(module.routines || []).length} {(module.routines || []).length === 1 ? 'routine' : 'routines'}</p>
                   </div>
                 </motion.div>
               ))}
@@ -290,7 +291,7 @@ export default function Lifestyle() {
             transition={{ duration: 0.25 }}
             className="page-safe-x pb-24"
           >
-            <div className="mt-4 mb-5 flex items-center gap-3 p-3 rounded-2xl border border-[rgba(201,169,98,0.2)] bg-gradient-to-r from-[rgba(0,0,0,0.6)] to-[rgba(0,0,0,0.4)]">
+            <div className="mt-4 mb-5 flex items-center gap-3 p-3 rounded-2xl border border-[rgba(201,169,98,0.2)]" style={{ backgroundColor: 'var(--app-wash)' }}>
               <ModuleThumb module={selectedModule} size="lg" />
               <div className="flex-1 min-w-0">
                 <p className="text-[color:var(--app-text)] text-base font-light">{selectedModule.name}</p>

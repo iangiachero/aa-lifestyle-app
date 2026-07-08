@@ -139,7 +139,8 @@ export default function Fitness() {
                     className={`aspect-square bg-[color:var(--app-bg)] rounded-2xl border-2 transition-all overflow-hidden relative group ${selectedMuscleGroup === group.id ? 'border-[#C9A962] shadow-lg shadow-[rgba(201,169,98,0.3)]' : 'border-[rgba(201,169,98,0.3)]'}`}>
                     <img src={group.image} alt={group.label} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:brightness-90 transition-all duration-300" />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent pt-8 pb-2 px-2">
-                      <div className="relative z-10 text-[11px] text-[color:var(--app-text)] font-light text-center tracking-wide">{group.label}</div>
+                      {/* Label sits on a dark image scrim in both themes — fixed light color */}
+                      <div className="relative z-10 text-[11px] text-[#F5F1E8] font-light text-center tracking-wide">{group.label}</div>
                     </div>
                   </button>
                 ))}
