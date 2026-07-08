@@ -15,7 +15,7 @@ export function useTheme() {
       localStorage.setItem(THEME_KEY, next);
     } catch (e) {}
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', next === 'light' ? '#FAF7F1' : '#000000');
+    if (meta) meta.setAttribute('content', next === 'light' ? '#FDFCF9' : '#000000');
     setThemeState(next);
   }, []);
 
