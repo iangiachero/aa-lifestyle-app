@@ -36,26 +36,32 @@ export default function ProductivitySection({ isStudent }) {
     },
   };
 
+  // Each tile has a dark-theme icon (Supabase) and a light-theme icon (local);
+  // CSS on <html>.light swaps which one is displayed.
   const items = [
-    { 
-      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Notes.png', 
-      label: 'Notes/Pass', 
-      path: '/notes' 
+    {
+      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Notes.png',
+      iconLight: '/icons/light/notes.webp',
+      label: 'Notes/Pass',
+      path: '/notes'
     },
-    { 
-      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Task.png', 
-      label: 'Checklists', 
-      path: '/checklists' 
+    {
+      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Task.png',
+      iconLight: '/icons/light/checklists.webp',
+      label: 'Checklists',
+      path: '/checklists'
     },
-    ...(isStudent ? [{ 
-      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Student.png', 
-      label: 'Student', 
-      path: '/student' 
+    ...(isStudent ? [{
+      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Student.png',
+      iconLight: '/icons/light/student.webp',
+      label: 'Student',
+      path: '/student'
     }] : []),
-    { 
-      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Home%20Organization.png', 
-      label: 'Org', 
-      path: '/home-organization' 
+    {
+      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Home%20Organization.png',
+      iconLight: '/icons/light/org.webp',
+      label: 'Org',
+      path: '/home-organization'
     },
   ];
 
@@ -74,7 +80,14 @@ export default function ProductivitySection({ isStudent }) {
                   alt={item.label}
                   loading="lazy"
                   decoding="async"
-                  className="w-[90px] h-[90px] object-cover flex-shrink-0"
+                  className="w-[90px] h-[90px] object-cover flex-shrink-0 theme-img-dark"
+                />
+                <img
+                  src={item.iconLight}
+                  alt={item.label}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-[90px] h-[90px] object-cover flex-shrink-0 theme-img-light"
                 />
                 <div className={`text-[9px] font-serif font-medium ${STYLE.colors.title} text-center leading-tight px-1`}>{item.label}</div>
               </div>

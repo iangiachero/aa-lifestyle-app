@@ -21,6 +21,14 @@
   --app-nav: rgba(10, 10, 10, 0.97);
 }
 
+/* Theme-conditional assets: elements shown only in one theme */
+:root:not(.light) .theme-img-light {
+  display: none;
+}
+:root.light .theme-img-dark {
+  display: none;
+}
+
 :root.light {
   --app-bg: #FDFCF9;
   --app-text: #2B241A;
