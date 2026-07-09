@@ -541,7 +541,7 @@ export default function Student() {
                       placeholder="Syllabus info, office hours, etc." rows={3}
                       className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-sm text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none resize-none mt-2" />
                   </Collapsible>
-                  <ModalButtons onCancel={closeModal} onSave={saveClass} saving={saving} disabled={!classForm.class_name.trim()} label={editingItem ? 'Save Changes' : 'Add'} />
+                  <ModalButtons onCancel={closeModal} onSave={saveClass} saving={saving} disabled={!classForm.class_name.trim()} label={editingItem ? 'Save Changes' : 'Add'} requiredHint="Please enter a class name first" />
                 </>
               )}
 
@@ -770,17 +770,27 @@ function ClassSelect({ classes, value, onChange }) {
   );
 }
 
-function ModalButtons({ onCancel, onSave, saving, disabled = false, label = 'Add' }) {
+function ModalButtons({ onCancel, onSave, saving, disabled = false, label = 'Add', requiredHint = 'Please enter a title first' }) {
+  // Keep the save button tappable even when required fields are missing:
+  // a silently disabled button reads as "broken" — tapping it explains what's needed.
+  const [showHint, setShowHint] = useState(false);
   return (
-    <div className="flex gap-3 pt-2">
-      <button onClick={onCancel} disabled={saving}
-        className="flex-1 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors disabled:opacity-50">
-        Cancel
-      </button>
-      <button onClick={onSave} disabled={saving || disabled}
-        className="flex-1 py-3 bg-[#C9A962] rounded-full text-sm text-[#000000] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50">
-        {saving ? 'Saving...' : label}
-      </button>
+    <div className="pt-2">
+      {showHint && disabled && (
+        <p className="text-xs text-red-400 text-center mb-2">{requiredHint}</p>
+      )}
+      <div className="flex gap-3">
+        <button onClick={onCancel} disabled={saving}
+          className="flex-1 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-full text-sm text-[color:var(--app-text-2)] hover:bg-[rgba(201,169,98,0.1)] transition-colors disabled:opacity-50">
+          Cancel
+        </button>
+        <button
+          onClick={() => { if (disabled) { setShowHint(true); return; } setShowHint(false); onSave(); }}
+          disabled={saving}
+          className={`flex-1 py-3 bg-[#C9A962] rounded-full text-sm text-[#000000] font-medium hover:bg-[#D4B574] transition-colors disabled:opacity-50 ${disabled ? 'opacity-60' : ''}`}>
+          {saving ? 'Saving...' : label}
+        </button>
+      </div>
     </div>
   );
 }
