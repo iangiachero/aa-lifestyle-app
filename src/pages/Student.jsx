@@ -194,19 +194,45 @@ export default function Student() {
     setClasses(prev => prev.filter(c => c.id !== id));
   }
 
+  function openEditAssignment(a) {
+    setAssignForm({
+      title: a.title || '', class_id: a.class_id || '', due_date: a.due_date || '',
+      due_time: a.due_time || '', priority: a.priority || 'Medium', notes: a.notes || '',
+      color: a.color || '#3B82F6',
+    });
+    setExpanded({ dueTime: !!a.due_time, notes: !!a.notes });
+    setEditingItem(a);
+    setActiveModal('assignment');
+  }
+
   async function saveAssignment() {
     if (!assignForm.title.trim()) return;
     setSaving(true);
-    const payload = {
-      ...assignForm, user_id: user.id, semester,
-      class_id: assignForm.class_id || null,
-      due_date: assignForm.due_date || null,
-      completed: false,
-    };
-    const { data, error } = await supabase.from('student_assignments').insert(payload).select('*, student_classes(class_name, color)').single();
-    if (!error && data) setAssignments(prev => [...prev, data].sort((a, b) => (a.due_date || '') > (b.due_date || '') ? 1 : -1));
+    if (editingItem) {
+      const payload = {
+        ...assignForm,
+        class_id: assignForm.class_id || null,
+        due_date: assignForm.due_date || null,
+      };
+      const { data, error } = await supabase.from('student_assignments').update(payload).eq('id', editingItem.id).select('*, student_classes(class_name, color)').single();
+      if (!error && data) setAssignments(prev => prev.map(a => a.id === editingItem.id ? data : a).sort((a, b) => (a.due_date || '') > (b.due_date || '') ? 1 : -1));
+    } else {
+      const payload = {
+        ...assignForm, user_id: user.id, semester,
+        class_id: assignForm.class_id || null,
+        due_date: assignForm.due_date || null,
+        completed: false,
+      };
+      const { data, error } = await supabase.from('student_assignments').insert(payload).select('*, student_classes(class_name, color)').single();
+      if (!error && data) setAssignments(prev => [...prev, data].sort((a, b) => (a.due_date || '') > (b.due_date || '') ? 1 : -1));
+    }
     setSaving(false);
     closeModal();
+  }
+
+  async function deleteAssignment(id) {
+    await supabase.from('student_assignments').delete().eq('id', id);
+    setAssignments(prev => prev.filter(a => a.id !== id));
   }
 
   async function saveExam() {
@@ -385,12 +411,12 @@ export default function Student() {
           ) : (
             <div className="space-y-2">
               {visibleAssignments.map(a => (
-                <AssignmentRow key={a.id} assignment={a} onToggle={toggleAssignment} />
+                <AssignmentRow key={a.id} assignment={a} onToggle={toggleAssignment} onEdit={openEditAssignment} onDelete={deleteAssignment} />
               ))}
               {showCompleted && (
                 <div className="space-y-2 mt-1 opacity-50">
                   {completedAssignments.map(a => (
-                    <AssignmentRow key={a.id} assignment={a} onToggle={toggleAssignment} />
+                    <AssignmentRow key={a.id} assignment={a} onToggle={toggleAssignment} onEdit={openEditAssignment} onDelete={deleteAssignment} />
                   ))}
                 </div>
               )}
@@ -410,7 +436,7 @@ export default function Student() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl text-[color:var(--app-gold)] font-light">
                 {activeModal === 'class' && (editingItem ? 'Edit Class' : 'Add Class')}
-                {activeModal === 'assignment' && 'Add Assignment'}
+                {activeModal === 'assignment' && (editingItem ? 'Edit Assignment' : 'Add Assignment')}
                 {activeModal === 'exam' && 'Add Exam'}
                 {activeModal === 'study' && 'Add Study Session'}
                 {activeModal === 'project' && 'Add Project'}
@@ -580,7 +606,7 @@ export default function Student() {
                     selectedColor={assignForm.color}
                     onSelectColor={(color) => setAssignForm(prev => ({ ...prev, color }))}
                   />
-                  <ModalButtons onCancel={closeModal} onSave={saveAssignment} saving={saving} disabled={!assignForm.title.trim()} />
+                  <ModalButtons onCancel={closeModal} onSave={saveAssignment} saving={saving} disabled={!assignForm.title.trim()} label={editingItem ? "Save Changes" : "Add"} />
                 </>
               )}
 
@@ -699,7 +725,7 @@ export default function Student() {
   );
 }
 
-function AssignmentRow({ assignment, onToggle }) {
+function AssignmentRow({ assignment, onToggle, onEdit, onDelete }) {
   return (
     <div
       className="flex items-center gap-2.5 p-2.5 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.12)]"
@@ -727,6 +753,16 @@ function AssignmentRow({ assignment, onToggle }) {
       {assignment.priority === 'High' && !assignment.completed && (
         <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-900/40 text-red-300 flex-shrink-0">!</span>
       )}
+      <div className="flex gap-0.5 flex-shrink-0">
+        {!assignment.completed && (
+          <button onClick={() => onEdit(assignment)} className="p-1.5 rounded-lg hover:bg-[rgba(201,169,98,0.1)] transition-colors">
+            <Pencil className="w-3.5 h-3.5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+          </button>
+        )}
+        <button onClick={() => onDelete(assignment.id)} className="p-1.5 rounded-lg hover:bg-[rgba(255,60,60,0.1)] transition-colors">
+          <Trash2 className="w-3.5 h-3.5 text-red-400" strokeWidth={1.5} />
+        </button>
+      </div>
     </div>
   );
 }
