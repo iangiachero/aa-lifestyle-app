@@ -36,26 +36,31 @@ export default function WellnessSection() {
     },
   };
 
+  // Dark-theme icons (Supabase) + light-theme icons (local); CSS on <html>.light swaps them.
   const items = [
-    { 
-      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Shop.png', 
-      label: 'Shop', 
-      path: '/shop' 
+    {
+      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Shop.png',
+      iconLight: '/icons/light/shop.webp',
+      label: 'Shop',
+      path: '/shop'
     },
-    { 
-      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Meal.png', 
-      label: 'Meals', 
-      path: '/meals' 
+    {
+      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Meal.png',
+      iconLight: '/icons/light/meals.webp',
+      label: 'Meals',
+      path: '/meals'
     },
-    { 
-      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Grocery.png', 
-      label: 'Grocery', 
-      path: '/grocery' 
+    {
+      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Grocery.png',
+      iconLight: '/icons/light/grocery.webp',
+      label: 'Grocery',
+      path: '/grocery'
     },
-    { 
-      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Workout.png', 
-      label: 'Workout', 
-      path: '/workout' 
+    {
+      icon: 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/dashboard-icon/ChatGPT%20Image%20Workout.png',
+      iconLight: '/icons/light/workout.webp',
+      label: 'Workout',
+      path: '/workout'
     },
   ];
 
@@ -76,7 +81,14 @@ export default function WellnessSection() {
                   alt={item.label}
                   loading="lazy"
                   decoding="async"
-                  className="w-[90px] h-[90px] object-cover flex-shrink-0"
+                  className="w-[90px] h-[90px] object-cover flex-shrink-0 theme-img-dark"
+                />
+                <img
+                  src={item.iconLight}
+                  alt={item.label}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-[90px] h-[90px] object-cover flex-shrink-0 theme-img-light"
                 />
                 <div className={`text-[9px] font-serif font-medium ${STYLE.colors.title} text-center leading-tight px-1`}>{item.label}</div>
               </div>
