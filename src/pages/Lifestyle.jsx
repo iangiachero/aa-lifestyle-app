@@ -323,7 +323,8 @@ export default function Lifestyle() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="bg-gradient-to-br from-[rgba(0,0,0,0.9)] to-[rgba(0,0,0,0.7)] rounded-2xl border border-[rgba(201,169,98,0.25)] overflow-hidden"
+                    className="rounded-2xl border border-[rgba(201,169,98,0.25)] overflow-hidden"
+                    style={{ backgroundColor: 'var(--app-surface)' }}
                   >
                     <div className="px-4 pt-4 pb-3">
                       <div className="flex items-start gap-3 mb-2">

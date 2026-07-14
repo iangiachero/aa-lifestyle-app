@@ -85,34 +85,25 @@ export default function MealPlanning() {
 
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
 
-  /* ── Auto-reset logic ── */
+  /* ── Weekly auto-reset ──
+     The plan starts fresh each week: on open, remove only meals created
+     before the current week began. This is derived from the row's own
+     created_at (not localStorage), so it can't wipe the current week's
+     plan and behaves the same across devices and PWA storage evictions.
+     The old localStorage-based daily reset deleted the current day's
+     planned meals every morning — that was data loss, not a reset. */
   useEffect(() => {
-    const today = format(new Date(), 'yyyy-MM-dd');
-    const todayDay = format(new Date(), 'EEEE').toLowerCase();
-    const weekStartStr = format(weekStart, 'yyyy-MM-dd');
-
-    const lastDailyDate = localStorage.getItem('mealLastDailyDate');
-    const lastWeeklyDate = localStorage.getItem('mealLastWeeklyDate');
-
-    const doWeeklyReset = lastWeeklyDate !== weekStartStr;
-    const doDailyReset = !doWeeklyReset && lastDailyDate !== today;
-
-    if (!doWeeklyReset && !doDailyReset) return;
-
+    const weekStartISO = weekStart.toISOString();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
-      if (doWeeklyReset) {
-        supabase.from('meals').delete().eq('user_id', user.id).then(() => {
-          queryClient.invalidateQueries({ queryKey: ['meals'] });
-          localStorage.setItem('mealLastWeeklyDate', weekStartStr);
-          localStorage.setItem('mealLastDailyDate', today);
+      supabase
+        .from('meals')
+        .delete()
+        .eq('user_id', user.id)
+        .lt('created_at', weekStartISO)
+        .then(({ error }) => {
+          if (!error) queryClient.invalidateQueries({ queryKey: ['meals'] });
         });
-      } else if (doDailyReset) {
-        supabase.from('meals').delete().eq('user_id', user.id).eq('day', todayDay).then(() => {
-          queryClient.invalidateQueries({ queryKey: ['meals'] });
-          localStorage.setItem('mealLastDailyDate', today);
-        });
-      }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -514,7 +505,7 @@ export default function MealPlanning() {
                                 </button>
                               )}
                               <button onClick={() => openEdit(meal)} className="p-2 rounded-lg hover:bg-[#e2ba8b]/10 transition-colors">
-                                <Edit2 className="w-4 h-4 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
+                                <Pencil className="w-4 h-4 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
                               </button>
                               <button onClick={() => deleteMutation.mutate(meal.id)} className="p-2 rounded-lg hover:bg-red-500/10 transition-colors">
                                 <Trash2 className="w-4 h-4 text-red-400" strokeWidth={1.5} />
@@ -569,7 +560,7 @@ export default function MealPlanning() {
                                   </button>
                                 )}
                                 <button onClick={() => openEdit(meal)} className="p-1.5 rounded-lg hover:bg-[#e2ba8b]/10 transition-colors">
-                                  <Edit2 className="w-3.5 h-3.5 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
+                                  <Pencil className="w-3.5 h-3.5 text-[color:var(--app-gold-light)]" strokeWidth={1.5} />
                                 </button>
                                 <button onClick={() => deleteMutation.mutate(meal.id)} className="p-1.5 rounded-lg hover:bg-red-500/10 transition-colors">
                                   <Trash2 className="w-3.5 h-3.5 text-red-400" strokeWidth={1.5} />

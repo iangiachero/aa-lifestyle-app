@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { AnimatePresence, motion } from 'framer-motion';
 import Layout from './components/Layout';
 import SplashScreen from './components/SplashScreen';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useCapacitor } from './hooks/useCapacitor';
 import { useAuth } from './context/AuthContext';
 
@@ -167,13 +168,13 @@ function App() {
   useCapacitor();
 
   return (
-    <>
+    <ErrorBoundary>
       <Router>
         <Suspense fallback={null}>
           <AnimatedRoutes />
         </Suspense>
       </Router>
-    </>
+    </ErrorBoundary>
   );
 }
 

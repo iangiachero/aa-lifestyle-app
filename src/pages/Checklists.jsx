@@ -251,7 +251,7 @@ export default function Checklists() {
     }
   }, [userChecklists, checklistsLoading, queryClient]);
 
-  const { data: checklistProgress = {} } = useQuery({
+  const { data: checklistProgress } = useQuery({
     queryKey: ['checklistProgress'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -267,7 +267,7 @@ export default function Checklists() {
     },
   });
 
-  const { data: customItemsData = {} } = useQuery({
+  const { data: customItemsData } = useQuery({
     queryKey: ['checklistCustomItems'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -287,11 +287,16 @@ export default function Checklists() {
     },
   });
 
+  // Guard against undefined query data: the previous `= {}` destructuring
+  // defaults created a fresh object every render, which made these effects
+  // re-run and setState in a loop ("Maximum update depth exceeded") whenever
+  // the query was pending or errored.
   useEffect(() => {
-    setCheckedItems(checklistProgress);
+    if (checklistProgress) setCheckedItems(checklistProgress);
   }, [checklistProgress]);
 
   useEffect(() => {
+    if (!customItemsData) return;
     const mapped = {};
     Object.entries(customItemsData).forEach(([clId, items]) => {
       mapped[clId] = items.map(i => i.text);
@@ -313,7 +318,7 @@ export default function Checklists() {
   const addCustomItemMutation = useMutation({
     mutationFn: async ({ checklistId, text }) => {
       const { data: { user } } = await supabase.auth.getUser();
-      const existing = customItemsData[checklistId] || [];
+      const existing = (customItemsData || {})[checklistId] || [];
       const { error } = await supabase
         .from('checklist_custom_items')
         .insert({ user_id: user.id, checklist_id: checklistId, text, sort_order: existing.length });
@@ -382,7 +387,7 @@ export default function Checklists() {
   const handleEditItem = useCallback((checklistId, idx) => {
     const trimmed = editText.trim();
     if (!trimmed) return;
-    const items = customItemsData[checklistId] || [];
+    const items = (customItemsData || {})[checklistId] || [];
     const item = items[idx];
     if (!item) return;
     updateCustomItemMutation.mutate({ id: item.id, text: trimmed });
@@ -391,7 +396,7 @@ export default function Checklists() {
   }, [editText, customItemsData, updateCustomItemMutation]);
 
   const handleDeleteItem = useCallback((checklistId, idx) => {
-    const items = customItemsData[checklistId] || [];
+    const items = (customItemsData || {})[checklistId] || [];
     const item = items[idx];
     if (!item) return;
     deleteCustomItemMutation.mutate(item.id);

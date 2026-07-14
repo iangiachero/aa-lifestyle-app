@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Repeat, CreditCard as Edit2, Trash2, X } from 'lucide-react';
 import { isToday, parseISO, startOfDay, endOfDay } from 'date-fns';
-import { expandRecurringEvents } from '../../utils/recurrence';
+import { expandRecurringEvents, expandMultiDayEvents } from '../../utils/recurrence';
 import { supabase } from '../../lib/supabase';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../context/AuthContext';
@@ -52,12 +52,14 @@ export default function TodaySchedule({ events }) {
     const rangeStart = startOfDay(today);
     const rangeEnd = endOfDay(today);
 
-    const expanded = expandRecurringEvents(events, rangeStart, rangeEnd);
+    // Expand multi-day events too, so an event started on a previous day
+    // that continues through today still appears (display_date = today).
+    const expanded = expandMultiDayEvents(expandRecurringEvents(events, rangeStart, rangeEnd));
 
     return expanded
       .filter(e => {
         try {
-          return isToday(parseISO(e.date));
+          return isToday(parseISO(e.display_date || e.date));
         } catch {
           return false;
         }
