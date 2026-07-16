@@ -56,7 +56,7 @@ export default function HabitTracker({ habits }) {
               <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                 isCompletedToday
                   ? 'bg-[#C9A962] text-white'
-                  : 'bg-[rgba(0,0,0,0.8)] text-[color:var(--app-text-2)]'
+                  : 'bg-[color:var(--app-wash-2)] text-[color:var(--app-text-2)]'
               }`}>
                 {isCompletedToday ? (
                   <Check className="w-5 h-5" />

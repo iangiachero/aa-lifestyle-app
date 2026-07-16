@@ -233,6 +233,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                           src={getIconifyIconUrl(selectedIconId)}
                           alt=""
                           className="w-6 h-6"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
                         />
                       ) : (
                         // Placeholder grid of dots
@@ -332,6 +333,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                                       src={getIconifyIconUrl(iconId)}
                                       alt=""
                                       className="w-6 h-6"
+                                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
                                     />
                                   </button>
                                 ))}
@@ -372,7 +374,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                         form.section === opt.id ? STYLE.chipActive : STYLE.chipInactive
                       }`}
                     >
-                      <img src={getIconifyIconUrl(opt.icon)} alt="" className="w-5 h-5 flex-shrink-0" />
+                      <img src={getIconifyIconUrl(opt.icon)} alt="" className="w-5 h-5 flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                       <span>{opt.label}</span>
                       {form.section === opt.id && (
                         <Check className="w-3 h-3 ml-auto flex-shrink-0" strokeWidth={2.5} />

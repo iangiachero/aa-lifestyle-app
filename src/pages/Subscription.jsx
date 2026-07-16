@@ -381,7 +381,7 @@ export default function Subscription() {
               key={f.label}
               className="grid grid-cols-3 px-4 py-3 items-center"
               style={{
-                background: i % 2 === 0 ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.4)',
+                background: 'var(--app-surface)',
                 borderBottom: i < ALL_FEATURES.length - 1 ? '1px solid rgba(201,169,98,0.08)' : 'none'
               }}
             >

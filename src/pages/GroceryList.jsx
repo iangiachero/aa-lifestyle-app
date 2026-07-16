@@ -291,7 +291,7 @@ export default function GroceryList() {
                 <Input placeholder="e.g., Organic Spinach"
                   value={newItem.name}
                   onChange={e => setNewItem({ ...newItem, name: e.target.value })}
-                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl bg-[rgba(0,0,0,0.5)] text-[color:var(--app-text)]" />
+                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl bg-[color:var(--app-input-bg)] text-[color:var(--app-text)]" />
               </div>
 
               <div>
@@ -315,7 +315,7 @@ export default function GroceryList() {
                 <Textarea placeholder="Quantity, brand, or other details..."
                   value={newItem.notes}
                   onChange={e => setNewItem({ ...newItem, notes: e.target.value })}
-                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl min-h-[80px] bg-[rgba(0,0,0,0.5)] text-[color:var(--app-text)]" />
+                  className="border-[#e2ba8b]/20 focus:border-[#e2ba8b] rounded-xl min-h-[80px] bg-[color:var(--app-input-bg)] text-[color:var(--app-text)]" />
               </div>
 
               <button onClick={addItem}
