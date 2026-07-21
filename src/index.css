@@ -1,4 +1,28 @@
 ﻿/* =========================
+   Keyboard avoidance (iOS/Android PWA)
+   Layout.jsx publishes --kb-height + <body>.keyboard-open from VisualViewport.
+   Bottom sheets are lifted above the keyboard so the focused input/buttons
+   stay visible; the floating nav is excluded (it hides on keyboard-open).
+   ========================= */
+:root {
+  --kb-height: 0px;
+}
+/* Bottom-anchored sheets that fill the screen and align content to the bottom */
+body.keyboard-open .fixed.inset-0.items-end {
+  padding-bottom: var(--kb-height);
+}
+/* Constrain the sheet panel to the space above the keyboard so its own
+   internal scroll (not the viewport) reveals the focused field */
+body.keyboard-open .fixed.inset-0.items-end > * {
+  max-height: calc(100dvh - var(--kb-height)) !important;
+}
+/* Sheets anchored directly to the bottom edge (not the app nav) */
+body.keyboard-open .fixed.bottom-0:not([data-app-nav]) {
+  bottom: var(--kb-height);
+  max-height: calc(100dvh - var(--kb-height)) !important;
+}
+
+/* =========================
    App theme palette (Light/Dark)
    Dark is the default. Adding class "light" to <html> switches the theme.
    Gold accents (#C9A962 / #e2ba8b) are intentionally identical in both themes.

@@ -48,6 +48,54 @@ export default function Layout({ children, currentPageName }) {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
+  // Keyboard avoidance for iOS (and Android) standalone PWA.
+  // On iOS the on-screen keyboard shrinks the visual viewport but NOT the
+  // layout viewport, so `fixed` bottom sheets stay pinned behind the keyboard
+  // and the caret desyncs ("cursor above the bar until you re-tap"). We publish
+  // the keyboard height as --kb-height, flag <body> with .keyboard-open (CSS
+  // then lifts the sheets and hides the nav), and keep the layout viewport
+  // pinned to the top so the caret stays aligned with its field.
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    let raf = 0;
+    const update = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+        const open = kb > 80;
+        document.documentElement.style.setProperty('--kb-height', `${kb}px`);
+        document.body.classList.toggle('keyboard-open', open);
+        setKeyboardOpen(open);
+        if (open && window.scrollY !== 0) window.scrollTo(0, 0);
+      });
+    };
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    update();
+
+    // After the keyboard settles, bring the focused field into view inside its
+    // own scroll container (block:'center' keeps it clear of the keyboard).
+    const onFocusIn = (e) => {
+      const el = e.target;
+      if (!el || !el.matches?.('input, textarea, [contenteditable="true"]')) return;
+      setTimeout(() => {
+        try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch {}
+      }, 320);
+    };
+    document.addEventListener('focusin', onFocusIn);
+
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+      document.removeEventListener('focusin', onFocusIn);
+      cancelAnimationFrame(raf);
+      document.body.classList.remove('keyboard-open');
+      document.documentElement.style.removeProperty('--kb-height');
+    };
+  }, []);
+
   const themeColors = {
     gold: {
       accent: '#B8955A',
@@ -277,14 +325,15 @@ export default function Layout({ children, currentPageName }) {
 
       {showNav && (
         <div
+          data-app-nav
           className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-6"
           style={{
             paddingBottom: `calc(1rem + env(safe-area-inset-bottom, 0px))`,
             paddingTop: '0.75rem',
             background: 'var(--app-bg)',
-            transform: isAnyModalOpen ? 'translateY(120%)' : 'translateY(0)',
+            transform: (isAnyModalOpen || keyboardOpen) ? 'translateY(120%)' : 'translateY(0)',
             transition: 'transform 0.25s ease',
-            pointerEvents: isAnyModalOpen ? 'none' : 'auto',
+            pointerEvents: (isAnyModalOpen || keyboardOpen) ? 'none' : 'auto',
           }}
         >
           <nav
