@@ -324,7 +324,8 @@ function VaultContent() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.96 }}
                     transition={{ duration: 0.15 }}
-                    className="bg-gradient-to-br from-[rgba(0,0,0,0.9)] to-[rgba(0,0,0,0.7)] rounded-2xl border border-[rgba(201,169,98,0.2)] p-4 hover:border-[rgba(201,169,98,0.4)] transition-all"
+                    className="rounded-2xl border border-[rgba(201,169,98,0.2)] p-4 hover:border-[rgba(201,169,98,0.4)] transition-all"
+                    style={{ backgroundColor: 'var(--app-surface)' }}
                   >
                     <div className="flex items-start gap-3">
                       <div
