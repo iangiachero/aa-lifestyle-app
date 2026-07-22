@@ -36,18 +36,33 @@ export default function SplashScreen() {
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </div>
-      <h1
-        style={{
-          color: 'var(--app-gold)',
-          fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 22,
-          fontWeight: 300,
-          letterSpacing: '0.15em',
-          margin: 0,
-        }}
-      >
-        AA LIFESTYLE
-      </h1>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+        <h1
+          style={{
+            color: 'var(--app-gold)',
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: 22,
+            fontWeight: 300,
+            letterSpacing: '0.15em',
+            margin: 0,
+          }}
+        >
+          AA LIFESTYLE
+        </h1>
+        <p
+          style={{
+            color: 'var(--app-gold)',
+            opacity: 0.7,
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontSize: 13,
+            fontWeight: 300,
+            letterSpacing: '0.05em',
+            margin: 0,
+          }}
+        >
+          All Access Lifestyle
+        </p>
+      </div>
       <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
         {[0, 150, 300].map((delay) => (
           <div

@@ -155,7 +155,7 @@ function AnimatedRoutes() {
         <Route path="/routines" element={<RequireAuth><Layout currentPageName="Routines"><PageTransition><Routines /></PageTransition></Layout></RequireAuth>} />
         <Route path="/student" element={<RequireAuth><RequirePro><Layout currentPageName="Student"><PageTransition><Student /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/meals" element={<RequireAuth><RequirePro><Layout currentPageName="MealPlanning"><PageTransition><MealPlanning /></PageTransition></Layout></RequirePro></RequireAuth>} />
-        <Route path="/checklists" element={<RequireAuth><Layout currentPageName="Checklists"><PageTransition><Checklists /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/checklists" element={<RequireAuth><RequirePro><Layout currentPageName="Checklists"><PageTransition><Checklists /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/home-organization" element={<RequireAuth><RequirePro><Layout currentPageName="HomeOrganization"><PageTransition><HomeOrganization /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/pwa-tutorial" element={<RequireAuth><Layout currentPageName="PWATutorial"><PageTransition><PWATutorial /></PageTransition></Layout></RequireAuth>} />
         <Route path="/vault" element={<RequireAuth><Layout currentPageName="PasswordVault"><PageTransition><PasswordVault /></PageTransition></Layout></RequireAuth>} />

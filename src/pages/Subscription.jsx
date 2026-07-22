@@ -56,7 +56,8 @@ const FREE_FEATURES = [
 const ALL_FEATURES = [
   { label: 'Home Dashboard', free: true, pro: true },
   { label: 'Calendar & Events', free: true, pro: true },
-  { label: 'Tasks & Checklists', free: true, pro: true },
+  { label: 'Tasks', free: true, pro: true },
+  { label: 'Checklists', free: false, pro: true },
   { label: 'Notes', free: true, pro: true },
   { label: 'Basic Grocery Lists', free: true, pro: true },
   { label: 'Password Vault (PIN-protected)', free: false, pro: true },

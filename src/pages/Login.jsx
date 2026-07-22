@@ -81,7 +81,7 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="rounded-2xl p-6 mb-6" style={{ background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(201,169,98,0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.4)' }}>
+        <div className="rounded-2xl p-6 mb-6" style={{ background: 'var(--app-surface)', border: '1px solid rgba(201,169,98,0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
               <div>
