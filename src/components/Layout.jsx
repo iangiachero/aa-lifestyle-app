@@ -103,11 +103,18 @@ export default function Layout({ children, currentPageName }) {
     };
     document.addEventListener('focusout', onFocusOut);
 
+    // Self-healing: on any tap, re-derive keyboard state from the
+    // visualViewport (source of truth). Even if every focus/resize event
+    // was missed, the first touch anywhere un-wedges the UI.
+    const onPointerDown = () => update();
+    document.addEventListener('pointerdown', onPointerDown, true);
+
     return () => {
       vv.removeEventListener('resize', update);
       vv.removeEventListener('scroll', update);
       document.removeEventListener('focusin', onFocusIn);
       document.removeEventListener('focusout', onFocusOut);
+      document.removeEventListener('pointerdown', onPointerDown, true);
       cancelAnimationFrame(raf);
       document.body.classList.remove('keyboard-open');
       document.documentElement.style.removeProperty('--kb-height');
