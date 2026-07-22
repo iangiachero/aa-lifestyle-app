@@ -265,7 +265,7 @@ export default function HomeOrganization() {
 
       <button
         onClick={() => { setCreateDefaultSection('daily-reset-adhd'); setShowCreate(true); }}
-        className="fixed right-6 w-14 h-14 bg-gradient-to-br from-[#D4B978] to-[#C9A962] rounded-full shadow-[0_0_12px_rgba(201,169,98,0.3),0_4px_10px_rgba(0,0,0,0.25)] hover:shadow-[0_0_16px_rgba(201,169,98,0.4),0_4px_12px_rgba(0,0,0,0.3)] flex items-center justify-center transition-all hover:scale-105 z-[55]"
+        className="fixed right-6 w-14 h-14 bg-gradient-to-br from-[#D4B978] to-[#C9A962] rounded-full shadow-[0_0_12px_rgba(201,169,98,0.3),0_4px_10px_rgba(0,0,0,0.25)] hover:shadow-[0_0_16px_rgba(201,169,98,0.4),0_4px_12px_rgba(0,0,0,0.3)] flex items-center justify-center transition-all hover:scale-105 z-[35]"
         style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}
       >
         <Plus className="w-6 h-6 text-white" strokeWidth={2} />

@@ -1,25 +1,19 @@
 ﻿/* =========================
    Keyboard avoidance (iOS/Android PWA)
    Layout.jsx publishes --kb-height + <body>.keyboard-open from VisualViewport.
-   Bottom sheets are lifted above the keyboard so the focused input/buttons
-   stay visible; the floating nav is excluded (it hides on keyboard-open).
+   Strategy: never reposition or clamp the fixed sheets themselves (fragile on
+   iOS and can wedge them clipped if a close event is missed). Instead, give
+   every scroll container inside a sheet keyboard-sized bottom padding while
+   the keyboard is open, so iOS's native reveal-on-focus scrolls WITHIN the
+   sheet — the field rises above the keyboard and the caret stays aligned.
    ========================= */
 :root {
   --kb-height: 0px;
 }
-/* Bottom-anchored sheets that fill the screen and align content to the bottom */
-body.keyboard-open .fixed.inset-0.items-end {
-  padding-bottom: var(--kb-height);
-}
-/* Constrain the sheet panel to the space above the keyboard so its own
-   internal scroll (not the viewport) reveals the focused field */
-body.keyboard-open .fixed.inset-0.items-end > * {
-  max-height: calc(100dvh - var(--kb-height)) !important;
-}
-/* Sheets anchored directly to the bottom edge (not the app nav) */
-body.keyboard-open .fixed.bottom-0:not([data-app-nav]) {
-  bottom: var(--kb-height);
-  max-height: calc(100dvh - var(--kb-height)) !important;
+/* Scrollers inside fixed sheets get room to reveal the focused field */
+body.keyboard-open .fixed .overflow-y-auto,
+body.keyboard-open .fixed.overflow-y-auto {
+  padding-bottom: calc(var(--kb-height) + 2rem) !important;
 }
 
 /* =========================

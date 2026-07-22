@@ -86,10 +86,28 @@ export default function Layout({ children, currentPageName }) {
     };
     document.addEventListener('focusin', onFocusIn);
 
+    // Failsafe: iOS sometimes skips the visualViewport resize when the
+    // keyboard closes, which would leave keyboard-open (and its padding)
+    // stuck on — e.g. wedging pickers/sheets. When focus leaves all text
+    // fields, clear the keyboard state explicitly.
+    const onFocusOut = () => {
+      setTimeout(() => {
+        const active = document.activeElement;
+        const stillTyping = active && active.matches?.('input, textarea, [contenteditable="true"]');
+        if (!stillTyping) {
+          document.documentElement.style.setProperty('--kb-height', '0px');
+          document.body.classList.remove('keyboard-open');
+          setKeyboardOpen(false);
+        }
+      }, 250);
+    };
+    document.addEventListener('focusout', onFocusOut);
+
     return () => {
       vv.removeEventListener('resize', update);
       vv.removeEventListener('scroll', update);
       document.removeEventListener('focusin', onFocusIn);
+      document.removeEventListener('focusout', onFocusOut);
       cancelAnimationFrame(raf);
       document.body.classList.remove('keyboard-open');
       document.documentElement.style.removeProperty('--kb-height');

@@ -2,6 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { X, Plus, ChevronDown, ChevronUp, ChevronLeft, Trash2, Pencil, Check, BookOpen, ClipboardList, FileText, Clock, Layers, SlidersHorizontal } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useModal } from '../context/ModalContext';
 import { supabase } from '../lib/supabase';
 import CustomSelect from '../components/ui/CustomSelect';
 import DatePicker from '../components/ui/DatePicker';
@@ -48,6 +49,7 @@ function todayStr() {
 export default function Student() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { openModal: registerModal, closeModal: unregisterModal } = useModal();
 
   const [semester, setSemester] = useState('Spring 2026');
   const [classes, setClasses] = useState([]);
@@ -60,6 +62,14 @@ export default function Student() {
   const [editingItem, setEditingItem] = useState(null);
   const [saving, setSaving] = useState(false);
   const [expanded, setExpanded] = useState({});
+
+  // Register open sheets with the modal context so the floating nav hides
+  useEffect(() => {
+    if (activeModal) {
+      registerModal();
+      return () => unregisterModal();
+    }
+  }, [activeModal, registerModal, unregisterModal]);
 
   const [classForm, setClassForm] = useState(EMPTY_CLASS);
   const [assignForm, setAssignForm] = useState(EMPTY_ASSIGNMENT);

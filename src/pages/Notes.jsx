@@ -278,7 +278,7 @@ export default function Notes() {
         </div>
       </div>}
 
-      <button onClick={handleCreateNote} className="fixed right-6 w-14 h-14 rounded-full bg-[#C9A962] flex items-center justify-center shadow-xl hover:bg-[#D4B574] hover:scale-110 transition-all z-[55]" style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}>
+      <button onClick={handleCreateNote} className="fixed right-6 w-14 h-14 rounded-full bg-[#C9A962] flex items-center justify-center shadow-xl hover:bg-[#D4B574] hover:scale-110 transition-all z-[35]" style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}>
         <Plus className="w-7 h-7 text-[#000000]" strokeWidth={2} />
       </button>
 

@@ -243,7 +243,7 @@ export default function Fitness() {
       </div>}
 
       {activeTab === 'myworkouts' && workouts.length > 0 && (
-        <button onClick={handleCreateWorkout} className="fixed right-6 w-14 h-14 bg-[#C9A962] rounded-full shadow-lg shadow-[rgba(201,169,98,0.4)] flex items-center justify-center hover:bg-[#D4B574] transition-all z-[55]" style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}>
+        <button onClick={handleCreateWorkout} className="fixed right-6 w-14 h-14 bg-[#C9A962] rounded-full shadow-lg shadow-[rgba(201,169,98,0.4)] flex items-center justify-center hover:bg-[#D4B574] transition-all z-[35]" style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}>
           <Plus className="w-6 h-6 text-[#000000]" strokeWidth={2} />
         </button>
       )}

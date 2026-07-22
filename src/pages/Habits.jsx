@@ -204,7 +204,7 @@ export default function Habits() {
       {/* FAB */}
       <button
         onClick={() => setShowModal(true)}
-        className="fixed right-6 w-14 h-14 bg-[#C9A962] rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 z-[55]"
+        className="fixed right-6 w-14 h-14 bg-[#C9A962] rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-110 z-[35]"
         style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}
       >
         <Plus className="w-6 h-6 text-white" strokeWidth={2} />

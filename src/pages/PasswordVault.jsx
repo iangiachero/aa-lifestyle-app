@@ -390,7 +390,7 @@ function VaultContent() {
 
       <button
         onClick={openAdd}
-        className="fixed right-6 w-14 h-14 rounded-full bg-[#C9A962] shadow-[0_0_24px_rgba(201,169,98,0.4)] flex items-center justify-center hover:bg-[#D4B574] active:scale-95 transition-all z-[55]"
+        className="fixed right-6 w-14 h-14 rounded-full bg-[#C9A962] shadow-[0_0_24px_rgba(201,169,98,0.4)] flex items-center justify-center hover:bg-[#D4B574] active:scale-95 transition-all z-[35]"
         style={{ bottom: 'calc(7.5rem + env(safe-area-inset-bottom, 0px))' }}
         aria-label="Add password"
       >
