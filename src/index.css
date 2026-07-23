@@ -17,6 +17,40 @@ body.keyboard-open .fixed.overflow-y-auto {
 }
 
 /* =========================
+   iPad / large screens
+   The layout is phone-first; on wide screens keep it as a centered column
+   (rather than stretching edge-to-edge) so it reads as an intentional app,
+   not a blown-up phone screen. Bottom sheets, the nav pill and the floating
+   FABs all align to the same column width.
+   ========================= */
+@media (min-width: 700px) {
+  :root {
+    --app-col: 560px;
+    /* left edge of the centered column, used to place edge-anchored FABs */
+    --app-col-gap: calc((100vw - var(--app-col)) / 2);
+  }
+  /* App shell becomes a centered column (overrides inline max-width:100vw) */
+  [data-app-shell] {
+    max-width: var(--app-col) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Bottom sheets and their panels align to the same column */
+  .fixed.bottom-0:not([data-app-nav]),
+  .fixed.inset-0.items-end > * {
+    max-width: var(--app-col) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    left: 0;
+    right: 0;
+  }
+  /* Floating FABs sit at the right edge of the column, not the screen */
+  .fixed.right-6 {
+    right: calc(var(--app-col-gap) + 1.5rem) !important;
+  }
+}
+
+/* =========================
    App theme palette (Light/Dark)
    Dark is the default. Adding class "light" to <html> switches the theme.
    Gold accents (#C9A962 / #e2ba8b) are intentionally identical in both themes.

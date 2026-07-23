@@ -490,7 +490,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
               <button
                 onClick={handleSubmit}
                 disabled={!isValid}
-                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:text-[color:var(--app-text-3)] text-[#000000] font-medium py-4 rounded-xl transition-all text-sm"
+                className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:opacity-40 disabled:cursor-not-allowed text-[#000000] font-medium py-4 rounded-xl transition-all text-sm"
               >
                 Create Task
               </button>

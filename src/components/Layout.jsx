@@ -228,6 +228,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div
+      data-app-shell
       className={isAuthPage ? "min-h-screen flex flex-col overflow-x-hidden" : "fixed inset-0 overflow-hidden"}
       style={{
         background: 'var(--app-bg)',

@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowLeft, Check, Sun, Clock, Moon, CheckCircle } from 'lucide-react';
 import { OnboardingShell, GoldButton } from './OnboardingShell';
 import CustomSelect from '../../components/ui/CustomSelect';
+import { useTheme } from '../../hooks/useTheme';
 
 const SCHEDULE_OPTIONS = [
   { key: 'early_bird', label: 'Early Bird', desc: '5am – 9pm', Icon: Sun },
@@ -27,6 +28,7 @@ const TIMEZONES = [
 export default function Step4Schedule({ onSubmit, onBack, data, onChange, loading }) {
   const { schedule_type, timezone } = data;
   const canContinue = schedule_type && timezone;
+  const { theme, setTheme } = useTheme();
 
   return (
     <OnboardingShell
@@ -119,6 +121,42 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
           options={TIMEZONES}
           placeholder="Select timezone"
         />
+
+        <p
+          className="text-xs font-medium uppercase tracking-widest mb-2 mt-6"
+          style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.5)' }}
+        >
+          Appearance
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { key: 'dark', label: 'Dark', Icon: Moon },
+            { key: 'light', label: 'Light', Icon: Sun },
+          ].map(({ key, label, Icon }) => {
+            const isSelected = theme === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setTheme(key)}
+                className="flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl transition-all duration-200"
+                style={{
+                  background: isSelected ? 'rgba(201,169,98,0.12)' : 'var(--app-wash-soft)',
+                  border: isSelected ? '1.5px solid rgba(201,169,98,0.5)' : '1.5px solid rgba(201,169,98,0.12)',
+                }}
+              >
+                <Icon size={16} style={{ color: isSelected ? '#C9A962' : 'rgba(226,186,139,0.6)' }} />
+                <span
+                  className="text-sm font-medium"
+                  style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? '#e2ba8b' : 'rgba(226,186,139,0.7)' }}
+                >
+                  {label}
+                </span>
+                {isSelected && <Check size={14} style={{ color: 'var(--app-gold)' }} />}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </OnboardingShell>
   );
