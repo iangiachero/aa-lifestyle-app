@@ -56,6 +56,19 @@ const ICON_MAP = {
 
 const CATEGORY_TABS = ['All', 'Travel', 'Events', 'Home', 'Wellness', 'Productivity', 'Safety'];
 
+// Top filter row: adds a dedicated "Mine" tab for user-created checklists so they
+// are kept separate from the curated ones (which live under All / categories).
+const FILTER_TABS = ['All', 'Mine', 'Travel', 'Events', 'Home', 'Wellness', 'Productivity', 'Safety'];
+
+// Curated checklists are seeded with a kebab-case slug id as icon_name
+// (e.g. 'flight-packing', always lowercase). User-created checklists don't set
+// one, so the DB defaults icon_name to 'ListChecks' (PascalCase) — any icon_name
+// that is missing or contains an uppercase letter marks a personal checklist.
+const isPersonalChecklist = (c) => {
+  const icon = c && c.icon_name;
+  return !icon || /[A-Z]/.test(icon);
+};
+
 const CATEGORY_COLORS = {
   Travel: '#3B82F6',
   Events: '#F59E0B',
@@ -71,14 +84,67 @@ function ChecklistIcon({ iconName, color, size = 'w-10 h-10' }) {
 }
 
 function ChecklistModal({
-  checklist, onClose, checkedItems, onToggleItem, onToggleCustom,
+  checklist, isPersonal, onClose, checkedItems, onToggleItem, onToggleCustom,
   customItems, addingToTopic, setAddingToTopic, newItemText, setNewItemText,
-  onAddItem, editingItem, setEditingItem, editText, setEditText, onEditItem, onDeleteItem,
+  onAddItem, editingItem, setEditingItem, editText, setEditText,
+  onEditCustomItem, onDeleteCustomItem, onEditTemplateItem, onDeleteTemplateItem,
+  onRenameChecklist, onDeleteChecklist,
 }) {
+  const [renaming, setRenaming] = useState(false);
+  const [nameText, setNameText] = useState(checklist?.name || '');
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const addInputRef = useRef(null);
+  const addRowRef = useRef(null);
+
+  useEffect(() => {
+    setNameText(checklist?.name || '');
+    setRenaming(false);
+    setConfirmDelete(false);
+  }, [checklist?.id]);
+
+  // Callback ref: focus the field the moment it mounts, so tapping "Add item"
+  // (or an edit pencil) drops the caret straight in — no second tap needed.
+  const setAddInput = useCallback((el) => {
+    addInputRef.current = el;
+    if (el) el.focus({ preventScroll: true });
+  }, []);
+
+  // Same for edit fields, with the caret parked at the end of the text.
+  const focusCaretEnd = useCallback((el) => {
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    const len = el.value.length;
+    try { el.setSelectionRange(len, len); } catch { /* type doesn't support it */ }
+  }, []);
+
+  const checklistId = checklist?.id;
+
+  // Add, then keep the caret in the (now empty) field and pull it into view
+  // above the keyboard so the next item can be typed immediately.
+  const submitAdd = useCallback(() => {
+    onAddItem(checklistId);
+    requestAnimationFrame(() => {
+      addInputRef.current?.focus({ preventScroll: true });
+      addRowRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  }, [onAddItem, checklistId]);
+
+  const closeAddRow = useCallback(() => {
+    setAddingToTopic(null);
+    setNewItemText('');
+  }, [setAddingToTopic, setNewItemText]);
+
   if (!checklist) return null;
-  const templateItems = checklist.items;
+  const templateItems = checklist.items || [];
   const customItemsList = customItems[checklist.id] || [];
   const iconColor = checklist.color_tag || CATEGORY_COLORS[checklist.category] || '#C9A962';
+
+  const saveName = () => {
+    const t = nameText.trim();
+    if (!t) return;
+    onRenameChecklist(checklist.id, t);
+    setRenaming(false);
+  };
 
   return (
     <AnimatePresence>
@@ -95,40 +161,92 @@ function ChecklistModal({
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className="relative w-full bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl max-h-[85vh] overflow-y-auto scrollbar-soft z-10"
+          className="relative w-full bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl max-h-[88dvh] overflow-y-auto scrollbar-soft z-10"
           onClick={e => e.stopPropagation()}
         >
           <div className="flex justify-center pt-3 pb-1">
             <div className="w-10 h-1 rounded-full bg-[rgba(201,169,98,0.3)]" />
           </div>
 
-          <div className="page-safe-x" style={{ paddingBottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}>
+          <div className="page-safe-x" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
             <div className="flex items-center justify-between py-4 border-b border-[rgba(201,169,98,0.2)] mb-4">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
                 <ChecklistIcon iconName={checklist.icon_name} color={iconColor} size="w-8 h-8" />
-                <div>
-                  <h2 className="text-xl font-light text-[color:var(--app-gold)]">{checklist.name}</h2>
+                <div className="flex-1 min-w-0">
+                  {renaming ? (
+                    <input
+                      value={nameText}
+                      onChange={e => setNameText(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); saveName(); } if (e.key === 'Escape') { setRenaming(false); setNameText(checklist.name); } }}
+                      ref={focusCaretEnd} enterKeyHint="done"
+                      className="w-full text-xl font-light text-[color:var(--app-gold)] bg-transparent border-b border-[rgba(201,169,98,0.4)] outline-none"
+                    />
+                  ) : (
+                    <h2 className="text-xl font-light text-[color:var(--app-gold)] truncate">{checklist.name}</h2>
+                  )}
                   <p className="text-xs text-[color:var(--app-text-2)] mt-0.5">{templateItems.length + customItemsList.length} items</p>
                 </div>
               </div>
-              <button onClick={onClose} className="text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)] transition-colors">
-                <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
-              </button>
+              <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                {isPersonal && (renaming ? (
+                  <>
+                    <button onClick={saveName} className="p-1 text-[color:var(--app-gold)]"><CheckCircle2 className="w-5 h-5" strokeWidth={1.5} /></button>
+                    <button onClick={() => { setRenaming(false); setNameText(checklist.name); }} className="p-1 text-red-400"><X className="w-5 h-5" strokeWidth={1.5} /></button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => setRenaming(true)} className="p-1.5 text-[color:var(--app-gold)] opacity-70 hover:opacity-100" aria-label="Rename checklist"><Edit2 className="w-4 h-4" strokeWidth={1.5} /></button>
+                    <button onClick={() => setConfirmDelete(true)} className="p-1.5 text-red-400 opacity-70 hover:opacity-100" aria-label="Delete checklist"><Trash2 className="w-4 h-4" strokeWidth={1.5} /></button>
+                  </>
+                ))}
+                <button onClick={onClose} className="p-1 text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)] transition-colors">
+                  <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
+                </button>
+              </div>
             </div>
+
+            {confirmDelete && (
+              <div className="mb-4 p-4 rounded-xl border border-red-300/40 bg-red-500/5">
+                <p className="text-sm font-light text-[color:var(--app-text)] mb-3">Delete &ldquo;{checklist.name}&rdquo;? This can&rsquo;t be undone.</p>
+                <div className="flex gap-2">
+                  <button onClick={() => onDeleteChecklist(checklist.id)} className="flex-1 py-2 rounded-lg bg-red-500 text-white text-sm font-light">Delete</button>
+                  <button onClick={() => setConfirmDelete(false)} className="flex-1 py-2 rounded-lg border border-[rgba(201,169,98,0.3)] text-[color:var(--app-text-2)] text-sm font-light">Cancel</button>
+                </div>
+              </div>
+            )}
 
             {templateItems.length > 0 && (
               <div className="space-y-2 mb-4">
-                <div className="text-[10px] font-light uppercase tracking-wider text-[color:var(--app-text-2)] opacity-70 mb-2">Included</div>
+                <div className="text-[10px] font-light uppercase tracking-wider text-[color:var(--app-text-2)] opacity-70 mb-2">{isPersonal ? 'Items' : 'Included'}</div>
                 {templateItems.map((item, idx) => {
                   const isChecked = checkedItems[`${checklist.id}-${idx}`] || false;
+                  const itemKey = `${checklist.id}-tpl-${idx}`;
+                  if (isPersonal && editingItem === itemKey) {
+                    return (
+                      <div key={itemKey} className="flex items-center gap-2 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)]">
+                        <input value={editText} onChange={e => setEditText(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); onEditTemplateItem(checklist.id, idx); } if (e.key === 'Escape') setEditingItem(null); }}
+                          ref={focusCaretEnd} enterKeyHint="done"
+                          className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)]" />
+                        <button onClick={() => onEditTemplateItem(checklist.id, idx)} className="p-1 text-[color:var(--app-gold)]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
+                        <button onClick={() => setEditingItem(null)} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
+                      </div>
+                    );
+                  }
                   return (
-                    <div key={idx} className={`flex items-center gap-3 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.15)] transition-opacity ${isChecked ? 'opacity-50' : ''}`}>
+                    <div key={itemKey} className={`flex items-center gap-3 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.15)] transition-opacity ${isChecked ? 'opacity-50' : ''}`}>
                       <button onClick={() => onToggleItem(checklist.id, idx)} className="flex-shrink-0">
                         {isChecked
                           ? <CheckCircle2 className="w-5 h-5 text-[#6BBF8A]" strokeWidth={1.5} />
                           : <Circle className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />}
                       </button>
                       <span className={`text-sm font-light flex-1 ${isChecked ? 'line-through text-[color:var(--app-text-3)]' : 'text-[color:var(--app-text)]'}`}>{item}</span>
+                      {isPersonal && (
+                        <>
+                          <button onClick={() => { setEditingItem(itemKey); setEditText(item); }} className="p-1 text-[color:var(--app-gold)] opacity-60 hover:opacity-100"><Edit2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
+                          <button onClick={() => onDeleteTemplateItem(checklist.id, idx)} className="p-1 text-red-400 opacity-60 hover:opacity-100"><Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
+                        </>
+                      )}
                     </div>
                   );
                 })}
@@ -146,9 +264,10 @@ function ChecklistModal({
                       {editingItem === itemKey ? (
                         <div className="flex items-center gap-2 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)]">
                           <input value={editText} onChange={e => setEditText(e.target.value)}
-                            onKeyDown={e => { if (e.key === 'Enter') onEditItem(checklist.id, idx); if (e.key === 'Escape') setEditingItem(null); }}
-                            className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)]" autoFocus />
-                          <button onClick={() => onEditItem(checklist.id, idx)} className="p-1 text-[color:var(--app-gold)]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
+                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); onEditCustomItem(checklist.id, idx); } if (e.key === 'Escape') setEditingItem(null); }}
+                            ref={focusCaretEnd} enterKeyHint="done"
+                            className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)]" />
+                          <button onClick={() => onEditCustomItem(checklist.id, idx)} className="p-1 text-[color:var(--app-gold)]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
                           <button onClick={() => setEditingItem(null)} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
                         </div>
                       ) : (
@@ -160,7 +279,7 @@ function ChecklistModal({
                           </button>
                           <span className={`text-sm font-light flex-1 ${isChecked ? 'line-through text-[color:var(--app-text-3)]' : 'text-[color:var(--app-text)]'}`}>{item}</span>
                           <button onClick={() => { setEditingItem(itemKey); setEditText(item); }} className="p-1 text-[color:var(--app-gold)] opacity-60 hover:opacity-100"><Edit2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
-                          <button onClick={() => onDeleteItem(checklist.id, idx)} className="p-1 text-red-400 opacity-60 hover:opacity-100"><Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
+                          <button onClick={() => onDeleteCustomItem(checklist.id, idx)} className="p-1 text-red-400 opacity-60 hover:opacity-100"><Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} /></button>
                         </div>
                       )}
                     </div>
@@ -170,12 +289,16 @@ function ChecklistModal({
             )}
 
             {addingToTopic === checklist.id ? (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)]">
+              <div ref={addRowRef} className="flex items-center gap-2 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)]">
                 <input value={newItemText} onChange={e => setNewItemText(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') onAddItem(checklist.id); if (e.key === 'Escape') { setAddingToTopic(null); setNewItemText(''); } }}
-                  placeholder="New item..." className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)]" autoFocus />
-                <button onClick={() => onAddItem(checklist.id)} className="p-1 text-[color:var(--app-gold)]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
-                <button onClick={() => { setAddingToTopic(null); setNewItemText(''); }} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
+                  ref={setAddInput}
+                  enterKeyHint="done"
+                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); submitAdd(); } if (e.key === 'Escape') closeAddRow(); }}
+                  placeholder="New item..." className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)]" />
+                {/* preventDefault on press keeps the caret (and the keyboard) in
+                    the field, so several items can be added back to back. */}
+                <button onMouseDown={e => e.preventDefault()} onClick={submitAdd} className="p-1 text-[color:var(--app-gold)]"><CheckCircle2 className="w-4 h-4" strokeWidth={1.5} /></button>
+                <button onMouseDown={e => e.preventDefault()} onClick={closeAddRow} className="p-1 text-red-400"><X className="w-4 h-4" strokeWidth={1.5} /></button>
               </div>
             ) : (
               <button onClick={() => setAddingToTopic(checklist.id)}
@@ -196,6 +319,7 @@ export default function Checklists() {
   const { openModal, closeModal } = useModal();
   const queryClient = useQueryClient();
   const tabsRef = useRef(null);
+  const newItemFieldRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeChecklist, setActiveChecklist] = useState(null);
   const [addingToTopic, setAddingToTopic] = useState(null);
@@ -213,6 +337,15 @@ export default function Checklists() {
       return () => closeModal();
     }
   }, [showAddChecklist, openModal, closeModal]);
+
+  // Hide the bottom nav while the checklist detail sheet is open so it doesn't
+  // overlap and cut off the sheet's bottom content (e.g. the "Add item" button).
+  useEffect(() => {
+    if (activeChecklist) {
+      openModal();
+      return () => closeModal();
+    }
+  }, [activeChecklist, openModal, closeModal]);
 
   const [newChecklistName, setNewChecklistName] = useState('');
   const [newChecklistItems, setNewChecklistItems] = useState([]);
@@ -351,7 +484,31 @@ export default function Checklists() {
         .insert({ user_id: user.id, name, items, color_tag, category });
       if (error) throw error;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userChecklists'] });
+      showNotification('Checklist created');
+    },
+    onError: (e) => showNotification(e?.message?.includes('duplicate') ? 'A checklist with that name already exists' : 'Could not create checklist'),
+  });
+
+  const updateChecklistMutation = useMutation({
+    mutationFn: async ({ id, updates }) => {
+      const { error } = await supabase.from('user_checklists').update(updates).eq('id', id);
+      if (error) throw error;
+    },
+    // Resync from the server once the write settles (also repairs the optimistic
+    // cache entry written by saveItems if the request failed).
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['userChecklists'] }),
+    onError: () => showNotification('Could not save changes'),
+  });
+
+  const deleteChecklistMutation = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from('user_checklists').delete().eq('id', id);
+      if (error) throw error;
+    },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['userChecklists'] }),
+    onError: () => showNotification('Could not delete checklist'),
   });
 
   const showNotification = (message) => {
@@ -373,16 +530,90 @@ export default function Checklists() {
     upsertProgressMutation.mutate({ key, checked: next });
   }, [checkedItems, upsertProgressMutation]);
 
+  // Read the freshest row: the query cache carries optimistic writes that the
+  // `userChecklists` closure hasn't re-rendered with yet.
+  const getChecklist = useCallback((id) =>
+    (queryClient.getQueryData(['userChecklists']) || userChecklists).find(c => c.id === id),
+  [queryClient, userChecklists]);
+
+  // A personal checklist keeps all its items in one jsonb array, so two quick
+  // edits would both read the same stale array and the second would clobber the
+  // first (typing three items fast used to persist only the last). Write the new
+  // array into the cache synchronously so the next call builds on it.
+  const saveItems = useCallback((checklistId, items) => {
+    queryClient.setQueryData(['userChecklists'], (old = []) =>
+      old.map(c => (c.id === checklistId ? { ...c, items } : c)));
+    updateChecklistMutation.mutate({ id: checklistId, updates: { items } });
+  }, [queryClient, updateChecklistMutation]);
+
   const handleAddItem = useCallback((checklistId) => {
     const trimmed = newItemText.trim();
     if (!trimmed) return;
-    const current = customItems[checklistId] || [];
-    if (current.find(i => i.toLowerCase() === trimmed.toLowerCase())) { showNotification('Item already exists'); return; }
-    addCustomItemMutation.mutate({ checklistId, text: trimmed });
-    setAddingToTopic(null);
+    const cl = getChecklist(checklistId);
+    if (isPersonalChecklist(cl)) {
+      // Personal checklists store their items inline on user_checklists.items.
+      const items = cl.items || [];
+      if (items.find(i => i.toLowerCase() === trimmed.toLowerCase())) { showNotification('Item already exists'); return; }
+      saveItems(checklistId, [...items, trimmed]);
+    } else {
+      // Curated checklists keep add-ons separate so the template stays intact.
+      const current = customItems[checklistId] || [];
+      if (current.find(i => i.toLowerCase() === trimmed.toLowerCase())) { showNotification('Item already exists'); return; }
+      addCustomItemMutation.mutate({ checklistId, text: trimmed });
+    }
+    // Keep the field open (and focused, handled by the modal) so the user can
+    // enter several items in a row without re-tapping "Add item" each time.
     setNewItemText('');
-    showNotification('Item added');
-  }, [newItemText, customItems, addCustomItemMutation]);
+  }, [newItemText, getChecklist, saveItems, customItems, addCustomItemMutation]);
+
+  const handleEditTemplateItem = useCallback((checklistId, idx) => {
+    const trimmed = editText.trim();
+    if (!trimmed) return;
+    const cl = getChecklist(checklistId);
+    if (!cl) return;
+    const items = [...(cl.items || [])];
+    if (idx < 0 || idx >= items.length) return;
+    items[idx] = trimmed;
+    saveItems(checklistId, items);
+    setEditingItem(null);
+    showNotification('Item updated');
+  }, [editText, getChecklist, saveItems]);
+
+  const handleDeleteTemplateItem = useCallback((checklistId, idx) => {
+    const cl = getChecklist(checklistId);
+    if (!cl) return;
+    const items = [...(cl.items || [])];
+    const total = items.length;
+    if (idx < 0 || idx >= total) return;
+    items.splice(idx, 1);
+    saveItems(checklistId, items);
+
+    // Item checked-state is keyed by index, so shift keys down to stay aligned.
+    setCheckedItems(prev => {
+      const next = { ...prev };
+      for (let i = idx; i < total - 1; i++) next[`${checklistId}-${i}`] = prev[`${checklistId}-${i + 1}`] || false;
+      delete next[`${checklistId}-${total - 1}`];
+      return next;
+    });
+    for (let i = idx; i < total - 1; i++) {
+      upsertProgressMutation.mutate({ key: `${checklistId}-${i}`, checked: checkedItems[`${checklistId}-${i + 1}`] || false });
+    }
+    upsertProgressMutation.mutate({ key: `${checklistId}-${total - 1}`, checked: false });
+    showNotification('Item deleted');
+  }, [getChecklist, saveItems, upsertProgressMutation, checkedItems]);
+
+  const handleRenameChecklist = useCallback((id, name) => {
+    const trimmed = name.trim();
+    if (!trimmed) { showNotification('Please enter a name'); return; }
+    updateChecklistMutation.mutate({ id, updates: { name: trimmed } });
+    showNotification('Checklist renamed');
+  }, [updateChecklistMutation]);
+
+  const handleDeleteChecklist = useCallback((id) => {
+    deleteChecklistMutation.mutate(id);
+    setActiveChecklist(null);
+    showNotification('Checklist deleted');
+  }, [deleteChecklistMutation]);
 
   const handleEditItem = useCallback((checklistId, idx) => {
     const trimmed = editText.trim();
@@ -420,6 +651,8 @@ export default function Checklists() {
     if (newChecklistItems.find(i => i.toLowerCase() === trimmed.toLowerCase())) { showNotification('Item already added'); return; }
     setNewChecklistItems([...newChecklistItems, trimmed]);
     setNewChecklistItemInput('');
+    // Keep the caret in the field so items can be typed one after another.
+    requestAnimationFrame(() => newItemFieldRef.current?.focus({ preventScroll: true }));
   };
 
   const handleCreateChecklist = () => {
@@ -437,13 +670,21 @@ export default function Checklists() {
     setNewChecklistItemInput('');
     setNewChecklistColor('#6B7280');
     setNewChecklistCategory('Productivity');
-    showNotification('Checklist created');
+    setActiveCategory('Mine');
   };
 
   const CATEGORY_ORDER = ['Travel', 'Events', 'Home', 'Wellness', 'Productivity', 'Safety'];
 
   const filteredChecklists = useMemo(() => {
-    const list = activeCategory === 'All' ? userChecklists : userChecklists.filter(c => c.category === activeCategory);
+    // "Mine" shows the user's own checklists, newest first. All other tabs show
+    // only curated checklists so personal ones never mix into the curated set.
+    if (activeCategory === 'Mine') {
+      return userChecklists
+        .filter(isPersonalChecklist)
+        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    }
+    const curated = userChecklists.filter(c => !isPersonalChecklist(c));
+    const list = activeCategory === 'All' ? curated : curated.filter(c => c.category === activeCategory);
     return [...list].sort((a, b) => {
       const catA = CATEGORY_ORDER.indexOf(a.category);
       const catB = CATEGORY_ORDER.indexOf(b.category);
@@ -459,8 +700,10 @@ export default function Checklists() {
   return (
     <div className="min-h-screen pb-24" style={{ background: 'var(--app-bg)' }}>
       {notification && (
-        <div className="fixed top-4 right-4 z-50 px-4 py-3 rounded-xl bg-gradient-to-br from-[#e2ba8b] to-[#C9A962] text-white shadow-lg text-sm font-light">
-          {notification}
+        <div className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none">
+          <div className="px-5 py-3 rounded-xl bg-gradient-to-br from-[#e2ba8b] to-[#C9A962] text-white shadow-lg text-sm font-light text-center max-w-[80%]">
+            {notification}
+          </div>
         </div>
       )}
 
@@ -480,9 +723,9 @@ export default function Checklists() {
           className="flex gap-1 px-4 py-3 overflow-x-auto scrollbar-hide"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {CATEGORY_TABS.map(tab => {
+          {FILTER_TABS.map(tab => {
             const isActive = activeCategory === tab;
-            const color = tab === 'All' ? '#C9A962' : CATEGORY_COLORS[tab];
+            const color = (tab === 'All' || tab === 'Mine') ? '#C9A962' : CATEGORY_COLORS[tab];
             return (
               <button
                 key={tab}
@@ -506,7 +749,9 @@ export default function Checklists() {
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <ListChecks className="w-16 h-16 text-[color:var(--app-gold)] opacity-30 mb-4" strokeWidth={1} />
             <p className="text-[color:var(--app-text-2)] font-light text-base mb-1">
-              {activeCategory === 'All' ? 'No checklists yet' : `No ${activeCategory} checklists`}
+              {activeCategory === 'All' ? 'No checklists yet'
+                : activeCategory === 'Mine' ? 'No personal checklists yet'
+                : `No ${activeCategory} checklists`}
             </p>
             <p className="text-[color:var(--app-text-3)] text-sm font-light">Tap the + button to create a checklist</p>
           </div>
@@ -594,6 +839,7 @@ export default function Checklists() {
       {activeChecklistObj && (
         <ChecklistModal
           checklist={activeChecklistObj}
+          isPersonal={isPersonalChecklist(activeChecklistObj)}
           onClose={() => { setActiveChecklist(null); setAddingToTopic(null); setNewItemText(''); setEditingItem(null); }}
           checkedItems={checkedItems}
           onToggleItem={handleToggleItem}
@@ -608,8 +854,12 @@ export default function Checklists() {
           setEditingItem={setEditingItem}
           editText={editText}
           setEditText={setEditText}
-          onEditItem={handleEditItem}
-          onDeleteItem={handleDeleteItem}
+          onEditCustomItem={handleEditItem}
+          onDeleteCustomItem={handleDeleteItem}
+          onEditTemplateItem={handleEditTemplateItem}
+          onDeleteTemplateItem={handleDeleteTemplateItem}
+          onRenameChecklist={handleRenameChecklist}
+          onDeleteChecklist={handleDeleteChecklist}
         />
       )}
 
@@ -657,8 +907,8 @@ export default function Checklists() {
               <div className="mb-4">
                 <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Add Items</label>
                 <div className="flex items-center gap-2">
-                  <Input value={newChecklistItemInput} onChange={e => setNewChecklistItemInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleAddChecklistItem(); }} placeholder="Enter item..." className="flex-1 border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
-                  <button onClick={handleAddChecklistItem} className="w-10 h-10 bg-[#C9A962] rounded-lg flex items-center justify-center hover:bg-[#D4B978]">
+                  <Input ref={newItemFieldRef} value={newChecklistItemInput} onChange={e => setNewChecklistItemInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddChecklistItem(); } }} enterKeyHint="done" placeholder="Enter item..." className="flex-1 border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
+                  <button onMouseDown={e => e.preventDefault()} onClick={handleAddChecklistItem} className="w-10 h-10 bg-[#C9A962] rounded-lg flex items-center justify-center hover:bg-[#D4B978]">
                     <Plus className="w-5 h-5 text-[#000000]" strokeWidth={2} />
                   </button>
                 </div>

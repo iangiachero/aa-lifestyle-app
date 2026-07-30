@@ -1,16 +1,16 @@
-﻿// src/pages/homeorganization/components/Create.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, ChevronUp, Plus, X, Check, Search } from 'lucide-react';
+// src/pages/homeorganization/components/Create.jsx
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ChevronDown, ChevronUp, Plus, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useDebounce } from '../../../hooks/useDebounce';
-import { searchIconifyIcons, getIconifyIconUrl } from '../../../services/iconifyService';
+import { getIconifyIconUrl } from '../../../services/iconifyService';
 import ColorPicker from '../../../components/ui/ColorPicker';
+import IconPicker, { DEFAULT_ICON } from '../../../components/ui/IconPicker';
 import { useModal } from '../../../context/ModalContext';
 
 /* === CREATE MODAL STYLING CONFIGURATION === */
 const STYLE = {
   overlay: 'fixed inset-0 bg-black/60 z-[100] flex items-end',
-  sheet: 'w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90vh] flex flex-col',
+  sheet: 'w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90dvh] flex flex-col',
   header: 'sticky top-0 bg-[color:var(--app-bg)] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
   title: 'text-xl text-[color:var(--app-gold)] font-light',
   subtitle: 'text-xs text-[color:var(--app-text-2)] mt-0.5',
@@ -45,8 +45,6 @@ const SECTION_OPTIONS = [
   { id: 'moving-reset-checklist',    label: 'Moving / Reset Checklist',       icon: 'mdi:truck-outline' },
 ];
 
-const DEFAULT_ICON = 'mdi:home-outline';
-
 const EMPTY_FORM = {
   title: '',
   section: 'daily-reset-adhd',
@@ -54,10 +52,17 @@ const EMPTY_FORM = {
   color_tag: '#6B7280',
 };
 
-export default function CreateModal({ visible, onClose, onAdd, defaultSection }) {
+export default function CreateModal({
+  visible, onClose, onAdd, onAddCategory, defaultSection, customCategories = [],
+}) {
   const { openModal, closeModal } = useModal();
-  const [form, setForm]               = useState({ ...EMPTY_FORM, section: defaultSection || 'daily-reset-adhd' });
+  // 'task'     -> add a single task into an existing section
+  // 'category' -> create a brand new custom category (bar) with its own items
+  const [mode, setMode] = useState('task');
+  const [form, setForm] = useState({ ...EMPTY_FORM, section: defaultSection || 'daily-reset-adhd' });
   const [expandedTask, setExpandedTask] = useState(null);
+  const [selectedIconId, setSelectedIconId] = useState(null);
+  const taskInputRefs = useRef({});
 
   useEffect(() => {
     if (visible) {
@@ -66,88 +71,24 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
     }
   }, [visible, openModal, closeModal]);
 
-  // Icon picker state
-  const [selectedIconId, setSelectedIconId]     = useState(null);
-  const [showIconPicker, setShowIconPicker]      = useState(false);
-  const [iconSearchQuery, setIconSearchQuery]    = useState('');
-  const [iconSearchResults, setIconSearchResults] = useState([]);
-  const [isSearching, setIsSearching]            = useState(false);
-
-  const iconPickerRef  = useRef(null);
-  const iconSearchRef  = useRef(null);
-  const debouncedQuery = useDebounce(iconSearchQuery, 250);
-
-  /* ── reset ── */
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setForm({ ...EMPTY_FORM, section: defaultSection || 'daily-reset-adhd' });
     setExpandedTask(null);
     setSelectedIconId(null);
-    setShowIconPicker(false);
-    setIconSearchQuery('');
-    setIconSearchResults([]);
-  };
+    setMode('task');
+  }, [defaultSection]);
 
   const handleClose = () => { onClose(); resetForm(); };
 
-  /* ── icon search ── */
-  useEffect(() => {
-    if (debouncedQuery.length >= 2) {
-      setIsSearching(true);
-      searchIconifyIcons(debouncedQuery).then((results) => {
-        setIconSearchResults(results);
-        setIsSearching(false);
-      });
-    } else {
-      setIconSearchResults([]);
-      setIsSearching(false);
-    }
-  }, [debouncedQuery]);
-
-  // Auto-focus search input when picker opens
-  useEffect(() => {
-    if (showIconPicker) {
-      setTimeout(() => iconSearchRef.current?.focus(), 100);
-    } else {
-      setIconSearchQuery('');
-      setIconSearchResults([]);
-    }
-  }, [showIconPicker]);
-
-  // Click-outside & Esc to close picker
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (iconPickerRef.current && !iconPickerRef.current.contains(e.target)) {
-        setShowIconPicker(false);
-      }
-    };
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') setShowIconPicker(false);
-    };
-    if (showIconPicker) {
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('keydown', handleEsc);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEsc);
-    };
-  }, [showIconPicker]);
-
-  const handleIconSelect = (iconId) => {
-    setSelectedIconId(iconId);
-    setShowIconPicker(false);
-  };
-
-  const handleClearIcon = (e) => {
-    e.stopPropagation();
-    setSelectedIconId(null);
-  };
-
-  /* ── tasks ── */
+  /* ── items ── */
   const addTask = () => {
     const newTask = { id: Date.now(), name: '' };
     setForm(prev => ({ ...prev, tasks: [...prev.tasks, newTask] }));
     setExpandedTask(newTask.id);
+    // Drop the caret straight into the new row instead of making the user tap it.
+    requestAnimationFrame(() => {
+      setTimeout(() => taskInputRefs.current[newTask.id]?.focus({ preventScroll: true }), 60);
+    });
   };
 
   const updateTask = (taskId, value) => {
@@ -165,16 +106,28 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
   /* ── submit ── */
   const handleSubmit = () => {
     if (!form.title.trim()) return;
-    onAdd({
-      title: form.title.trim(),
-      icon: selectedIconId || DEFAULT_ICON,
-      section: form.section,
-      sub_tasks: form.tasks.filter(t => t.name.trim()).map(t => t.name.trim()),
-      color_tag: form.color_tag,
-    });
+    const items = form.tasks.filter(t => t.name.trim()).map(t => t.name.trim());
+
+    if (mode === 'category') {
+      onAddCategory({
+        name: form.title.trim(),
+        icon: selectedIconId || DEFAULT_ICON,
+        color_tag: form.color_tag,
+        items,
+      });
+    } else {
+      onAdd({
+        title: form.title.trim(),
+        icon: selectedIconId || DEFAULT_ICON,
+        section: form.section,
+        sub_tasks: items,
+        color_tag: form.color_tag,
+      });
+    }
     handleClose();
   };
 
+  const isCategory = mode === 'category';
   const isValid = form.title.trim().length > 0;
 
   return (
@@ -198,8 +151,10 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
             {/* ── Header ── */}
             <div className={STYLE.header}>
               <div>
-                <h2 className={STYLE.title}>Create Task</h2>
-                <p className={STYLE.subtitle}>Add a new home organization task</p>
+                <h2 className={STYLE.title}>{isCategory ? 'Create Category' : 'Create Task'}</h2>
+                <p className={STYLE.subtitle}>
+                  {isCategory ? 'Your own home organization bar' : 'Add a task to an existing section'}
+                </p>
               </div>
               <button onClick={handleClose} className="text-[color:var(--app-gold)] hover:text-[color:var(--app-gold-light)] transition-colors">
                 <ChevronDown className="w-7 h-7" strokeWidth={1.5} />
@@ -211,190 +166,105 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
               className="overflow-y-auto flex-1 px-6 py-5 space-y-5 scrollbar-hide"
               style={{ paddingBottom: '3rem' }}
             >
+              {/* ── 0. What are we creating? ── */}
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { id: 'task', label: 'New Task' },
+                  { id: 'category', label: 'New Category' },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => setMode(opt.id)}
+                    className={`px-3 py-2.5 rounded-xl text-sm font-light transition-all border ${
+                      mode === opt.id ? STYLE.chipActive : STYLE.chipInactive
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
 
-              {/* ── 1. Icon + Title on the same row ── */}
+              {/* ── 1. Icon + Title ── */}
               <div>
-                <label className={STYLE.label}>Title</label>
+                <label className={STYLE.label}>{isCategory ? 'Category Name' : 'Title'}</label>
                 <div className="flex items-center gap-3">
-
-                  {/* Icon trigger button */}
-                  <div className="relative flex-shrink-0" ref={iconPickerRef}>
-                    <button
-                      onClick={() => setShowIconPicker(prev => !prev)}
-                      className={`w-12 h-12 flex items-center justify-center rounded-xl border transition-all ${
-                        showIconPicker
-                          ? 'border-[#C9A962] bg-[rgba(201,169,98,0.1)]'
-                          : 'border-[rgba(201,169,98,0.3)] bg-[color:var(--app-bg)] hover:border-[rgba(201,169,98,0.55)]'
-                      }`}
-                      title={selectedIconId ? 'Change icon' : 'Pick an icon'}
-                    >
-                      {selectedIconId ? (
-                        <img
-                          src={getIconifyIconUrl(selectedIconId)}
-                          alt=""
-                          className="w-6 h-6"
-                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                        />
-                      ) : (
-                        // Placeholder grid of dots
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                          {[3,10,17].map(cx =>
-                            [3,10,17].map(cy => (
-                              <circle
-                                key={`${cx}-${cy}`}
-                                cx={cx} cy={cy} r="1.5"
-                                fill="rgba(201,169,98,0.45)"
-                              />
-                            ))
-                          )}
-                        </svg>
-                      )}
-                    </button>
-
-                    {/* Clear badge when icon selected */}
-                    {selectedIconId && (
-                      <button
-                        onClick={handleClearIcon}
-                        className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.4)] rounded-full flex items-center justify-center hover:bg-[rgba(201,169,98,0.15)] transition-colors z-10"
-                        title="Clear icon"
-                      >
-                        <X className="w-2.5 h-2.5 text-[color:var(--app-gold)]" strokeWidth={2} />
-                      </button>
-                    )}
-
-                    {/* ── Icon Picker Panel ── */}
-                    <AnimatePresence>
-                      {showIconPicker && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                          transition={{ duration: 0.15 }}
-                          className="absolute left-0 top-full mt-2 w-72 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-[200] overflow-hidden"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {/* Search bar inside picker */}
-                          <div className="px-3 pt-3 pb-2 border-b border-[rgba(201,169,98,0.15)]">
-                            <div className="flex items-center gap-2 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.25)] rounded-xl px-3 py-2">
-                              <Search className="w-3.5 h-3.5 text-[color:var(--app-text-3)] flex-shrink-0" strokeWidth={1.5} />
-                              <input
-                                ref={iconSearchRef}
-                                type="text"
-                                placeholder="Search icons..."
-                                value={iconSearchQuery}
-                                onChange={(e) => setIconSearchQuery(e.target.value)}
-                                className="flex-1 bg-transparent text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:outline-none text-xs"
-                              />
-                              {iconSearchQuery && (
-                                <button
-                                  onClick={() => { setIconSearchQuery(''); setIconSearchResults([]); }}
-                                  className="text-[color:var(--app-text-3)] hover:text-[color:var(--app-text-2)] transition-colors"
-                                >
-                                  <X className="w-3 h-3" strokeWidth={2} />
-                                </button>
-                              )}
-                            </div>
-                            {iconSearchQuery.length > 0 && iconSearchQuery.length < 2 && (
-                              <p className="text-[10px] text-[color:var(--app-text-3)] mt-1.5 px-1">
-                                Type at least 2 characters to search
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Results area */}
-                          <div
-                            className="overflow-y-auto scrollbar-hide"
-                            style={{ maxHeight: '220px' }}
-                          >
-                            {isSearching ? (
-                              <div className="flex items-center justify-center gap-2 py-8 text-[color:var(--app-text-3)] text-xs">
-                                <div className="w-4 h-4 border border-[rgba(201,169,98,0.4)] border-t-[#C9A962] rounded-full animate-spin" />
-                                Searching...
-                              </div>
-                            ) : iconSearchQuery.length >= 2 && iconSearchResults.length === 0 ? (
-                              <div className="py-8 text-center text-[color:var(--app-text-3)] text-xs">
-                                No icons found for "{iconSearchQuery}"
-                              </div>
-                            ) : iconSearchResults.length > 0 ? (
-                              /* Grid of icon results */
-                              <div className="p-3 grid grid-cols-6 gap-1.5">
-                                {iconSearchResults.map((iconId) => (
-                                  <button
-                                    key={iconId}
-                                    onClick={() => handleIconSelect(iconId)}
-                                    className={`aspect-square flex items-center justify-center rounded-lg transition-all border ${
-                                      selectedIconId === iconId
-                                        ? 'border-[#C9A962] bg-[rgba(201,169,98,0.15)]'
-                                        : 'border-transparent hover:border-[rgba(201,169,98,0.35)] hover:bg-[rgba(201,169,98,0.08)]'
-                                    }`}
-                                    title={iconId}
-                                  >
-                                    <img
-                                      src={getIconifyIconUrl(iconId)}
-                                      alt=""
-                                      className="w-6 h-6"
-                                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                    />
-                                  </button>
-                                ))}
-                              </div>
-                            ) : (
-                              /* Empty/idle state */
-                              <div className="py-8 text-center">
-                                <div className="text-2xl mb-1 opacity-30">⌕</div>
-                                <p className="text-xs text-[color:var(--app-text-3)]">Search for an icon above</p>
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-
-                  {/* Title input */}
+                  <IconPicker value={selectedIconId} onChange={setSelectedIconId} />
                   <input
                     type="text"
-                    placeholder="e.g., Wipe kitchen counters"
+                    placeholder={isCategory ? 'e.g., Craft Room' : 'e.g., Wipe kitchen counters'}
                     value={form.title}
                     onChange={(e) => setForm(prev => ({ ...prev, title: e.target.value }))}
                     className={`${STYLE.input} flex-1`}
                   />
                 </div>
+                {isCategory && (
+                  <p className="text-[11px] text-[color:var(--app-text-3)] mt-2">
+                    Appears in <span className="text-[color:var(--app-gold)]">Your Categories</span>, below the curated ones.
+                  </p>
+                )}
               </div>
 
-              {/* ── 2. Section selector ── */}
-              <div>
-                <label className={STYLE.label}>Section</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {SECTION_OPTIONS.map(opt => (
-                    <button
-                      key={opt.id}
-                      onClick={() => setForm(prev => ({ ...prev, section: opt.id }))}
-                      className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-light transition-all border ${
-                        form.section === opt.id ? STYLE.chipActive : STYLE.chipInactive
-                      }`}
-                    >
-                      <img src={getIconifyIconUrl(opt.icon)} alt="" className="w-5 h-5 flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                      <span>{opt.label}</span>
-                      {form.section === opt.id && (
-                        <Check className="w-3 h-3 ml-auto flex-shrink-0" strokeWidth={2.5} />
-                      )}
-                    </button>
-                  ))}
+              {/* ── 2. Section selector (task mode only) ── */}
+              {!isCategory && (
+                <div>
+                  <label className={STYLE.label}>Section</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {SECTION_OPTIONS.map(opt => (
+                      <button
+                        key={opt.id}
+                        onClick={() => setForm(prev => ({ ...prev, section: opt.id }))}
+                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-light transition-all border ${
+                          form.section === opt.id ? STYLE.chipActive : STYLE.chipInactive
+                        }`}
+                      >
+                        <img src={getIconifyIconUrl(opt.icon)} alt="" className="w-5 h-5 flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                        <span className="truncate">{opt.label}</span>
+                        {form.section === opt.id && (
+                          <Check className="w-3 h-3 ml-auto flex-shrink-0" strokeWidth={2.5} />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* User's own categories are valid targets too */}
+                  {customCategories.length > 0 && (
+                    <>
+                      <p className="text-[10px] uppercase tracking-wider text-[color:var(--app-text-3)] mt-4 mb-2">
+                        Your Categories
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {customCategories.map(cat => (
+                          <button
+                            key={cat.id}
+                            onClick={() => setForm(prev => ({ ...prev, section: cat.id }))}
+                            className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-light transition-all border ${
+                              form.section === cat.id ? STYLE.chipActive : STYLE.chipInactive
+                            }`}
+                          >
+                            <img src={getIconifyIconUrl(cat.icon || DEFAULT_ICON)} alt="" className="w-5 h-5 flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                            <span className="truncate">{cat.name}</span>
+                            {form.section === cat.id && (
+                              <Check className="w-3 h-3 ml-auto flex-shrink-0" strokeWidth={2.5} />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
-              </div>
+              )}
 
-              {/* ── 2b. Color Tag ── */}
+              {/* ── 3. Color Tag ── */}
               <ColorPicker
                 selectedColor={form.color_tag}
                 onSelectColor={(color) => setForm(prev => ({ ...prev, color_tag: color }))}
               />
 
-              {/* ── 3. Sub-Tasks ── */}
+              {/* ── 4. Items ── */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <label className={`${STYLE.label} mb-0`}>
-                    Sub-Tasks{' '}
+                    {isCategory ? 'Checklist Items' : 'Sub-Tasks'}{' '}
                     {form.tasks.length > 0 && (
                       <span className="text-[color:var(--app-gold)] normal-case">({form.tasks.length})</span>
                     )}
@@ -404,7 +274,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                     className="flex items-center gap-1.5 text-xs text-[color:var(--app-gold)] hover:text-[color:var(--app-gold-light)] transition-colors bg-[rgba(201,169,98,0.1)] hover:bg-[rgba(201,169,98,0.15)] px-3 py-1.5 rounded-lg border border-[rgba(201,169,98,0.25)]"
                   >
                     <Plus className="w-3.5 h-3.5" strokeWidth={2} />
-                    Add Task
+                    Add Item
                   </button>
                 </div>
 
@@ -429,7 +299,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                                 {index + 1}
                               </span>
                               <span className={`text-sm font-light truncate ${task.name ? 'text-[color:var(--app-text)]' : 'text-[color:var(--app-text-3)]'}`}>
-                                {task.name || 'Untitled task'}
+                                {task.name || 'Untitled item'}
                               </span>
                             </div>
                             <div className="flex items-center gap-2 flex-shrink-0">
@@ -456,17 +326,21 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                                 className="border-t border-[rgba(201,169,98,0.15)] px-4 py-3"
                               >
                                 <label className="text-[10px] text-[color:var(--app-text-2)] uppercase tracking-wider mb-1.5 block">
-                                  Task Name
+                                  Item Name
                                 </label>
                                 <input
+                                  ref={(el) => { taskInputRefs.current[task.id] = el; }}
                                   type="text"
                                   placeholder="e.g., Wipe counters"
                                   value={task.name}
                                   onChange={(e) => updateTask(task.id, e.target.value)}
                                   className="w-full bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.25)] rounded-lg px-3 py-2.5 text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:border-[#C9A962] focus:outline-none text-sm"
                                   onClick={(e) => e.stopPropagation()}
+                                  enterKeyHint="done"
                                   onKeyDown={(e) => {
-                                    if (e.key === 'Enter') { e.preventDefault(); setExpandedTask(null); }
+                                    // Enter closes this row and opens a fresh one, so a
+                                    // whole list can be typed without reaching for the mouse.
+                                    if (e.key === 'Enter') { e.preventDefault(); if (task.name.trim()) addTask(); else setExpandedTask(null); }
                                   }}
                                 />
                               </motion.div>
@@ -479,8 +353,8 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
 
                   {form.tasks.length === 0 && (
                     <div className="text-center py-6 border border-dashed border-[rgba(201,169,98,0.2)] rounded-xl">
-                      <p className="text-xs text-[color:var(--app-text-3)]">No sub-tasks added yet</p>
-                      <p className="text-[10px] text-[color:var(--app-text-3)] mt-1">Tap "Add Task" to begin</p>
+                      <p className="text-xs text-[color:var(--app-text-3)]">No items added yet</p>
+                      <p className="text-[10px] text-[color:var(--app-text-3)] mt-1">Tap &ldquo;Add Item&rdquo; to begin</p>
                     </div>
                   )}
                 </div>
@@ -492,7 +366,7 @@ export default function CreateModal({ visible, onClose, onAdd, defaultSection })
                 disabled={!isValid}
                 className="w-full bg-[#C9A962] hover:bg-[#D4B978] disabled:opacity-40 disabled:cursor-not-allowed text-[#000000] font-medium py-4 rounded-xl transition-all text-sm"
               >
-                Create Task
+                {isCategory ? 'Create Category' : 'Create Task'}
               </button>
 
               <div className="h-10" />

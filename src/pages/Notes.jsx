@@ -51,7 +51,9 @@ export default function Notes() {
     if (!user?.id) return;
     const { data, error } = await supabase
       .from('notes')
-      .insert({ user_id: user.id, title: 'New Note', content: '', pinned: false })
+      // Empty title so the "Subject Title" placeholder shows instead of literal
+      // text the user has to delete first. The list falls back to 'Untitled Note'.
+      .insert({ user_id: user.id, title: '', content: '', pinned: false })
       .select()
       .single();
     if (!error && data) {
@@ -173,18 +175,30 @@ export default function Notes() {
         </div>
 
         <div className="px-6 pt-6 pb-24 space-y-4">
-          <input
-            value={editingNote.title}
-            onChange={(e) => handleAutoSave('title', e.target.value)}
-            placeholder="Untitled Note"
-            className="w-full text-2xl font-light bg-transparent border-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:outline-none"
-          />
-          <textarea
-            value={editingNote.content}
-            onChange={(e) => handleAutoSave('content', e.target.value)}
-            placeholder="Start writing..."
-            className="w-full min-h-[500px] bg-transparent border-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] resize-none focus:outline-none leading-relaxed"
-          />
+          {/* The two fields look alike, so users tried to write paragraphs in the
+              single-line title. Label them explicitly instead. */}
+          <div>
+            <label className="text-[10px] font-light uppercase tracking-wider text-[color:var(--app-text-2)] opacity-70 mb-1 block">
+              Subject Title
+            </label>
+            <input
+              value={editingNote.title}
+              onChange={(e) => handleAutoSave('title', e.target.value)}
+              placeholder="Give this note a title"
+              className="w-full text-2xl font-light bg-transparent border-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] focus:outline-none"
+            />
+          </div>
+          <div className="pt-1 border-t border-[rgba(201,169,98,0.15)]">
+            <label className="text-[10px] font-light uppercase tracking-wider text-[color:var(--app-text-2)] opacity-70 mb-1 mt-3 block">
+              Note
+            </label>
+            <textarea
+              value={editingNote.content}
+              onChange={(e) => handleAutoSave('content', e.target.value)}
+              placeholder="Write your note here..."
+              className="w-full min-h-[500px] bg-transparent border-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)] resize-none focus:outline-none leading-relaxed"
+            />
+          </div>
           <div className="text-xs text-[color:var(--app-text-3)]">
             Last edited {new Date(selectedNote.updated_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
           </div>

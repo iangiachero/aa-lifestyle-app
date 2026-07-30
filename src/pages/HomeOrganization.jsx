@@ -8,6 +8,8 @@ import CreateModal from './homeorganization/components/Create';
 import ViewCategoryModal from './homeorganization/components/ViewCategoryModal';
 import { homeOrgImages, homeOrgImagesById } from '../data/homeOrgImages';
 import { seedHomeOrg } from '../lib/seedHomeOrg';
+import { getIconifyIconUrl } from '../services/iconifyService';
+import { DEFAULT_ICON } from '../components/ui/IconPicker';
 
 const CATEGORY_META = {
   'daily-reset-adhd':          { name: 'Daily Reset (ADHD Quick Wins)',  color: '#F59E0B' },
@@ -39,7 +41,7 @@ export default function HomeOrganization() {
   const navigate = useNavigate();
   const [showCreate, setShowCreate] = useState(false);
   const [createDefaultSection, setCreateDefaultSection] = useState('daily-reset-adhd');
-  const [viewingCategory, setViewingCategory] = useState(null);
+  const [viewingCategoryId, setViewingCategoryId] = useState(null);
   const queryClient = useQueryClient();
 
   const seeded = useRef(false);
@@ -57,6 +59,28 @@ export default function HomeOrganization() {
       if (error) throw error;
       return data || [];
     },
+  });
+
+  // User-created categories. Returns [] if the table hasn't been migrated yet,
+  // so the curated section keeps working instead of the page erroring out.
+  const { data: customCategories = [] } = useQuery({
+    queryKey: ['homeOrgCategories'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('home_org_categories')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: true });
+      if (error) {
+        console.warn('[HomeOrganization] home_org_categories unavailable:', error.message);
+        return [];
+      }
+      return data || [];
+    },
+    retry: false,
   });
 
   useEffect(() => {
@@ -134,6 +158,85 @@ export default function HomeOrganization() {
     onSettled: () => queryClient.invalidateQueries({ queryKey: ['organizationTasks'] }),
   });
 
+  /* ── custom categories ── */
+
+  const createCategoryMutation = useMutation({
+    mutationFn: async ({ name, icon, color_tag, items }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: category, error } = await supabase
+        .from('home_org_categories')
+        .insert({ user_id: user.id, name, icon, color_tag, sort_order: customCategories.length })
+        .select()
+        .single();
+      if (error) throw error;
+
+      // The category id doubles as the tasks' section slug.
+      const rows = (items || []).filter(Boolean).map(title => ({
+        user_id: user.id, title, icon, color_tag, section: category.id, sub_tasks: [], is_curated: false,
+      }));
+      if (rows.length) {
+        const { error: itemsError } = await supabase.from('organization_tasks').insert(rows);
+        if (itemsError) throw itemsError;
+      }
+      return category;
+    },
+    onSuccess: (category) => {
+      queryClient.invalidateQueries({ queryKey: ['homeOrgCategories'] });
+      queryClient.invalidateQueries({ queryKey: ['organizationTasks'] });
+      // Jump straight into the new category so it's obvious it was created.
+      if (category?.id) setViewingCategoryId(category.id);
+    },
+    onError: (e) => {
+      // Distinguish "table not migrated yet" (PGRST205) from "table exists but
+      // RLS policies were never applied" (42501) — they need different fixes.
+      const code = e?.code || '';
+      if (code === 'PGRST205' || /schema cache/i.test(e?.message || '')) {
+        window.alert('Custom categories need the home_org_categories table. Run the latest Supabase migration, then try again.');
+      } else if (code === '42501' || /row-level security/i.test(e?.message || '')) {
+        window.alert('The home_org_categories table exists but its row-level security policies are missing. Run the policy statements from the latest migration, then try again.');
+      } else {
+        window.alert(`Could not create the category: ${e?.message || 'unknown error'}`);
+      }
+    },
+  });
+
+  const updateCategoryMutation = useMutation({
+    mutationFn: async ({ id, updates }) => {
+      const { error } = await supabase
+        .from('home_org_categories')
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onMutate: async ({ id, updates }) => {
+      await queryClient.cancelQueries({ queryKey: ['homeOrgCategories'] });
+      const previous = queryClient.getQueryData(['homeOrgCategories']);
+      queryClient.setQueryData(['homeOrgCategories'], (old = []) =>
+        old.map(c => c.id === id ? { ...c, ...updates } : c));
+      return { previous };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.previous) queryClient.setQueryData(['homeOrgCategories'], ctx.previous);
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ['homeOrgCategories'] }),
+  });
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id) => {
+      // Tasks reference the category by slug, not by FK, so clear them first.
+      const { error: tasksError } = await supabase
+        .from('organization_tasks').delete().eq('section', id);
+      if (tasksError) throw tasksError;
+      const { error } = await supabase.from('home_org_categories').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setViewingCategoryId(null);
+      queryClient.invalidateQueries({ queryKey: ['homeOrgCategories'] });
+      queryClient.invalidateQueries({ queryKey: ['organizationTasks'] });
+    },
+  });
+
   const handleCreate = ({ icon, title, section, sub_tasks, color_tag }) => {
     createTaskMutation.mutate({ icon, title, section, sub_tasks, color_tag, is_curated: false });
   };
@@ -163,12 +266,15 @@ export default function HomeOrganization() {
     }, {});
   }, [orgTasks]);
 
-  const activeSections = useMemo(() => {
-    const allSectionIds = new Set(Object.keys(tasksBySection));
-    const ordered = CATEGORY_ORDER.filter(id => allSectionIds.has(id));
-    const remaining = [...allSectionIds].filter(id => !CATEGORY_META[id]);
+  const customIds = useMemo(() => new Set(customCategories.map(c => c.id)), [customCategories]);
 
-    return [...ordered, ...remaining].map(sectionId => {
+  // Curated bars first, then any legacy sections, then the user's own categories
+  // last — a custom category is never inserted among the curated ones.
+  const curatedSections = useMemo(() => {
+    const withTasks = new Set(Object.keys(tasksBySection));
+    const ordered = CATEGORY_ORDER.filter(id => withTasks.has(id));
+    const legacy = [...withTasks].filter(id => !CATEGORY_META[id] && !customIds.has(id));
+    return [...ordered, ...legacy].map(sectionId => {
       const meta = CATEGORY_META[sectionId];
       const title = meta ? meta.name : sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
       return {
@@ -176,9 +282,69 @@ export default function HomeOrganization() {
         title,
         color_tag: meta ? meta.color : '#C9A962',
         image_url: homeOrgImagesById[sectionId] || homeOrgImages[title] || null,
+        isCustom: false,
       };
     });
-  }, [tasksBySection]);
+  }, [tasksBySection, customIds]);
+
+  const customSections = useMemo(() => customCategories.map(cat => ({
+    id: cat.id,
+    title: cat.name,
+    color_tag: cat.color_tag || '#C9A962',
+    image_url: null,
+    icon: cat.icon || DEFAULT_ICON,
+    isCustom: true,
+  })), [customCategories]);
+
+  const viewingCategory = useMemo(
+    () => [...curatedSections, ...customSections].find(s => s.id === viewingCategoryId) || null,
+    [curatedSections, customSections, viewingCategoryId]
+  );
+
+  const renderCard = (section, idx) => {
+    const sectionTasks = tasksBySection[section.id] || [];
+    const completed = sectionTasks.filter(t => t.completed).length;
+    const total = sectionTasks.length;
+
+    return (
+      <motion.div
+        key={section.id}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: Math.min(idx, 12) * 0.03 }}
+        onClick={() => setViewingCategoryId(section.id)}
+        className="flex items-center gap-4 p-4 rounded-xl cursor-pointer hover:opacity-90 active:scale-[0.99] transition-all duration-200"
+        style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.2)' }}
+      >
+        <div
+          className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center"
+          style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.15)' }}
+        >
+          {section.image_url ? (
+            <img src={section.image_url} alt={section.title} loading="lazy" decoding="async"
+              className="w-full h-full object-cover" />
+          ) : section.icon ? (
+            <img src={getIconifyIconUrl(section.icon, section.color_tag)} alt="" className="w-8 h-8"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+          ) : (
+            <div className="w-full h-full" style={{ background: 'var(--app-bg)' }} />
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <h3
+            className="text-[color:var(--app-gold)] font-light text-base leading-snug mb-1 truncate"
+            style={{ fontFamily: 'Cormorant Garamond, serif' }}
+          >
+            {section.title}
+          </h3>
+          <p className="text-[color:var(--app-wash-3)] text-sm">{completed}/{total} completed</p>
+        </div>
+
+        <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)] opacity-40 flex-shrink-0" />
+      </motion.div>
+    );
+  };
 
   return (
     <div className="w-full min-h-screen bg-[color:var(--app-bg)] overflow-hidden">
@@ -196,69 +362,33 @@ export default function HomeOrganization() {
         </div>
 
         <div className="px-4 pt-6 pb-24">
-          {activeSections.length === 0 ? (
+          {curatedSections.length === 0 && customSections.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <Home className="w-16 h-16 text-[color:var(--app-gold)] opacity-30 mb-4" strokeWidth={1} />
               <p className="text-[color:var(--app-text-2)] font-light text-base mb-1">Setting up your home organization...</p>
               <p className="text-[color:var(--app-text-3)] text-sm font-light">Your 21 categories are being loaded</p>
             </div>
           ) : (
-            <div className="space-y-3">
-              {activeSections.map((section, idx) => {
-                const sectionTasks = tasksBySection[section.id] || [];
-                const completed = sectionTasks.filter(t => t.completed).length;
-                const total = sectionTasks.length;
+            <>
+              <div className="space-y-3">
+                {curatedSections.map(renderCard)}
+              </div>
 
-                return (
-                  <motion.div
-                    key={section.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.03 }}
-                    onClick={() => setViewingCategory(section)}
-                    className="flex items-center gap-4 p-4 rounded-xl cursor-pointer hover:opacity-90 active:scale-[0.99] transition-all duration-200"
-                    style={{
-                      backgroundColor: 'var(--app-bg)',
-                      border: '1px solid rgba(201,169,98,0.2)',
-                    }}
-                  >
-                    <div
-                      className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0"
-                      style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.15)' }}
-                    >
-                      {section.image_url ? (
-                        <img
-                          src={section.image_url}
-                          alt={section.title}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div
-                          className="w-full h-full"
-                          style={{ background: 'var(--app-bg)' }}
-                        />
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <h3
-                        className="text-[color:var(--app-gold)] font-light text-base leading-snug mb-1 truncate"
-                        style={{ fontFamily: 'Cormorant Garamond, serif' }}
-                      >
-                        {section.title}
-                      </h3>
-                      <p className="text-[color:var(--app-wash-3)] text-sm">
-                        {completed}/{total} completed
-                      </p>
-                    </div>
-
-                    <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)] opacity-40 flex-shrink-0" />
-                  </motion.div>
-                );
-              })}
-            </div>
+              {/* The user's own bars live in their own labelled block underneath */}
+              {customSections.length > 0 && (
+                <div className="mt-8">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-[11px] uppercase tracking-wider text-[color:var(--app-gold)] font-light">
+                      Your Categories
+                    </span>
+                    <div className="flex-1 h-px bg-[rgba(201,169,98,0.25)]" />
+                  </div>
+                  <div className="space-y-3">
+                    {customSections.map(renderCard)}
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -275,20 +405,26 @@ export default function HomeOrganization() {
         visible={showCreate}
         onClose={() => setShowCreate(false)}
         onAdd={handleCreate}
+        onAddCategory={(payload) => createCategoryMutation.mutate(payload)}
         defaultSection={createDefaultSection}
+        customCategories={customCategories}
       />
 
       <ViewCategoryModal
         visible={!!viewingCategory}
-        onClose={() => setViewingCategory(null)}
+        onClose={() => setViewingCategoryId(null)}
         section={viewingCategory}
         tasks={viewingCategory ? (tasksBySection[viewingCategory.id] || []) : []}
         onToggleComplete={handleToggleComplete}
         onDelete={handleDelete}
+        onRenameTask={(task, title) => updateTaskMutation.mutate({ id: task.id, updates: { title } })}
+        onRenameCategory={(id, name) => updateCategoryMutation.mutate({ id, updates: { name } })}
+        onChangeCategoryIcon={(id, icon) => updateCategoryMutation.mutate({ id, updates: { icon } })}
+        onDeleteCategory={(id) => deleteCategoryMutation.mutate(id)}
         onCreateTask={({ title, color_tag, section }) => {
-          const meta = CATEGORY_META[section];
+          const category = customCategories.find(c => c.id === section);
           createTaskMutation.mutate({
-            icon: meta ? meta.icon : 'Home',
+            icon: category?.icon || DEFAULT_ICON,
             title,
             section,
             sub_tasks: [],
