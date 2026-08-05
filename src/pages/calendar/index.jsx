@@ -18,7 +18,7 @@ import { UI, CATEGORIES, calculateAge, getAgeOrdinal } from './constants';
 import { CalendarSkeleton } from '../../components/ui/PageSkeleton';
 import { Plus } from 'lucide-react';
 import CalendarHeader from './components/CalendarHeader';
-import MonthView from './components/MonthView';
+import MonthView, { WEEK_ROW_H } from './components/MonthView';
 import WeekView from './components/WeekView';
 import DayView from './components/DayView';
 import DayEventList from './components/DayEventList';
@@ -82,6 +82,14 @@ export default function CalendarIndex() {
 
   const [recurrenceDialog, setRecurrenceDialog] = useState(null);
   const eventListRef = useRef(null);
+
+  // Month grid collapse: 0 = full month, 1 = single week. Dragging the day strip
+  // up shrinks the grid and hands the freed space to the day's event list, the
+  // way Google Calendar does — so the selected day is readable without losing
+  // the month at a glance.
+  const [monthCollapse, setMonthCollapse] = useState(0);
+  const [collapseDragging, setCollapseDragging] = useState(false);
+  const collapseDrag = useRef({ active: false, y0: 0, base: 0, moved: false });
 
   const [showHolidays, setShowHolidays] = useState(() => {
     const stored = localStorage.getItem('showHolidays');
@@ -563,6 +571,31 @@ export default function CalendarIndex() {
   };
 
   const monthWeeks = useMemo(() => getMondayFirstWeeks(selectedDate), [selectedDate]);
+
+  // Travel available to the drag: the height of every week that can fold away.
+  const collapseRange = Math.max(1, (monthWeeks.length - 1) * WEEK_ROW_H);
+
+  const handleCollapseStart = useCallback((clientY) => {
+    collapseDrag.current = { active: true, y0: clientY, base: monthCollapse, moved: false };
+  }, [monthCollapse]);
+
+  const handleCollapseMove = useCallback((clientY) => {
+    const st = collapseDrag.current;
+    if (!st.active) return;
+    const dy = clientY - st.y0;
+    if (Math.abs(dy) > 4) { st.moved = true; setCollapseDragging(true); }
+    const next = Math.min(1, Math.max(0, st.base - dy / collapseRange));
+    setMonthCollapse(next);
+  }, [collapseRange]);
+
+  const handleCollapseEnd = useCallback(() => {
+    const st = collapseDrag.current;
+    if (!st.active) return;
+    st.active = false;
+    setCollapseDragging(false);
+    // A tap (no real movement) toggles; a drag snaps to the nearer end.
+    setMonthCollapse((c) => (st.moved ? (c > 0.5 ? 1 : 0) : (st.base > 0.5 ? 0 : 1)));
+  }, []);
   const weekDates = useMemo(() => {
     const monday = startOfWeek(selectedDate, { weekStartsOn: 1 });
     return Array.from({ length: 7 }, (_, i) => addDays(monday, i));
@@ -610,9 +643,40 @@ export default function CalendarIndex() {
                 birthdays={birthdays}
                 onDayClick={setSelectedDate}
                 onEventDrop={handleEventDrop}
+                collapse={monthCollapse}
+                dragging={collapseDragging}
               />
+              {/* Drag handle: pull up to fold the month down to one week, pull
+                  down (or tap) to bring it back. */}
+              {/* Pointer events (not touch + mouse) so the emulated mouse events a
+                  phone fires after a tap can't start a second, phantom drag. */}
               <div
-                className="px-5 pt-4 pb-3 flex items-start justify-between"
+                className="flex justify-center items-center cursor-grab active:cursor-grabbing"
+                style={{ height: 22, touchAction: 'none' }}
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                  handleCollapseStart(e.clientY);
+                }}
+                onPointerMove={(e) => { e.stopPropagation(); handleCollapseMove(e.clientY); }}
+                onPointerUp={(e) => {
+                  e.stopPropagation();
+                  try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* already released */ }
+                  handleCollapseEnd();
+                }}
+                onPointerCancel={(e) => { e.stopPropagation(); handleCollapseEnd(); }}
+                aria-label={monthCollapse > 0.5 ? 'Expand month' : 'Collapse month'}
+                role="button"
+              >
+                <div
+                  style={{
+                    width: 38, height: 4, borderRadius: 999,
+                    backgroundColor: 'rgba(201,169,98,0.35)',
+                  }}
+                />
+              </div>
+              <div
+                className="px-5 pt-1 pb-3 flex items-start justify-between"
                 style={{ borderTop: `1px solid rgba(201,169,98,0.12)` }}
               >
                 <div className="flex items-baseline gap-2.5">
