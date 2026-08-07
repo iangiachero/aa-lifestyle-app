@@ -56,6 +56,22 @@ const ICON_MAP = {
 
 const CATEGORY_TABS = ['All', 'Travel', 'Events', 'Home', 'Wellness', 'Productivity', 'Safety'];
 
+// iOS keeps the on-screen keyboard up — and paints a stray caret where the field
+// used to be — when a focused input is unmounted, which is what happens when a
+// sheet closes while the "add item" field still holds focus. Blur first so the
+// keyboard retracts and the caret goes with it.
+const dismissKeyboard = () => {
+  const el = typeof document !== 'undefined' ? document.activeElement : null;
+  if (el && typeof el.blur === 'function') el.blur();
+};
+
+// Stops iOS offering "AutoFill Contact" on fields whose label contains "Name".
+const NO_AUTOFILL = {
+  autoComplete: 'off',
+  autoCorrect: 'off',
+  spellCheck: false,
+};
+
 // Top filter row: adds a dedicated "Mine" tab for user-created checklists so they
 // are kept separate from the curated ones (which live under All / categories).
 const FILTER_TABS = ['All', 'Mine', 'Travel', 'Events', 'Home', 'Wellness', 'Productivity', 'Safety'];
@@ -130,6 +146,7 @@ function ChecklistModal({
   }, [onAddItem, checklistId]);
 
   const closeAddRow = useCallback(() => {
+    dismissKeyboard();
     setAddingToTopic(null);
     setNewItemText('');
   }, [setAddingToTopic, setNewItemText]);
@@ -292,6 +309,7 @@ function ChecklistModal({
               <div ref={addRowRef} className="flex items-center gap-2 p-3 rounded-xl bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)]">
                 <input value={newItemText} onChange={e => setNewItemText(e.target.value)}
                   ref={setAddInput}
+                  {...NO_AUTOFILL} name="checklist-item"
                   enterKeyHint="done"
                   onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); submitAdd(); } if (e.key === 'Escape') closeAddRow(); }}
                   placeholder="New item..." className="flex-1 text-sm bg-transparent border-none outline-none text-[color:var(--app-text)] placeholder-[color:var(--app-text-3)]" />
@@ -645,6 +663,14 @@ export default function Checklists() {
     };
   };
 
+  const closeAddChecklist = useCallback(() => {
+    dismissKeyboard();
+    setShowAddChecklist(false);
+    setNewChecklistName('');
+    setNewChecklistItems([]);
+    setNewChecklistItemInput('');
+  }, []);
+
   const handleAddChecklistItem = () => {
     const trimmed = newChecklistItemInput.trim();
     if (!trimmed) return;
@@ -664,10 +690,7 @@ export default function Checklists() {
       color_tag: newChecklistColor,
       category: newChecklistCategory,
     });
-    setShowAddChecklist(false);
-    setNewChecklistName('');
-    setNewChecklistItems([]);
-    setNewChecklistItemInput('');
+    closeAddChecklist();
     setNewChecklistColor('#6B7280');
     setNewChecklistCategory('Productivity');
     setActiveCategory('Mine');
@@ -840,7 +863,7 @@ export default function Checklists() {
         <ChecklistModal
           checklist={activeChecklistObj}
           isPersonal={isPersonalChecklist(activeChecklistObj)}
-          onClose={() => { setActiveChecklist(null); setAddingToTopic(null); setNewItemText(''); setEditingItem(null); }}
+          onClose={() => { dismissKeyboard(); setActiveChecklist(null); setAddingToTopic(null); setNewItemText(''); setEditingItem(null); }}
           checkedItems={checkedItems}
           onToggleItem={handleToggleItem}
           onToggleCustom={handleToggleCustom}
@@ -866,18 +889,18 @@ export default function Checklists() {
       {/* Add Checklist Bottom Sheet */}
       {showAddChecklist && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => { setShowAddChecklist(false); setNewChecklistName(''); setNewChecklistItems([]); setNewChecklistItemInput(''); }} />
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={closeAddChecklist} />
           <div className="fixed bottom-0 left-0 right-0 bg-[color:var(--app-bg)] border-t-2 border-[rgba(201,169,98,0.3)] rounded-t-3xl z-50 max-h-[85dvh] overflow-y-auto scrollbar-hide" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-light text-[color:var(--app-gold)]">Create Checklist</h2>
-                <button onClick={() => { setShowAddChecklist(false); setNewChecklistName(''); setNewChecklistItems([]); setNewChecklistItemInput(''); }} className="text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)]">
+                <button onClick={closeAddChecklist} className="text-[color:var(--app-text-2)] hover:text-[color:var(--app-gold)]">
                   <X className="w-6 h-6" strokeWidth={1.5} />
                 </button>
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Checklist Name</label>
-                <Input value={newChecklistName} onChange={e => setNewChecklistName(e.target.value)} placeholder="e.g., Morning Routine" className="w-full border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
+                <Input {...NO_AUTOFILL} name="checklist-title" value={newChecklistName} onChange={e => setNewChecklistName(e.target.value)} placeholder="e.g., Morning Routine" className="w-full border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Category</label>
@@ -907,7 +930,7 @@ export default function Checklists() {
               <div className="mb-4">
                 <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Add Items</label>
                 <div className="flex items-center gap-2">
-                  <Input ref={newItemFieldRef} value={newChecklistItemInput} onChange={e => setNewChecklistItemInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddChecklistItem(); } }} enterKeyHint="done" placeholder="Enter item..." className="flex-1 border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
+                  <Input {...NO_AUTOFILL} name="checklist-item" ref={newItemFieldRef} value={newChecklistItemInput} onChange={e => setNewChecklistItemInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddChecklistItem(); } }} enterKeyHint="done" placeholder="Enter item..." className="flex-1 border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
                   <button onMouseDown={e => e.preventDefault()} onClick={handleAddChecklistItem} className="w-10 h-10 bg-[#C9A962] rounded-lg flex items-center justify-center hover:bg-[#D4B978]">
                     <Plus className="w-5 h-5 text-[#000000]" strokeWidth={2} />
                   </button>
