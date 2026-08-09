@@ -1,5 +1,6 @@
 // src/components/ui/IconPicker.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -33,7 +34,37 @@ export default function IconPicker({ value, onChange, anchor = 'left', disabled 
   const [isSearching, setIsSearching] = useState(false);
 
   const containerRef = useRef(null);
+  const panelRef = useRef(null);
   const searchRef = useRef(null);
+  // The panel is portalled to <body> and positioned from the trigger's rect:
+  // rendered in place it was clipped by the sheet's own scroll container, which
+  // cut off the bottom row of icons once the keyboard shrank the sheet.
+  const [pos, setPos] = useState(null);
+
+  const PANEL_W = 280;
+
+  const computePos = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const kb = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--kb-height')
+    ) || 0;
+    const visibleBottom = window.innerHeight - kb;
+    const gap = 8, margin = 12;
+    const left = Math.max(margin, Math.min(r.left, window.innerWidth - PANEL_W - margin));
+    const below = visibleBottom - r.bottom - gap - margin;
+    const above = r.top - gap - margin;
+    // Prefer opening downwards, but flip up when the keyboard leaves no room.
+    const openUp = below < 200 && above > below;
+    const maxHeight = Math.max(150, Math.min(320, openUp ? above : below));
+    setPos({
+      left,
+      top: openUp ? undefined : r.bottom + gap,
+      bottom: openUp ? window.innerHeight - r.top + gap : undefined,
+      maxHeight,
+    });
+  }, []);
   // Monotonic token: only the newest search may write results. Without this a
   // slow early request could land after a faster later one and show icons for
   // a query the user already moved on from.
@@ -73,18 +104,39 @@ export default function IconPicker({ value, onChange, anchor = 'left', disabled 
 
   useEffect(() => {
     if (open) {
+      computePos();
       setTimeout(() => searchRef.current?.focus({ preventScroll: true }), 120);
     } else {
       setQuery('');
       setResults([]);
       setIsSearching(false);
+      setPos(null);
     }
-  }, [open]);
+  }, [open, computePos]);
+
+  // Keep the panel glued to the trigger while the sheet scrolls, the window
+  // resizes, or the keyboard opens and changes the space available.
+  useEffect(() => {
+    if (!open) return;
+    const update = () => computePos();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    window.visualViewport?.addEventListener('resize', update);
+    const id = setInterval(update, 250);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+      window.visualViewport?.removeEventListener('resize', update);
+      clearInterval(id);
+    };
+  }, [open, computePos]);
 
   useEffect(() => {
     if (!open) return;
     const onPointerDown = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) setOpen(false);
+      const inTrigger = containerRef.current?.contains(e.target);
+      const inPanel = panelRef.current?.contains(e.target);
+      if (!inTrigger && !inPanel) setOpen(false);
     };
     const onEsc = (e) => { if (e.key === 'Escape') { e.stopPropagation(); setOpen(false); } };
     document.addEventListener('mousedown', onPointerDown);
@@ -129,17 +181,27 @@ export default function IconPicker({ value, onChange, anchor = 'left', disabled 
         )}
       </button>
 
+      {createPortal(
       <AnimatePresence>
-        {open && (
+        {open && pos && (
           <motion.div
+            ref={panelRef}
             initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.97 }}
             transition={{ duration: 0.15 }}
-            className={`absolute ${anchor === 'right' ? 'right-0' : 'left-0'} top-full mt-2 w-[17.5rem] max-w-[calc(100vw-3rem)] bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-[200] overflow-hidden`}
+            className="fixed bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-[300] overflow-hidden flex flex-col"
+            style={{
+              left: pos.left,
+              top: pos.top,
+              bottom: pos.bottom,
+              width: PANEL_W,
+              maxWidth: 'calc(100vw - 1.5rem)',
+              maxHeight: pos.maxHeight,
+            }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-3 pt-3 pb-2 border-b border-[rgba(201,169,98,0.15)]">
+            <div className="px-3 pt-3 pb-2 border-b border-[rgba(201,169,98,0.15)] flex-shrink-0">
               <div className="flex items-center gap-2 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.25)] rounded-xl px-3 py-2">
                 <Search className="w-3.5 h-3.5 text-[color:var(--app-text-3)] flex-shrink-0" strokeWidth={1.5} />
                 <input
@@ -161,7 +223,7 @@ export default function IconPicker({ value, onChange, anchor = 'left', disabled 
               </div>
             </div>
 
-            <div className="overflow-y-auto scrollbar-hide overscroll-contain" style={{ maxHeight: '15rem' }}>
+            <div className="overflow-y-auto scrollbar-hide overscroll-contain flex-1 min-h-0">
               {isSearching ? (
                 <div className="flex items-center justify-center gap-2 py-8 text-[color:var(--app-text-3)] text-xs">
                   <div className="w-4 h-4 border border-[rgba(201,169,98,0.4)] border-t-[#C9A962] rounded-full animate-spin" />
@@ -199,7 +261,8 @@ export default function IconPicker({ value, onChange, anchor = 'left', disabled 
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body)}
     </div>
   );
 }

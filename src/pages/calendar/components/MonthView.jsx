@@ -7,44 +7,45 @@ const DAY_LABELS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 // Every week row is exactly this tall, which is what lets the grid collapse to a
 // single week by animating its height and sliding the selected week to the top.
-export const WEEK_ROW_H = 64;
+export const WEEK_ROW_H = 56;
 
-// Up to three markers per day. They render as short bars rather than 4px dots so
-// a glance at the month actually shows which days have something on them.
+// One small dot per kind (event / task / birthday), side by side — the quieter
+// reading the client preferred over full-width bars, which made a busy month
+// look cluttered.
 function DayMarkers({ events, tasks, birthdays, draggedEvent, flashDate, onDragStart, onDragEnd }) {
-  const marks = [
-    ...events.slice(0, 3).map((e) => ({ key: `e-${e.id}`, color: e.color || UI.gold, event: e })),
-    ...tasks.slice(0, 3).map((t) => ({ key: `t-${t.id}`, color: t.color_tag || UI.taskColor, task: t })),
-    ...birthdays.slice(0, 3).map((b) => ({ key: `b-${b.id}`, color: UI.birthdayColor })),
-  ].slice(0, 3);
-
-  const extra = (events.length + tasks.length + birthdays.length) - marks.length;
-
   return (
-    <div className="w-full flex flex-col items-center gap-[2px] mt-1" style={{ minHeight: 12 }}>
-      {marks.map((m) => (
-        <motion.div
-          key={m.key}
-          draggable={!!m.event && !m.event.isHoliday}
-          onDragStart={(e) => {
-            if (!m.event || m.event.isHoliday) { e.preventDefault(); return; }
-            e.stopPropagation(); onDragStart(m.event);
-          }}
+    <div className="flex items-center justify-center gap-1 mt-1.5" style={{ minHeight: 4 }}>
+      {events.slice(0, 1).map((event) => (
+        <div
+          key={event.id}
+          draggable={!event.isHoliday}
+          onDragStart={(e) => { if (event.isHoliday) { e.preventDefault(); return; } e.stopPropagation(); onDragStart(event); }}
           onDragEnd={(e) => { e.stopPropagation(); onDragEnd(); }}
-          animate={flashDate ? { opacity: [1, 0.15, 1, 0.15, 1] } : { opacity: 1 }}
-          transition={{ duration: 0.65, ease: 'easeInOut' }}
-          className="rounded-full"
+          className={`rounded-full ${event.isHoliday ? 'cursor-default' : 'cursor-grab'}`}
           style={{
-            width: '78%',
-            height: 3,
-            backgroundColor: m.color,
-            opacity: draggedEvent?.id === m.event?.id ? 0.25 : 1,
+            width: 4,
+            height: 4,
+            backgroundColor: event.color || UI.gold,
+            opacity: draggedEvent?.id === event.id ? 0.25 : 1,
           }}
         />
       ))}
-      {extra > 0 && (
-        <span style={{ fontSize: 8, lineHeight: 1, color: UI.muted }}>+{extra}</span>
-      )}
+      {tasks.slice(0, 1).map((task) => (
+        <motion.div
+          key={`task-${task.id}`}
+          className="rounded-full flex-shrink-0"
+          animate={flashDate ? { opacity: [1, 0.15, 1, 0.15, 1] } : { opacity: 1 }}
+          transition={{ duration: 0.65, ease: 'easeInOut' }}
+          style={{ width: 4, height: 4, backgroundColor: task.color_tag || UI.taskColor }}
+        />
+      ))}
+      {birthdays.slice(0, 1).map((b) => (
+        <div
+          key={`bday-${b.id}`}
+          className="rounded-full flex-shrink-0"
+          style={{ width: 4, height: 4, backgroundColor: UI.birthdayColor }}
+        />
+      ))}
     </div>
   );
 }
@@ -75,9 +76,10 @@ function DayCell({
 
   const isWeekend = isSundayCol || isSaturdayCol;
   const numberColor = isCurrentDay
-    ? '#1A1612'
+    ? UI.onGold
     : !isCurrentMonth
-    ? 'rgba(245,241,232,0.22)'
+    // Was a hardcoded off-white at 0.22 alpha — invisible on the light theme.
+    ? UI.muted2
     : isWeekend
     ? UI.gold
     : UI.text;
@@ -96,10 +98,10 @@ function DayCell({
           <div
             className="absolute"
             style={{
-              width: 36,
-              height: 36,
+              width: 30,
+              height: 30,
               backgroundColor: UI.gold,
-              borderRadius: 10,
+              borderRadius: 9,
             }}
           />
         )}
@@ -107,10 +109,10 @@ function DayCell({
           <div
             className="absolute"
             style={{
-              width: 36,
-              height: 36,
+              width: 30,
+              height: 30,
               border: `1.5px solid ${UI.gold}`,
-              borderRadius: 10,
+              borderRadius: 9,
               backgroundColor: 'rgba(201,169,98,0.07)',
             }}
           />
@@ -119,10 +121,10 @@ function DayCell({
           <div
             className="absolute"
             style={{
-              width: 36,
-              height: 36,
+              width: 30,
+              height: 30,
               border: `1px solid rgba(201,169,98,0.35)`,
-              borderRadius: 10,
+              borderRadius: 9,
             }}
           />
         )}
@@ -222,10 +224,12 @@ export default function MonthView({
             key={day}
             className="text-center"
             style={{
-              color: i === 0 || i === 6 ? 'rgba(201,169,98,0.45)' : 'rgba(184,184,184,0.38)',
-              fontWeight: 400,
+              // Was a hardcoded grey at 0.38 alpha: near-invisible on the light
+              // theme and weak on the dark one. Theme tokens read properly in both.
+              color: i === 0 || i === 6 ? UI.gold : UI.muted,
+              fontWeight: 500,
               letterSpacing: '0.08em',
-              fontSize: 9,
+              fontSize: 10,
               paddingBottom: 5,
             }}
           >

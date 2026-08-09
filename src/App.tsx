@@ -150,7 +150,7 @@ function AnimatedRoutes() {
         <Route path="/contacts" element={<RequireAuth><Layout currentPageName="Contacts"><PageTransition><Contacts /></PageTransition></Layout></RequireAuth>} />
         <Route path="/reminders" element={<RequireAuth><Layout currentPageName="Reminders"><PageTransition><Reminders /></PageTransition></Layout></RequireAuth>} />
         <Route path="/shopping" element={<RequireAuth><Layout currentPageName="Shopping"><PageTransition><Shopping /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/shop" element={<RequireAuth><Layout currentPageName="Shop"><PageTransition><Shop /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/shop" element={<RequireAuth><RequirePro><Layout currentPageName="Shop"><PageTransition><Shop /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/grocery" element={<RequireAuth><Layout currentPageName="GroceryList"><PageTransition><GroceryList /></PageTransition></Layout></RequireAuth>} />
         <Route path="/routines" element={<RequireAuth><Layout currentPageName="Routines"><PageTransition><Routines /></PageTransition></Layout></RequireAuth>} />
         <Route path="/student" element={<RequireAuth><RequirePro><Layout currentPageName="Student"><PageTransition><Student /></PageTransition></Layout></RequirePro></RequireAuth>} />

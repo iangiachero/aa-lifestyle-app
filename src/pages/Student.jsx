@@ -56,6 +56,11 @@ export default function Student() {
   const [assignments, setAssignments] = useState([]);
   const [loadingClasses, setLoadingClasses] = useState(true);
   const [loadingAssignments, setLoadingAssignments] = useState(true);
+  const [exams, setExams] = useState([]);
+  const [sessions, setSessions] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [customBlocks, setCustomBlocks] = useState([]);
+  const [loadingBlocks, setLoadingBlocks] = useState(true);
   const [showCompleted, setShowCompleted] = useState(false);
 
   const [activeModal, setActiveModal] = useState(null);
@@ -104,10 +109,33 @@ export default function Student() {
     setLoadingAssignments(false);
   }, [user, semester]);
 
+  // Exams, sessions, projects and custom blocks were only ever inserted — never
+  // read back or rendered — so adding one appeared to do nothing. Same query
+  // shape as the two that already worked.
+  const fetchBlocks = useCallback(async () => {
+    if (!user) return;
+    setLoadingBlocks(true);
+    const withClass = '*, student_classes(class_name, color)';
+    const base = (table) => supabase
+      .from(table).select(withClass).eq('user_id', user.id).eq('semester', semester);
+    const [ex, se, pr, cu] = await Promise.all([
+      base('student_exams').order('exam_date', { ascending: true }),
+      base('student_study_sessions').order('session_date', { ascending: true }),
+      base('student_projects').order('due_date', { ascending: true }),
+      base('student_custom_blocks').order('due_date', { ascending: true }),
+    ]);
+    setExams(ex.data || []);
+    setSessions(se.data || []);
+    setProjects(pr.data || []);
+    setCustomBlocks(cu.data || []);
+    setLoadingBlocks(false);
+  }, [user, semester]);
+
   useEffect(() => {
     fetchClasses();
     fetchAssignments();
-  }, [fetchClasses, fetchAssignments]);
+    fetchBlocks();
+  }, [fetchClasses, fetchAssignments, fetchBlocks]);
 
   const today = todayStr();
 
@@ -245,55 +273,59 @@ export default function Student() {
     setAssignments(prev => prev.filter(a => a.id !== id));
   }
 
-  async function saveExam() {
-    if (!examForm.title.trim()) return;
+  // Shared tail for the block inserts: surface a failure instead of silently
+  // closing the sheet, and pull the new row back so it actually shows up.
+  async function insertBlock(table, payload) {
     setSaving(true);
-    const payload = {
-      ...examForm, user_id: user.id, semester,
-      class_id: examForm.class_id || null,
-      exam_date: examForm.exam_date || null
-    };
-    await supabase.from('student_exams').insert(payload);
+    const { error } = await supabase.from(table).insert(payload);
     setSaving(false);
+    if (error) {
+      window.alert(`Could not save: ${error.message}`);
+      return;
+    }
+    await fetchBlocks();
     closeModal();
   }
 
+  async function saveExam() {
+    if (!examForm.title.trim()) return;
+    await insertBlock('student_exams', {
+      ...examForm, user_id: user.id, semester,
+      class_id: examForm.class_id || null,
+      exam_date: examForm.exam_date || null
+    });
+  }
+
   async function saveSession() {
-    setSaving(true);
-    const payload = {
+    await insertBlock('student_study_sessions', {
       ...sessionForm, user_id: user.id, semester,
       class_id: sessionForm.class_id || null,
       session_date: sessionForm.session_date || null
-    };
-    await supabase.from('student_study_sessions').insert(payload);
-    setSaving(false);
-    closeModal();
+    });
   }
 
   async function saveProject() {
     if (!projectForm.title.trim()) return;
-    setSaving(true);
-    const payload = {
+    await insertBlock('student_projects', {
       ...projectForm, user_id: user.id, semester,
       class_id: projectForm.class_id || null,
       due_date: projectForm.due_date || null
-    };
-    await supabase.from('student_projects').insert(payload);
-    setSaving(false);
-    closeModal();
+    });
+  }
+
+  async function deleteBlock(table, id, setter) {
+    const { error } = await supabase.from(table).delete().eq('id', id);
+    if (error) { window.alert(`Could not delete: ${error.message}`); return; }
+    setter(prev => prev.filter(x => x.id !== id));
   }
 
   async function saveCustom() {
     if (!customForm.title.trim()) return;
-    setSaving(true);
-    const payload = {
+    await insertBlock('student_custom_blocks', {
       ...customForm, user_id: user.id, semester,
       class_id: customForm.class_id || null,
       due_date: customForm.due_date || null
-    };
-    await supabase.from('student_custom_blocks').insert(payload);
-    setSaving(false);
-    closeModal();
+    });
   }
 
   const academicBlocks = [
@@ -433,6 +465,80 @@ export default function Student() {
             </div>
           )}
         </div>
+
+        {/* Exams / Sessions / Projects / Custom — each section appears only once
+            it has something in it, so the page looks unchanged until used. */}
+        <BlockSection
+          label="Exams"
+          items={exams}
+          renderItem={(e) => (
+            <BlockRow
+              key={e.id}
+              title={e.title}
+              color={e.student_classes?.color}
+              subtitle={[
+                e.student_classes?.class_name,
+                e.exam_date ? fmtDate(e.exam_date) : '',
+                e.exam_time ? fmtTime(e.exam_time) : '',
+              ].filter(Boolean).join(' · ')}
+              onDelete={() => deleteBlock('student_exams', e.id, setExams)}
+            />
+          )}
+        />
+
+        <BlockSection
+          label="Study Sessions"
+          items={sessions}
+          renderItem={(s) => (
+            <BlockRow
+              key={s.id}
+              title={s.student_classes?.class_name || 'Study Session'}
+              color={s.student_classes?.color}
+              subtitle={[
+                s.session_date ? fmtDate(s.session_date) : '',
+                s.start_time ? fmtTime(s.start_time) : '',
+                s.duration_minutes ? `${s.duration_minutes} min` : '',
+              ].filter(Boolean).join(' · ')}
+              onDelete={() => deleteBlock('student_study_sessions', s.id, setSessions)}
+            />
+          )}
+        />
+
+        <BlockSection
+          label="Projects"
+          items={projects}
+          renderItem={(p) => (
+            <BlockRow
+              key={p.id}
+              title={p.title}
+              color={p.student_classes?.color}
+              subtitle={[
+                p.student_classes?.class_name,
+                p.due_date ? `Due ${fmtDate(p.due_date)}` : '',
+              ].filter(Boolean).join(' · ')}
+              onDelete={() => deleteBlock('student_projects', p.id, setProjects)}
+            />
+          )}
+        />
+
+        <BlockSection
+          label="Custom Blocks"
+          items={customBlocks}
+          renderItem={(c) => (
+            <BlockRow
+              key={c.id}
+              title={c.title}
+              color={c.student_classes?.color}
+              subtitle={[
+                c.custom_label,
+                c.student_classes?.class_name,
+                c.due_date ? `Due ${fmtDate(c.due_date)}` : '',
+                c.due_time ? fmtTime(c.due_time) : '',
+              ].filter(Boolean).join(' · ')}
+              onDelete={() => deleteBlock('student_custom_blocks', c.id, setCustomBlocks)}
+            />
+          )}
+        />
       </div>
 
       {/* ——— Modals ——— */}
@@ -773,6 +879,39 @@ function AssignmentRow({ assignment, onToggle, onEdit, onDelete }) {
           <Trash2 className="w-3.5 h-3.5 text-red-400" strokeWidth={1.5} />
         </button>
       </div>
+    </div>
+  );
+}
+
+// Same row treatment as AssignmentRow, minus the completion checkbox: exams,
+// sessions, projects and custom blocks have no completed flag in their tables.
+function BlockRow({ title, subtitle, color, onDelete }) {
+  return (
+    <div
+      className="flex items-center gap-2.5 p-2.5 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.12)]"
+      style={{ borderLeft: `3px solid ${color || '#3B82F6'}` }}
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-xs text-[color:var(--app-text)] font-medium truncate">{title}</p>
+        {subtitle && (
+          <p className="text-[10px] text-[color:var(--app-text-3)] truncate">{subtitle}</p>
+        )}
+      </div>
+      <div className="flex gap-0.5 flex-shrink-0">
+        <button onClick={onDelete} className="p-1.5 rounded-lg hover:bg-[rgba(255,60,60,0.1)] transition-colors">
+          <Trash2 className="w-3.5 h-3.5 text-red-400" strokeWidth={1.5} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function BlockSection({ label, items, emptyHint, renderItem }) {
+  if (items.length === 0) return null;
+  return (
+    <div className="page-safe-x">
+      <p className="text-[10px] text-[color:var(--app-gold)] font-light tracking-widest uppercase mb-3">{label}</p>
+      <div className="space-y-2">{items.map(renderItem)}</div>
     </div>
   );
 }

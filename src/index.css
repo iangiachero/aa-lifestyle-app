@@ -1,19 +1,43 @@
 ﻿/* =========================
    Keyboard avoidance (iOS/Android PWA)
    Layout.jsx publishes --kb-height + <body>.keyboard-open from VisualViewport.
-   Strategy: never reposition or clamp the fixed sheets themselves (fragile on
-   iOS and can wedge them clipped if a close event is missed). Instead, give
-   every scroll container inside a sheet keyboard-sized bottom padding while
-   the keyboard is open, so iOS's native reveal-on-focus scrolls WITHIN the
-   sheet — the field rises above the keyboard and the caret stays aligned.
+
+   Padding the scroll container inside a sheet was the old strategy. It only
+   ever helped sheets that HAVE a scroller: a plain bottom panel (the Home
+   Organization "Add Item" sheet, for one) has none, so it stayed pinned to the
+   layout viewport — behind the keyboard — and the field was simply covered.
+
+   So instead we shorten the sheet's own viewport by the keyboard height. A
+   bottom sheet then rests on top of the keyboard rather than under it, whether
+   or not it scrolls, and no element has to be individually repositioned.
+   Wedging (the reason the previous approach avoided this) is covered by
+   Layout.jsx, which re-derives keyboard state on every pointerdown.
    ========================= */
 :root {
   --kb-height: 0px;
 }
-/* Scrollers inside fixed sheets get room to reveal the focused field */
+
+/* Full-screen overlays that bottom-align their panel (flex items-end) */
+body.keyboard-open .fixed.inset-0 {
+  bottom: var(--kb-height);
+}
+/* Panels pinned directly to the bottom edge, minus the app's own nav bar.
+   Their max-h is in dvh too, so cap it to the space left above the keyboard —
+   otherwise a tall sheet lifts its own top off the screen. */
+body.keyboard-open .fixed.bottom-0:not([data-app-nav]) {
+  bottom: var(--kb-height);
+  max-height: calc(100dvh - var(--kb-height) - 0.5rem) !important;
+}
+/* A lifted panel must stay inside the shortened overlay: its max-h is written
+   in dvh, which iOS does not shrink when the keyboard appears. */
+body.keyboard-open .fixed.inset-0 > * {
+  max-height: 100%;
+}
+/* Scrollers still get a little breathing room under the focused field, but no
+   longer the whole keyboard height — the sheet is already clear of it. */
 body.keyboard-open .fixed .overflow-y-auto,
 body.keyboard-open .fixed.overflow-y-auto {
-  padding-bottom: calc(var(--kb-height) + 2rem) !important;
+  padding-bottom: 1.5rem !important;
 }
 
 /* =========================

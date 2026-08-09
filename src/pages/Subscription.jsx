@@ -24,6 +24,7 @@ const PLANS = [
       'Custom Workout Routines',
       'Lifestyle Section (Self-Care Routines)',
       'Student Dashboard',
+      'Shop',
     ],
   },
   {
@@ -41,6 +42,7 @@ const PLANS = [
       'Custom Workout Routines',
       'Lifestyle Section (Self-Care Routines)',
       'Student Dashboard',
+      'Shop',
     ],
   },
 ];
@@ -60,6 +62,7 @@ const ALL_FEATURES = [
   { label: 'Checklists', free: false, pro: true },
   { label: 'Notes', free: true, pro: true },
   { label: 'Basic Grocery Lists', free: true, pro: true },
+  { label: 'Shop', free: false, pro: true },
   { label: 'Password Vault (PIN-protected)', free: false, pro: true },
   { label: 'Full Meal Planning & Recipes', free: false, pro: true },
   { label: 'Home Organization Checklists', free: false, pro: true },

@@ -37,6 +37,34 @@ const CATEGORY_META = {
 
 const CATEGORY_ORDER = Object.keys(CATEGORY_META);
 
+// Stand-in artwork for a user's own category, so it reads like the curated bars
+// instead of a bare placeholder. Replaced the moment they pick their own icon.
+// Same bucket as the curated home organization images.
+const DEFAULT_CATEGORY_IMAGE =
+  'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/homeorganization-icon/my-home-organization.png';
+
+// Artwork first, icon as a real fallback if it fails to load — otherwise a
+// missing image leaves an empty square on the card.
+function CategoryThumb({ section }) {
+  const [failed, setFailed] = useState(false);
+  const showImage = section.image_url && !failed;
+  return (
+    <div
+      className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center"
+      style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.15)' }}
+    >
+      {showImage ? (
+        <img src={section.image_url} alt={section.title} loading="lazy" decoding="async"
+          className="w-full h-full object-cover" onError={() => setFailed(true)} />
+      ) : section.icon ? (
+        <img src={getIconifyIconUrl(section.icon, section.color_tag)} alt="" className="w-8 h-8" />
+      ) : (
+        <div className="w-full h-full" style={{ background: 'var(--app-bg)' }} />
+      )}
+    </div>
+  );
+}
+
 export default function HomeOrganization() {
   const navigate = useNavigate();
   const [showCreate, setShowCreate] = useState(false);
@@ -287,14 +315,18 @@ export default function HomeOrganization() {
     });
   }, [tasksBySection, customIds]);
 
-  const customSections = useMemo(() => customCategories.map(cat => ({
-    id: cat.id,
-    title: cat.name,
-    color_tag: cat.color_tag || '#C9A962',
-    image_url: null,
-    icon: cat.icon || DEFAULT_ICON,
-    isCustom: true,
-  })), [customCategories]);
+  const customSections = useMemo(() => customCategories.map(cat => {
+    // No icon picked yet (or still the fallback) → show the default artwork.
+    const pickedOwnIcon = !!cat.icon && cat.icon !== DEFAULT_ICON;
+    return {
+      id: cat.id,
+      title: cat.name,
+      color_tag: cat.color_tag || '#C9A962',
+      image_url: pickedOwnIcon ? null : DEFAULT_CATEGORY_IMAGE,
+      icon: cat.icon || DEFAULT_ICON,
+      isCustom: true,
+    };
+  }), [customCategories]);
 
   const viewingCategory = useMemo(
     () => [...curatedSections, ...customSections].find(s => s.id === viewingCategoryId) || null,
@@ -316,20 +348,7 @@ export default function HomeOrganization() {
         className="flex items-center gap-4 p-4 rounded-xl cursor-pointer hover:opacity-90 active:scale-[0.99] transition-all duration-200"
         style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.2)' }}
       >
-        <div
-          className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center"
-          style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.15)' }}
-        >
-          {section.image_url ? (
-            <img src={section.image_url} alt={section.title} loading="lazy" decoding="async"
-              className="w-full h-full object-cover" />
-          ) : section.icon ? (
-            <img src={getIconifyIconUrl(section.icon, section.color_tag)} alt="" className="w-8 h-8"
-              onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-          ) : (
-            <div className="w-full h-full" style={{ background: 'var(--app-bg)' }} />
-          )}
-        </div>
+        <CategoryThumb section={section} />
 
         <div className="flex-1 min-w-0">
           <h3

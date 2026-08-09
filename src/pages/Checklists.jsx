@@ -65,6 +65,11 @@ const dismissKeyboard = () => {
   if (el && typeof el.blur === 'function') el.blur();
 };
 
+// Shown on the user's own checklists, which have no curated artwork of their own.
+// Same bucket as the curated checklist images, so all of it is managed in one place.
+const DEFAULT_MINE_IMAGE =
+  'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/checklist-icon/my-checklist.png';
+
 // Stops iOS offering "AutoFill Contact" on fields whose label contains "Name".
 const NO_AUTOFILL = {
   autoComplete: 'off',
@@ -99,6 +104,31 @@ function ChecklistIcon({ iconName, color, size = 'w-10 h-10' }) {
   return <Icon className={`${size} flex-shrink-0`} style={{ color: color || '#C9A962' }} strokeWidth={1.5} />;
 }
 
+// Falls back to the lucide icon when the artwork is missing. Hiding the broken
+// <img> (the previous behaviour) left an empty square instead.
+function ChecklistThumb({ src, alt, iconName, color }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) {
+    return (
+      <div className="pl-4">
+        <ChecklistIcon iconName={iconName} color={color} size="w-10 h-10" />
+      </div>
+    );
+  }
+  return (
+    <div className="w-16 h-16 rounded-l-2xl overflow-hidden flex-shrink-0">
+      <img
+        src={src}
+        alt={alt}
+        loading="eager"
+        decoding="async"
+        className="w-full h-full object-cover"
+        onError={() => setFailed(true)}
+      />
+    </div>
+  );
+}
+
 function ChecklistModal({
   checklist, isPersonal, onClose, checkedItems, onToggleItem, onToggleCustom,
   customItems, addingToTopic, setAddingToTopic, newItemText, setNewItemText,
@@ -118,12 +148,26 @@ function ChecklistModal({
     setConfirmDelete(false);
   }, [checklist?.id]);
 
+  // The add row is always the last thing in the sheet, so pinning the sheet's
+  // scroller to the bottom is what keeps the field clear of the keyboard.
+  // scrollIntoView is unreliable here: the sheet sits inside a transformed
+  // framer-motion element and the scroll silently does nothing.
+  const revealAddRow = useCallback(() => {
+    const scroller = addInputRef.current?.closest('.overflow-y-auto');
+    if (scroller) scroller.scrollTop = scroller.scrollHeight;
+  }, []);
+
   // Callback ref: focus the field the moment it mounts, so tapping "Add item"
   // (or an edit pencil) drops the caret straight in — no second tap needed.
   const setAddInput = useCallback((el) => {
     addInputRef.current = el;
-    if (el) el.focus({ preventScroll: true });
-  }, []);
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    // Once after mount, and again after the keyboard has had time to appear
+    // and shrink the sheet.
+    requestAnimationFrame(revealAddRow);
+    setTimeout(revealAddRow, 400);
+  }, [revealAddRow]);
 
   // Same for edit fields, with the caret parked at the end of the text.
   const focusCaretEnd = useCallback((el) => {
@@ -141,9 +185,9 @@ function ChecklistModal({
     onAddItem(checklistId);
     requestAnimationFrame(() => {
       addInputRef.current?.focus({ preventScroll: true });
-      addRowRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      revealAddRow();
     });
-  }, [onAddItem, checklistId]);
+  }, [onAddItem, checklistId, revealAddRow]);
 
   const closeAddRow = useCallback(() => {
     dismissKeyboard();
@@ -786,7 +830,8 @@ export default function Checklists() {
               const progress = totalItems > 0 ? (totalCompleted / totalItems) * 100 : 0;
               const categoryColor = CATEGORY_COLORS[checklist.category] || '#C9A962';
 
-              const checklistImage = getChecklistImage(checklist.name);
+              const checklistImage = getChecklistImage(checklist.name)
+                || (isPersonalChecklist(checklist) ? DEFAULT_MINE_IMAGE : null);
 
               return (
                 <motion.div
@@ -800,22 +845,12 @@ export default function Checklists() {
                     onClick={() => setActiveChecklist(checklist.id)}
                     className="w-full flex items-center gap-4 px-0 py-0 hover:bg-[rgba(201,169,98,0.03)] transition-colors"
                   >
-                    {checklistImage ? (
-                      <div className="w-16 h-16 rounded-l-2xl overflow-hidden flex-shrink-0">
-                        <img
-                          src={checklistImage}
-                          alt={checklist.name}
-                          loading="eager"
-                          decoding="async"
-                          className="w-full h-full object-cover"
-                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="pl-4">
-                        <ChecklistIcon iconName={checklist.icon_name} color={iconColor} size="w-10 h-10" />
-                      </div>
-                    )}
+                    <ChecklistThumb
+                      src={checklistImage}
+                      alt={checklist.name}
+                      iconName={checklist.icon_name}
+                      color={iconColor}
+                    />
                     <div className="flex-1 text-left min-w-0 py-4 pr-4">
                       <div className="flex items-center gap-2 mb-0.5">
                         <h3 className="font-light text-base text-[color:var(--app-text)] truncate">{checklist.name}</h3>
