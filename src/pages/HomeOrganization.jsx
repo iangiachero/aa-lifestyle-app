@@ -8,8 +8,7 @@ import CreateModal from './homeorganization/components/Create';
 import ViewCategoryModal from './homeorganization/components/ViewCategoryModal';
 import { homeOrgImages, homeOrgImagesById } from '../data/homeOrgImages';
 import { seedHomeOrg } from '../lib/seedHomeOrg';
-import { getIconifyIconUrl } from '../services/iconifyService';
-import { DEFAULT_ICON } from '../components/ui/IconPicker';
+import { DEFAULT_CATEGORY_IMAGE } from '../data/homeOrgImages';
 
 const CATEGORY_META = {
   'daily-reset-adhd':          { name: 'Daily Reset (ADHD Quick Wins)',  color: '#F59E0B' },
@@ -37,14 +36,8 @@ const CATEGORY_META = {
 
 const CATEGORY_ORDER = Object.keys(CATEGORY_META);
 
-// Stand-in artwork for a user's own category, so it reads like the curated bars
-// instead of a bare placeholder. Replaced the moment they pick their own icon.
-// Same bucket as the curated home organization images.
-const DEFAULT_CATEGORY_IMAGE =
-  'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/homeorganization-icon/my-home-organization.png';
 
-// Artwork first, icon as a real fallback if it fails to load — otherwise a
-// missing image leaves an empty square on the card.
+// A missing image leaves a plain tile rather than a broken-image glyph.
 function CategoryThumb({ section }) {
   const [failed, setFailed] = useState(false);
   const showImage = section.image_url && !failed;
@@ -53,13 +46,9 @@ function CategoryThumb({ section }) {
       className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center"
       style={{ backgroundColor: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.15)' }}
     >
-      {showImage ? (
+      {showImage && (
         <img src={section.image_url} alt={section.title} loading="lazy" decoding="async"
           className="w-full h-full object-cover" onError={() => setFailed(true)} />
-      ) : section.icon ? (
-        <img src={getIconifyIconUrl(section.icon, section.color_tag)} alt="" className="w-8 h-8" />
-      ) : (
-        <div className="w-full h-full" style={{ background: 'var(--app-bg)' }} />
       )}
     </div>
   );
@@ -189,18 +178,26 @@ export default function HomeOrganization() {
   /* ── custom categories ── */
 
   const createCategoryMutation = useMutation({
-    mutationFn: async ({ name, icon, color_tag, items }) => {
+    mutationFn: async ({ name, image_url, color_tag, items }) => {
       const { data: { user } } = await supabase.auth.getUser();
-      const { data: category, error } = await supabase
+      const base = { user_id: user.id, name, color_tag, sort_order: customCategories.length };
+
+      let { data: category, error } = await supabase
         .from('home_org_categories')
-        .insert({ user_id: user.id, name, icon, color_tag, sort_order: customCategories.length })
+        .insert({ ...base, image_url })
         .select()
         .single();
+      // Same guard MealPlanning uses for custom recipes: if image_url hasn't been
+      // migrated yet, save the category without the photo rather than failing.
+      if (error && (error.code === 'PGRST204' || /image_url/.test(error.message || ''))) {
+        ({ data: category, error } = await supabase
+          .from('home_org_categories').insert(base).select().single());
+      }
       if (error) throw error;
 
       // The category id doubles as the tasks' section slug.
       const rows = (items || []).filter(Boolean).map(title => ({
-        user_id: user.id, title, icon, color_tag, section: category.id, sub_tasks: [], is_curated: false,
+        user_id: user.id, title, color_tag, section: category.id, sub_tasks: [], is_curated: false,
       }));
       if (rows.length) {
         const { error: itemsError } = await supabase.from('organization_tasks').insert(rows);
@@ -315,18 +312,15 @@ export default function HomeOrganization() {
     });
   }, [tasksBySection, customIds]);
 
-  const customSections = useMemo(() => customCategories.map(cat => {
-    // No icon picked yet (or still the fallback) → show the default artwork.
-    const pickedOwnIcon = !!cat.icon && cat.icon !== DEFAULT_ICON;
-    return {
-      id: cat.id,
-      title: cat.name,
-      color_tag: cat.color_tag || '#C9A962',
-      image_url: pickedOwnIcon ? null : DEFAULT_CATEGORY_IMAGE,
-      icon: cat.icon || DEFAULT_ICON,
-      isCustom: true,
-    };
-  }), [customCategories]);
+  // The icon picker was dropped in favour of photos: a user's own image if they
+  // uploaded one, the shared default artwork otherwise.
+  const customSections = useMemo(() => customCategories.map(cat => ({
+    id: cat.id,
+    title: cat.name,
+    color_tag: cat.color_tag || '#C9A962',
+    image_url: cat.image_url || DEFAULT_CATEGORY_IMAGE,
+    isCustom: true,
+  })), [customCategories]);
 
   const viewingCategory = useMemo(
     () => [...curatedSections, ...customSections].find(s => s.id === viewingCategoryId) || null,
@@ -438,12 +432,10 @@ export default function HomeOrganization() {
         onDelete={handleDelete}
         onRenameTask={(task, title) => updateTaskMutation.mutate({ id: task.id, updates: { title } })}
         onRenameCategory={(id, name) => updateCategoryMutation.mutate({ id, updates: { name } })}
-        onChangeCategoryIcon={(id, icon) => updateCategoryMutation.mutate({ id, updates: { icon } })}
+        onChangeCategoryImage={(id, image_url) => updateCategoryMutation.mutate({ id, updates: { image_url } })}
         onDeleteCategory={(id) => deleteCategoryMutation.mutate(id)}
         onCreateTask={({ title, color_tag, section }) => {
-          const category = customCategories.find(c => c.id === section);
           createTaskMutation.mutate({
-            icon: category?.icon || DEFAULT_ICON,
             title,
             section,
             sub_tasks: [],

@@ -46,6 +46,37 @@ function todayStr() {
   return new Date().toISOString().split('T')[0];
 }
 
+// "3 days left" / "Due today" / "2 days overdue", shown on every dated block.
+function dueStatus(dateStr) {
+  if (!dateStr) return null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(dateStr + 'T00:00:00');
+  const days = Math.round((due - today) / 86400000);
+  if (days < 0) return { text: `${Math.abs(days)} ${Math.abs(days) === 1 ? 'day' : 'days'} overdue`, tone: 'overdue' };
+  if (days === 0) return { text: 'Due today', tone: 'soon' };
+  if (days === 1) return { text: '1 day left', tone: 'soon' };
+  return { text: `${days} days left`, tone: 'normal' };
+}
+
+function DueBadge({ date }) {
+  const s = dueStatus(date);
+  if (!s) return null;
+  const colors = {
+    overdue: { color: '#F87171', bg: 'rgba(248,113,113,0.12)' },
+    soon:    { color: '#C9A962', bg: 'rgba(201,169,98,0.15)' },
+    normal:  { color: 'var(--app-text-3)', bg: 'rgba(201,169,98,0.07)' },
+  }[s.tone];
+  return (
+    <span
+      className="text-[9px] px-1.5 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap"
+      style={{ color: colors.color, backgroundColor: colors.bg }}
+    >
+      {s.text}
+    </span>
+  );
+}
+
 export default function Student() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -273,11 +304,15 @@ export default function Student() {
     setAssignments(prev => prev.filter(a => a.id !== id));
   }
 
-  // Shared tail for the block inserts: surface a failure instead of silently
-  // closing the sheet, and pull the new row back so it actually shows up.
-  async function insertBlock(table, payload) {
+  // Shared tail for the block writes: surface a failure instead of silently
+  // closing the sheet, and pull the row back so it actually shows up. Updates
+  // when a block is being edited, inserts otherwise — same shape as classes and
+  // assignments, which is the parity the client asked for.
+  async function saveBlock(table, payload) {
     setSaving(true);
-    const { error } = await supabase.from(table).insert(payload);
+    const { error } = editingItem
+      ? await supabase.from(table).update(payload).eq('id', editingItem.id)
+      : await supabase.from(table).insert(payload);
     setSaving(false);
     if (error) {
       window.alert(`Could not save: ${error.message}`);
@@ -287,9 +322,15 @@ export default function Student() {
     closeModal();
   }
 
+  function openEditBlock(type, item, setForm, fields) {
+    setForm(fields);
+    setEditingItem(item);
+    setActiveModal(type);
+  }
+
   async function saveExam() {
     if (!examForm.title.trim()) return;
-    await insertBlock('student_exams', {
+    await saveBlock('student_exams', {
       ...examForm, user_id: user.id, semester,
       class_id: examForm.class_id || null,
       exam_date: examForm.exam_date || null
@@ -297,7 +338,7 @@ export default function Student() {
   }
 
   async function saveSession() {
-    await insertBlock('student_study_sessions', {
+    await saveBlock('student_study_sessions', {
       ...sessionForm, user_id: user.id, semester,
       class_id: sessionForm.class_id || null,
       session_date: sessionForm.session_date || null
@@ -306,7 +347,7 @@ export default function Student() {
 
   async function saveProject() {
     if (!projectForm.title.trim()) return;
-    await insertBlock('student_projects', {
+    await saveBlock('student_projects', {
       ...projectForm, user_id: user.id, semester,
       class_id: projectForm.class_id || null,
       due_date: projectForm.due_date || null
@@ -321,7 +362,7 @@ export default function Student() {
 
   async function saveCustom() {
     if (!customForm.title.trim()) return;
-    await insertBlock('student_custom_blocks', {
+    await saveBlock('student_custom_blocks', {
       ...customForm, user_id: user.id, semester,
       class_id: customForm.class_id || null,
       due_date: customForm.due_date || null
@@ -476,11 +517,16 @@ export default function Student() {
               key={e.id}
               title={e.title}
               color={e.student_classes?.color}
+              dueDate={e.exam_date}
               subtitle={[
                 e.student_classes?.class_name,
                 e.exam_date ? fmtDate(e.exam_date) : '',
                 e.exam_time ? fmtTime(e.exam_time) : '',
               ].filter(Boolean).join(' · ')}
+              onEdit={() => openEditBlock('exam', e, setExamForm, {
+                title: e.title || '', class_id: e.class_id || '',
+                exam_date: e.exam_date || '', exam_time: e.exam_time || '', notes: e.notes || '',
+              })}
               onDelete={() => deleteBlock('student_exams', e.id, setExams)}
             />
           )}
@@ -494,11 +540,16 @@ export default function Student() {
               key={s.id}
               title={s.student_classes?.class_name || 'Study Session'}
               color={s.student_classes?.color}
+              dueDate={s.session_date}
               subtitle={[
                 s.session_date ? fmtDate(s.session_date) : '',
                 s.start_time ? fmtTime(s.start_time) : '',
                 s.duration_minutes ? `${s.duration_minutes} min` : '',
               ].filter(Boolean).join(' · ')}
+              onEdit={() => openEditBlock('study', s, setSessionForm, {
+                class_id: s.class_id || '', session_date: s.session_date || '',
+                start_time: s.start_time || '15:00', duration_minutes: s.duration_minutes || 60,
+              })}
               onDelete={() => deleteBlock('student_study_sessions', s.id, setSessions)}
             />
           )}
@@ -512,10 +563,15 @@ export default function Student() {
               key={p.id}
               title={p.title}
               color={p.student_classes?.color}
+              dueDate={p.due_date}
               subtitle={[
                 p.student_classes?.class_name,
                 p.due_date ? `Due ${fmtDate(p.due_date)}` : '',
               ].filter(Boolean).join(' · ')}
+              onEdit={() => openEditBlock('project', p, setProjectForm, {
+                title: p.title || '', class_id: p.class_id || '',
+                due_date: p.due_date || '', notes: p.notes || '',
+              })}
               onDelete={() => deleteBlock('student_projects', p.id, setProjects)}
             />
           )}
@@ -529,12 +585,17 @@ export default function Student() {
               key={c.id}
               title={c.title}
               color={c.student_classes?.color}
+              dueDate={c.due_date}
               subtitle={[
                 c.custom_label,
                 c.student_classes?.class_name,
                 c.due_date ? `Due ${fmtDate(c.due_date)}` : '',
                 c.due_time ? fmtTime(c.due_time) : '',
               ].filter(Boolean).join(' · ')}
+              onEdit={() => openEditBlock('custom', c, setCustomForm, {
+                title: c.title || '', class_id: c.class_id || '', due_date: c.due_date || '',
+                due_time: c.due_time || '', custom_label: c.custom_label || '', notes: c.notes || '',
+              })}
               onDelete={() => deleteBlock('student_custom_blocks', c.id, setCustomBlocks)}
             />
           )}
@@ -553,10 +614,10 @@ export default function Student() {
               <h2 className="text-xl text-[color:var(--app-gold)] font-light">
                 {activeModal === 'class' && (editingItem ? 'Edit Class' : 'Add Class')}
                 {activeModal === 'assignment' && (editingItem ? 'Edit Assignment' : 'Add Assignment')}
-                {activeModal === 'exam' && 'Add Exam'}
-                {activeModal === 'study' && 'Add Study Session'}
-                {activeModal === 'project' && 'Add Project'}
-                {activeModal === 'custom' && 'Add Custom Block'}
+                {activeModal === 'exam' && (editingItem ? 'Edit Exam' : 'Add Exam')}
+                {activeModal === 'study' && (editingItem ? 'Edit Study Session' : 'Add Study Session')}
+                {activeModal === 'project' && (editingItem ? 'Edit Project' : 'Add Project')}
+                {activeModal === 'custom' && (editingItem ? 'Edit Custom Block' : 'Add Custom Block')}
               </h2>
               <button onClick={closeModal} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[color:var(--app-bg)] transition-colors">
                 <X className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
@@ -866,6 +927,7 @@ function AssignmentRow({ assignment, onToggle, onEdit, onDelete }) {
           {assignment.due_date ? `${assignment.student_classes?.class_name ? ' · ' : ''}Due ${fmtDate(assignment.due_date)}` : ''}
         </p>
       </div>
+      {!assignment.completed && <DueBadge date={assignment.due_date} />}
       {assignment.priority === 'High' && !assignment.completed && (
         <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-900/40 text-red-300 flex-shrink-0">!</span>
       )}
@@ -885,7 +947,7 @@ function AssignmentRow({ assignment, onToggle, onEdit, onDelete }) {
 
 // Same row treatment as AssignmentRow, minus the completion checkbox: exams,
 // sessions, projects and custom blocks have no completed flag in their tables.
-function BlockRow({ title, subtitle, color, onDelete }) {
+function BlockRow({ title, subtitle, color, dueDate, onEdit, onDelete }) {
   return (
     <div
       className="flex items-center gap-2.5 p-2.5 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.12)]"
@@ -897,7 +959,11 @@ function BlockRow({ title, subtitle, color, onDelete }) {
           <p className="text-[10px] text-[color:var(--app-text-3)] truncate">{subtitle}</p>
         )}
       </div>
+      <DueBadge date={dueDate} />
       <div className="flex gap-0.5 flex-shrink-0">
+        <button onClick={onEdit} className="p-1.5 rounded-lg hover:bg-[rgba(201,169,98,0.1)] transition-colors">
+          <Pencil className="w-3.5 h-3.5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+        </button>
         <button onClick={onDelete} className="p-1.5 rounded-lg hover:bg-[rgba(255,60,60,0.1)] transition-colors">
           <Trash2 className="w-3.5 h-3.5 text-red-400" strokeWidth={1.5} />
         </button>

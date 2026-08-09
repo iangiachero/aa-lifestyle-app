@@ -49,3 +49,7 @@ export const homeOrgImagesById = {
 };
 
 export const homeOrgImages = homeOrgImagesByTitle;
+
+// Shown on a user-created category until they upload a photo of their own,
+// so it reads like the curated bars instead of an empty tile.
+export const DEFAULT_CATEGORY_IMAGE = `${BASE}/my-home-organization.png`;

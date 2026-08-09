@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ChevronDown, Check, Plus, Trash2, X, Pencil } from 'lucide-react';
+import { ChevronDown, Check, Plus, Trash2, X, Pencil, ImagePlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useModal } from '../../../context/ModalContext';
-import IconPicker, { DEFAULT_ICON } from '../../../components/ui/IconPicker';
-import { getIconifyIconUrl } from '../../../services/iconifyService';
+import { supabase } from '../../../lib/supabase';
 
 function QuickAddModal({ sectionId, onClose, onAdd }) {
   const [title, setTitle] = useState('');
@@ -86,11 +85,39 @@ export default function ViewCategoryModal({
   onCreateTask,
   onRenameTask,
   onRenameCategory,
-  onChangeCategoryIcon,
+  onChangeCategoryImage,
   onDeleteCategory,
 }) {
   const { openModal, closeModal } = useModal();
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageInputRef = useRef(null);
+
+  const handleImagePick = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImagePreview(URL.createObjectURL(file));
+    setUploadingImage(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const rawExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const ext = ['heic', 'heif'].includes(rawExt) ? 'jpg' : rawExt;
+      const path = `${user.id}/homeorg_${Date.now()}.${ext}`;
+      const { error } = await supabase.storage
+        .from('public_user_pfp')
+        .upload(path, file, { upsert: false, contentType: file.type || 'image/jpeg' });
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage.from('public_user_pfp').getPublicUrl(path);
+      onChangeCategoryImage?.(section.id, publicUrl);
+    } catch {
+      setImagePreview(null);
+      window.alert('Photo upload failed — please try again.');
+    } finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+    }
+  };
   const [renaming, setRenaming] = useState(false);
   const [nameText, setNameText] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -111,6 +138,7 @@ export default function ViewCategoryModal({
     setRenaming(false);
     setConfirmDelete(false);
     setEditingTaskId(null);
+    setImagePreview(null);   // don't carry one category's photo over to the next
   }, [section?.id, section?.title]);
 
   const focusCaretEnd = useCallback((el) => {
@@ -167,27 +195,37 @@ export default function ViewCategoryModal({
             <div className="px-5 pt-5 pb-4 border-b border-[rgba(201,169,98,0.15)]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  {/* Category image, or an editable icon for the user's own bars */}
-                  {isCustom ? (
-                    <IconPicker
-                      value={section.icon || DEFAULT_ICON}
-                      onChange={(icon) => onChangeCategoryIcon?.(section.id, icon)}
-                    />
-                  ) : (
-                    <div className="w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden bg-[rgba(201,169,98,0.1)]">
-                      {section.image_url ? (
-                        <img src={section.image_url} alt={section.title} className="w-full h-full object-cover" />
-                      ) : section.icon ? (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <img src={getIconifyIconUrl(section.icon, section.color_tag)} alt="" className="w-7 h-7" />
-                        </div>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="w-6 h-6 rounded-full bg-[rgba(201,169,98,0.3)]" />
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  {/* Curated bars show their artwork; the user's own bars let them
+                      swap in a photo, the way recipes do. */}
+                  <div className="w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden bg-[rgba(201,169,98,0.1)] relative">
+                    {(imagePreview || section.image_url) && (
+                      <img
+                        src={imagePreview || section.image_url}
+                        alt={section.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+                      />
+                    )}
+                    {isCustom && (
+                      <button
+                        onClick={() => imageInputRef.current?.click()}
+                        className="absolute inset-0 flex items-end justify-center pb-1 bg-black/0 hover:bg-black/25 transition-colors"
+                        aria-label="Change photo"
+                        title="Change photo"
+                      >
+                        {uploadingImage
+                          ? <span className="w-4 h-4 border border-[rgba(201,169,98,0.4)] border-t-[#C9A962] rounded-full animate-spin" />
+                          : <ImagePlus className="w-4 h-4 text-white drop-shadow" strokeWidth={2} />}
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImagePick}
+                  />
 
                   <div className="flex-1 min-w-0">
                     {renaming ? (

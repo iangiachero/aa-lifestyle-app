@@ -4,8 +4,9 @@ import { ChevronDown, ChevronUp, Plus, X, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getIconifyIconUrl } from '../../../services/iconifyService';
 import ColorPicker from '../../../components/ui/ColorPicker';
-import IconPicker, { DEFAULT_ICON } from '../../../components/ui/IconPicker';
 import { useModal } from '../../../context/ModalContext';
+import { supabase } from '../../../lib/supabase';
+import { DEFAULT_CATEGORY_IMAGE } from '../../../data/homeOrgImages';
 
 /* === CREATE MODAL STYLING CONFIGURATION === */
 const STYLE = {
@@ -61,8 +62,38 @@ export default function CreateModal({
   const [mode, setMode] = useState('task');
   const [form, setForm] = useState({ ...EMPTY_FORM, section: defaultSection || 'daily-reset-adhd' });
   const [expandedTask, setExpandedTask] = useState(null);
-  const [selectedIconId, setSelectedIconId] = useState(null);
   const taskInputRefs = useRef({});
+  // Category photo, mirroring the recipe flow: default artwork until the user
+  // picks one of their own.
+  const [imageUrl, setImageUrl] = useState('');
+  const [imagePreview, setImagePreview] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageInputRef = useRef(null);
+
+  const handleImagePick = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImagePreview(URL.createObjectURL(file));   // instant preview
+    setUploadingImage(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const rawExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const ext = ['heic', 'heif'].includes(rawExt) ? 'jpg' : rawExt;   // iPhone
+      const path = `${user.id}/homeorg_${Date.now()}.${ext}`;
+      const { error } = await supabase.storage
+        .from('public_user_pfp')
+        .upload(path, file, { upsert: false, contentType: file.type || 'image/jpeg' });
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage.from('public_user_pfp').getPublicUrl(path);
+      setImageUrl(publicUrl);
+    } catch {
+      setImageUrl('');
+      window.alert('Photo upload failed — the category will use the default image.');
+    } finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+    }
+  };
 
   useEffect(() => {
     if (visible) {
@@ -74,8 +105,9 @@ export default function CreateModal({
   const resetForm = useCallback(() => {
     setForm({ ...EMPTY_FORM, section: defaultSection || 'daily-reset-adhd' });
     setExpandedTask(null);
-    setSelectedIconId(null);
     setMode('task');
+    setImageUrl('');
+    setImagePreview(null);
   }, [defaultSection]);
 
   const handleClose = () => { onClose(); resetForm(); };
@@ -111,14 +143,13 @@ export default function CreateModal({
     if (mode === 'category') {
       onAddCategory({
         name: form.title.trim(),
-        icon: selectedIconId || DEFAULT_ICON,
+        image_url: imageUrl || null,   // null → the app's default artwork
         color_tag: form.color_tag,
         items,
       });
     } else {
       onAdd({
         title: form.title.trim(),
-        icon: selectedIconId || DEFAULT_ICON,
         section: form.section,
         sub_tasks: items,
         color_tag: form.color_tag,
@@ -188,7 +219,34 @@ export default function CreateModal({
               <div>
                 <label className={STYLE.label}>{isCategory ? 'Category Name' : 'Title'}</label>
                 <div className="flex items-center gap-3">
-                  <IconPicker value={selectedIconId} onChange={setSelectedIconId} />
+                  {isCategory && (
+                    <button
+                      type="button"
+                      onClick={() => imageInputRef.current?.click()}
+                      className="w-12 h-12 rounded-xl overflow-hidden border border-[rgba(201,169,98,0.3)] hover:border-[rgba(201,169,98,0.55)] flex-shrink-0 relative"
+                      title="Choose a photo"
+                      aria-label="Choose a photo"
+                    >
+                      <img
+                        src={imagePreview || imageUrl || DEFAULT_CATEGORY_IMAGE}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+                      />
+                      {uploadingImage && (
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <span className="w-4 h-4 border border-[rgba(201,169,98,0.4)] border-t-[#C9A962] rounded-full animate-spin" />
+                        </span>
+                      )}
+                    </button>
+                  )}
+                  <input
+                    ref={imageInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImagePick}
+                  />
                   <input
                     type="text"
                     placeholder={isCategory ? 'e.g., Craft Room' : 'e.g., Wipe kitchen counters'}
@@ -199,7 +257,8 @@ export default function CreateModal({
                 </div>
                 {isCategory && (
                   <p className="text-[11px] text-[color:var(--app-text-3)] mt-2">
-                    Appears in <span className="text-[color:var(--app-gold)]">Your Categories</span>, below the curated ones.
+                    Tap the image to use your own photo. Appears in{' '}
+                    <span className="text-[color:var(--app-gold)]">Your Categories</span>, below the curated ones.
                   </p>
                 )}
               </div>
@@ -241,7 +300,7 @@ export default function CreateModal({
                               form.section === cat.id ? STYLE.chipActive : STYLE.chipInactive
                             }`}
                           >
-                            <img src={getIconifyIconUrl(cat.icon || DEFAULT_ICON)} alt="" className="w-5 h-5 flex-shrink-0" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                            <img src={cat.image_url || DEFAULT_CATEGORY_IMAGE} alt="" className="w-5 h-5 rounded object-cover flex-shrink-0" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
                             <span className="truncate">{cat.name}</span>
                             {form.section === cat.id && (
                               <Check className="w-3 h-3 ml-auto flex-shrink-0" strokeWidth={2.5} />
