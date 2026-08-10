@@ -51,5 +51,7 @@ export const homeOrgImagesById = {
 export const homeOrgImages = homeOrgImagesByTitle;
 
 // Shown on a user-created category until they upload a photo of their own,
-// so it reads like the curated bars instead of an empty tile.
-export const DEFAULT_CATEGORY_IMAGE = `${BASE}/my-home-organization.png`;
+// so it reads like the curated bars instead of an empty tile. Lives in the
+// checklist-icon bucket, which is where it was uploaded.
+export const DEFAULT_CATEGORY_IMAGE =
+  'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/checklist-icon/WhatsApp%20Image%202026-08-06%20at%2010.20.20%20AM.jpeg';

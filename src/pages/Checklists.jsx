@@ -68,7 +68,7 @@ const dismissKeyboard = () => {
 // Shown on the user's own checklists, which have no curated artwork of their own.
 // Same bucket as the curated checklist images, so all of it is managed in one place.
 const DEFAULT_MINE_IMAGE =
-  'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/checklist-icon/my-checklist.png';
+  'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/checklist-icon/WhatsApp%20Image%202026-08-06%20at%2010.17.11%20AM.jpeg';
 
 // Upload a photo the user picked and hand back its public URL. Same bucket and
 // naming shape as recipe and category photos.
