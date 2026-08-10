@@ -9,7 +9,7 @@ import {
   Sun, Dumbbell, Sparkles, Brain,
   Calendar, Zap, Users, GraduationCap,
   AlertTriangle, Shield, HeartPulse, Lock,
-  Luggage, Backpack, RefreshCw, School, Building,
+  Luggage, Backpack, RefreshCw, School, Building, ImagePlus,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '../components/ui/input';
@@ -69,6 +69,21 @@ const dismissKeyboard = () => {
 // Same bucket as the curated checklist images, so all of it is managed in one place.
 const DEFAULT_MINE_IMAGE =
   'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/checklist-icon/my-checklist.png';
+
+// Upload a photo the user picked and hand back its public URL. Same bucket and
+// naming shape as recipe and category photos.
+async function uploadChecklistPhoto(file) {
+  const { data: { user } } = await supabase.auth.getUser();
+  const rawExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const ext = ['heic', 'heif'].includes(rawExt) ? 'jpg' : rawExt;   // iPhone
+  const path = `${user.id}/checklist_${Date.now()}.${ext}`;
+  const { error } = await supabase.storage
+    .from('public_user_pfp')
+    .upload(path, file, { upsert: false, contentType: file.type || 'image/jpeg' });
+  if (error) throw error;
+  const { data: { publicUrl } } = supabase.storage.from('public_user_pfp').getPublicUrl(path);
+  return publicUrl;
+}
 
 // Stops iOS offering "AutoFill Contact" on fields whose label contains "Name".
 const NO_AUTOFILL = {
@@ -134,18 +149,37 @@ function ChecklistModal({
   customItems, addingToTopic, setAddingToTopic, newItemText, setNewItemText,
   onAddItem, editingItem, setEditingItem, editText, setEditText,
   onEditCustomItem, onDeleteCustomItem, onEditTemplateItem, onDeleteTemplateItem,
-  onRenameChecklist, onDeleteChecklist,
+  onRenameChecklist, onDeleteChecklist, onChangeImage,
 }) {
   const [renaming, setRenaming] = useState(false);
   const [nameText, setNameText] = useState(checklist?.name || '');
   const [confirmDelete, setConfirmDelete] = useState(false);
   const addInputRef = useRef(null);
   const addRowRef = useRef(null);
+  const photoInputRef = useRef(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  const handlePhotoPick = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoPreview(URL.createObjectURL(file));
+    setUploadingPhoto(true);
+    try {
+      onChangeImage?.(checklist.id, await uploadChecklistPhoto(file));
+    } catch {
+      setPhotoPreview(null);
+    } finally {
+      setUploadingPhoto(false);
+      if (photoInputRef.current) photoInputRef.current.value = '';
+    }
+  };
 
   useEffect(() => {
     setNameText(checklist?.name || '');
     setRenaming(false);
     setConfirmDelete(false);
+    setPhotoPreview(null);   // don't carry one checklist's photo to the next
   }, [checklist?.id]);
 
   // The add row is always the last thing in the sheet, so pinning the sheet's
@@ -232,7 +266,31 @@ function ChecklistModal({
           <div className="page-safe-x" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom, 0px))' }}>
             <div className="flex items-center justify-between py-4 border-b border-[rgba(201,169,98,0.2)] mb-4">
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <ChecklistIcon iconName={checklist.icon_name} color={iconColor} size="w-8 h-8" />
+                {isPersonal ? (
+                  <>
+                    <button
+                      onClick={() => photoInputRef.current?.click()}
+                      className="w-11 h-11 rounded-xl overflow-hidden border border-[#C9A962]/30 flex-shrink-0 relative"
+                      aria-label="Change photo"
+                      title="Change photo"
+                    >
+                      <img
+                        src={photoPreview || checklist.image_url || DEFAULT_MINE_IMAGE}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+                      />
+                      <span className="absolute inset-0 flex items-end justify-center pb-0.5 hover:bg-black/25 transition-colors">
+                        {uploadingPhoto
+                          ? <span className="w-3.5 h-3.5 border border-[#C9A962]/40 border-t-[#C9A962] rounded-full animate-spin" />
+                          : <ImagePlus className="w-3.5 h-3.5 text-white drop-shadow" strokeWidth={2} />}
+                      </span>
+                    </button>
+                    <input ref={photoInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoPick} />
+                  </>
+                ) : (
+                  <ChecklistIcon iconName={checklist.icon_name} color={iconColor} size="w-8 h-8" />
+                )}
                 <div className="flex-1 min-w-0">
                   {renaming ? (
                     <input
@@ -414,6 +472,26 @@ export default function Checklists() {
   const [newChecklistItemInput, setNewChecklistItemInput] = useState('');
   const [newChecklistColor, setNewChecklistColor] = useState('#6B7280');
   const [newChecklistCategory, setNewChecklistCategory] = useState('Productivity');
+  const [newChecklistImage, setNewChecklistImage] = useState('');
+  const [newImagePreview, setNewImagePreview] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const imageInputRef = useRef(null);
+
+  const handleImagePick = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setNewImagePreview(URL.createObjectURL(file));   // instant preview
+    setUploadingImage(true);
+    try {
+      setNewChecklistImage(await uploadChecklistPhoto(file));
+    } catch {
+      setNewChecklistImage('');
+      showNotification('Photo upload failed — the default image will be used');
+    } finally {
+      setUploadingImage(false);
+      if (imageInputRef.current) imageInputRef.current.value = '';
+    }
+  };
 
   const checklistSeeded = useRef(false);
 
@@ -539,11 +617,15 @@ export default function Checklists() {
   });
 
   const createChecklistMutation = useMutation({
-    mutationFn: async ({ name, items, color_tag, category }) => {
+    mutationFn: async ({ name, items, color_tag, category, image_url }) => {
       const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await supabase
-        .from('user_checklists')
-        .insert({ user_id: user.id, name, items, color_tag, category });
+      const base = { user_id: user.id, name, items, color_tag, category };
+      let { error } = await supabase.from('user_checklists').insert({ ...base, image_url });
+      // Same guard MealPlanning uses: if image_url hasn't been migrated yet,
+      // save without the photo rather than failing the whole create.
+      if (error && (error.code === 'PGRST204' || /image_url/.test(error.message || ''))) {
+        ({ error } = await supabase.from('user_checklists').insert(base));
+      }
       if (error) throw error;
     },
     onSuccess: () => {
@@ -713,6 +795,8 @@ export default function Checklists() {
     setNewChecklistName('');
     setNewChecklistItems([]);
     setNewChecklistItemInput('');
+    setNewChecklistImage('');
+    setNewImagePreview(null);
   }, []);
 
   const handleAddChecklistItem = () => {
@@ -733,6 +817,7 @@ export default function Checklists() {
       items: newChecklistItems,
       color_tag: newChecklistColor,
       category: newChecklistCategory,
+      image_url: newChecklistImage || null,   // null → the app's default artwork
     });
     closeAddChecklist();
     setNewChecklistColor('#6B7280');
@@ -830,7 +915,10 @@ export default function Checklists() {
               const progress = totalItems > 0 ? (totalCompleted / totalItems) * 100 : 0;
               const categoryColor = CATEGORY_COLORS[checklist.category] || '#C9A962';
 
-              const checklistImage = getChecklistImage(checklist.name)
+              // The user's own photo wins, then curated artwork, then the shared
+              // default for a personal checklist that has neither.
+              const checklistImage = checklist.image_url
+                || getChecklistImage(checklist.name)
                 || (isPersonalChecklist(checklist) ? DEFAULT_MINE_IMAGE : null);
 
               return (
@@ -918,6 +1006,7 @@ export default function Checklists() {
           onDeleteTemplateItem={handleDeleteTemplateItem}
           onRenameChecklist={handleRenameChecklist}
           onDeleteChecklist={handleDeleteChecklist}
+          onChangeImage={(id, image_url) => updateChecklistMutation.mutate({ id, updates: { image_url } })}
         />
       )}
 
@@ -935,7 +1024,31 @@ export default function Checklists() {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Checklist Name</label>
-                <Input {...NO_AUTOFILL} name="checklist-title" value={newChecklistName} onChange={e => setNewChecklistName(e.target.value)} placeholder="e.g., Morning Routine" className="w-full border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
+                <div className="flex items-center gap-3">
+                  {/* Tap to use your own photo; otherwise the default artwork. */}
+                  <button
+                    type="button"
+                    onClick={() => imageInputRef.current?.click()}
+                    className="w-12 h-12 rounded-xl overflow-hidden border border-[#C9A962]/30 hover:border-[#C9A962]/60 flex-shrink-0 relative"
+                    aria-label="Choose a photo"
+                    title="Choose a photo"
+                  >
+                    <img
+                      src={newImagePreview || newChecklistImage || DEFAULT_MINE_IMAGE}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+                    />
+                    {uploadingImage && (
+                      <span className="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <span className="w-4 h-4 border border-[#C9A962]/40 border-t-[#C9A962] rounded-full animate-spin" />
+                      </span>
+                    )}
+                  </button>
+                  <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImagePick} />
+                  <Input {...NO_AUTOFILL} name="checklist-title" value={newChecklistName} onChange={e => setNewChecklistName(e.target.value)} placeholder="e.g., Morning Routine" className="flex-1 border-[#C9A962]/20 bg-[color:var(--app-wash)] text-[color:var(--app-text)]" />
+                </div>
+                <p className="text-[11px] text-[color:var(--app-text-3)] mt-2">Tap the image to use your own photo.</p>
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-light text-[color:var(--app-text-2)] mb-2">Category</label>
