@@ -897,10 +897,13 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
   const extra = recipe.ingredients.length - 4;
   const hasInstructions = recipe.instructions && recipe.instructions.length > 0;
   const categoryIcon = RECIPE_CATEGORY_ICONS[recipe.category] || 'mdi:silverware-variant';
-  // Curated recipes have ids like cr-1 through cr-192
+  // Curated recipes are cr-<n>, each with a photo at meal-photos/cr-<n>.jpg.
+  // The count used to be hardcoded here (<= 192), so the three recipes added
+  // afterwards silently lost their photo. Ask for the photo for any curated id
+  // instead and let onError fall back to the category icon — that way a new
+  // recipe works as soon as its photo is uploaded, with no code change.
   const recipeNum = recipe.id?.startsWith('cr-') ? recipe.id.replace('cr-', '') : null;
-  const hasCuratedPhoto = recipeNum && parseInt(recipeNum) <= 192;
-  const curatedPhotoUrl = hasCuratedPhoto ? `https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos/cr-${recipeNum}.jpg` : null;
+  const curatedPhotoUrl = recipeNum ? `https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos/cr-${recipeNum}.jpg` : null;
   // Custom recipes may have an uploaded image_url
   const customPhotoUrl = recipe.is_custom && recipe.image_url ? recipe.image_url : null;
   const photoUrl = customPhotoUrl || curatedPhotoUrl;
