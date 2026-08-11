@@ -890,6 +890,34 @@ export default function MealPlanning() {
   );
 }
 
+/**
+ * Which meal-photos/cr-<n>.jpg belongs to curated recipe cr-<n>.
+ *
+ * The photos were shot against an earlier version of CURATED_RECIPES. The list
+ * was then edited — one recipe dropped, four inserted, two swapped near the end
+ * — but the files kept their original numbers, so from cr-89 onwards a recipe
+ * was showing somebody else's dish (cr-192 "Tuna Stuffed Avocado" rendered a
+ * French onion soup). The drift is not a single offset, so this table was built
+ * by checking all 104 affected photos against the list.
+ *
+ * Returns null for the four recipes that never had a photo taken; the card
+ * falls back to its category icon.
+ */
+function curatedPhotoNumber(n) {
+  if (!n) return null;
+  if (n <= 88) return n;          // still aligned
+  if (n <= 98) return n + 1;      // a recipe was removed before cr-89
+  if (n <= 101) return null;      // cr-99..101 inserted later — no photo
+  if (n <= 130) return n - 2;
+  if (n === 131) return null;     // inserted later — no photo
+  if (n <= 182) return n - 3;
+  if (n === 183) return 181;      // 183 and 184 were shot in swapped order
+  if (n === 184) return 180;
+  if (n <= 191) return n - 3;
+  if (n === 192) return 191;
+  return n;                       // 193-195 have correctly named files
+}
+
 function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit, difficultyColors }) {
   const [expanded, setExpanded] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -897,13 +925,9 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
   const extra = recipe.ingredients.length - 4;
   const hasInstructions = recipe.instructions && recipe.instructions.length > 0;
   const categoryIcon = RECIPE_CATEGORY_ICONS[recipe.category] || 'mdi:silverware-variant';
-  // Curated recipes are cr-<n>, each with a photo at meal-photos/cr-<n>.jpg.
-  // The count used to be hardcoded here (<= 192), so the three recipes added
-  // afterwards silently lost their photo. Ask for the photo for any curated id
-  // instead and let onError fall back to the category icon — that way a new
-  // recipe works as soon as its photo is uploaded, with no code change.
-  const recipeNum = recipe.id?.startsWith('cr-') ? recipe.id.replace('cr-', '') : null;
-  const curatedPhotoUrl = recipeNum ? `https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos/cr-${recipeNum}.jpg` : null;
+  const recipeNum = recipe.id?.startsWith('cr-') ? parseInt(recipe.id.replace('cr-', ''), 10) : null;
+  const photoNum = curatedPhotoNumber(recipeNum);
+  const curatedPhotoUrl = photoNum ? `https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos/cr-${photoNum}.jpg` : null;
   // Custom recipes may have an uploaded image_url
   const customPhotoUrl = recipe.is_custom && recipe.image_url ? recipe.image_url : null;
   const photoUrl = customPhotoUrl || curatedPhotoUrl;
