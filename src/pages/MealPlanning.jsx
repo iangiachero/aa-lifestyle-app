@@ -900,16 +900,20 @@ export default function MealPlanning() {
  * French onion soup). The drift is not a single offset, so this table was built
  * by checking all 104 affected photos against the list.
  *
- * Returns null for the four recipes that never had a photo taken; the card
- * falls back to its category icon.
+ * The four recipes that never had a photo taken (cr-99..101 and cr-131) point
+ * at files numbered from 196 up: their own numbers were already taken by the
+ * original shoot, which is offset from the list. A file that isn't there yet
+ * simply falls back to the category icon.
  */
 function curatedPhotoNumber(n) {
   if (!n) return null;
   if (n <= 88) return n;          // still aligned
   if (n <= 98) return n + 1;      // a recipe was removed before cr-89
-  if (n <= 101) return null;      // cr-99..101 inserted later — no photo
+  if (n === 99) return 196;       // added later, shot separately
+  if (n === 100) return 197;
+  if (n === 101) return 198;
   if (n <= 130) return n - 2;
-  if (n === 131) return null;     // inserted later — no photo
+  if (n === 131) return 199;      // added later, shot separately
   if (n <= 182) return n - 3;
   if (n === 183) return 181;      // 183 and 184 were shot in swapped order
   if (n === 184) return 180;
