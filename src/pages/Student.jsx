@@ -354,6 +354,23 @@ export default function Student() {
     });
   }
 
+  async function toggleBlock(table, item, setter) {
+    const next = !item.completed;
+    // Optimistic: the tick should feel instant, like the assignments one.
+    setter(prev => prev.map(x => x.id === item.id ? { ...x, completed: next } : x));
+    const { error } = await supabase
+      .from(table)
+      .update({ completed: next, completed_at: next ? new Date().toISOString() : null })
+      .eq('id', item.id);
+    if (error) {
+      // Column not migrated yet: keep the tick on screen rather than failing,
+      // it just won't survive a reload until the migration is applied.
+      if (error.code === 'PGRST204' || /completed/.test(error.message || '')) return;
+      setter(prev => prev.map(x => x.id === item.id ? { ...x, completed: item.completed } : x));
+      window.alert(`Could not update: ${error.message}`);
+    }
+  }
+
   async function deleteBlock(table, id, setter) {
     const { error } = await supabase.from(table).delete().eq('id', id);
     if (error) { window.alert(`Could not delete: ${error.message}`); return; }
@@ -527,6 +544,8 @@ export default function Student() {
                 title: e.title || '', class_id: e.class_id || '',
                 exam_date: e.exam_date || '', exam_time: e.exam_time || '', notes: e.notes || '',
               })}
+              completed={e.completed}
+              onToggle={() => toggleBlock('student_exams', e, setExams)}
               onDelete={() => deleteBlock('student_exams', e.id, setExams)}
             />
           )}
@@ -550,6 +569,8 @@ export default function Student() {
                 class_id: s.class_id || '', session_date: s.session_date || '',
                 start_time: s.start_time || '15:00', duration_minutes: s.duration_minutes || 60,
               })}
+              completed={s.completed}
+              onToggle={() => toggleBlock('student_study_sessions', s, setSessions)}
               onDelete={() => deleteBlock('student_study_sessions', s.id, setSessions)}
             />
           )}
@@ -572,6 +593,8 @@ export default function Student() {
                 title: p.title || '', class_id: p.class_id || '',
                 due_date: p.due_date || '', notes: p.notes || '',
               })}
+              completed={p.completed}
+              onToggle={() => toggleBlock('student_projects', p, setProjects)}
               onDelete={() => deleteBlock('student_projects', p.id, setProjects)}
             />
           )}
@@ -596,6 +619,8 @@ export default function Student() {
                 title: c.title || '', class_id: c.class_id || '', due_date: c.due_date || '',
                 due_time: c.due_time || '', custom_label: c.custom_label || '', notes: c.notes || '',
               })}
+              completed={c.completed}
+              onToggle={() => toggleBlock('student_custom_blocks', c, setCustomBlocks)}
               onDelete={() => deleteBlock('student_custom_blocks', c.id, setCustomBlocks)}
             />
           )}
@@ -947,19 +972,29 @@ function AssignmentRow({ assignment, onToggle, onEdit, onDelete }) {
 
 // Same row treatment as AssignmentRow, minus the completion checkbox: exams,
 // sessions, projects and custom blocks have no completed flag in their tables.
-function BlockRow({ title, subtitle, color, dueDate, onEdit, onDelete }) {
+function BlockRow({ title, subtitle, color, dueDate, completed, onToggle, onEdit, onDelete }) {
   return (
     <div
       className="flex items-center gap-2.5 p-2.5 bg-[color:var(--app-bg)] rounded-xl border border-[rgba(201,169,98,0.12)]"
-      style={{ borderLeft: `3px solid ${color || '#3B82F6'}` }}
+      style={{ borderLeft: `3px solid ${color || '#3B82F6'}`, opacity: completed ? 0.55 : 1 }}
     >
+      {/* Same checkbox the assignments already had, now on every block type. */}
+      <button
+        onClick={onToggle}
+        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+          completed ? 'bg-[#C9A962] border-[#C9A962]' : 'border-[color:var(--app-wash-3)] hover:border-[#C9A962]'
+        }`}
+        aria-label={completed ? 'Mark as not done' : 'Mark as done'}
+      >
+        {completed && <Check className="w-3 h-3 text-[#000000]" strokeWidth={3} />}
+      </button>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-[color:var(--app-text)] font-medium truncate">{title}</p>
+        <p className={`text-xs text-[color:var(--app-text)] font-medium truncate ${completed ? 'line-through' : ''}`}>{title}</p>
         {subtitle && (
           <p className="text-[10px] text-[color:var(--app-text-3)] truncate">{subtitle}</p>
         )}
       </div>
-      <DueBadge date={dueDate} />
+      {!completed && <DueBadge date={dueDate} />}
       <div className="flex gap-0.5 flex-shrink-0">
         <button onClick={onEdit} className="p-1.5 rounded-lg hover:bg-[rgba(201,169,98,0.1)] transition-colors">
           <Pencil className="w-3.5 h-3.5 text-[color:var(--app-gold)]" strokeWidth={1.5} />

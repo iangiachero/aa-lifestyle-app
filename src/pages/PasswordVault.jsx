@@ -616,29 +616,56 @@ export default function PasswordVault() {
   const [pinStatus, setPinStatus] = useState('loading');
   const [pinHash, setPinHash] = useState(null);
 
-  useEffect(() => {
+  const loadPinStatus = useCallback(async () => {
     if (!user?.id) return;
-    (async () => {
-      const { data } = await supabase
-        .from('users')
-        .select('vault_pin_hash')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      const hash = data?.vault_pin_hash || null;
-      setPinHash(hash);
-      if (!hash) {
-        setPinStatus('setup');
+    setPinStatus('loading');
+    const { data, error } = await supabase
+      .from('users')
+      .select('vault_pin_hash')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    // A failed read used to look exactly like "this user has no PIN", so a
+    // hiccup after signing in sent a returning user to Create PIN — and the
+    // PIN they set there never replaced the real one. Never offer setup unless
+    // we actually know there is no PIN.
+    if (error) {
+      setPinStatus('error');
+      return;
+    }
+
+    const hash = data?.vault_pin_hash || null;
+    setPinHash(hash);
+    if (!hash) {
+      setPinStatus('setup');
+    } else {
+      const expiry = parseInt(localStorage.getItem('vault_unlock_expiry') || '0');
+      if (Date.now() < expiry) {
+        setPinStatus('unlocked');
       } else {
-        const expiry = parseInt(localStorage.getItem('vault_unlock_expiry') || '0');
-        if (Date.now() < expiry) {
-          setPinStatus('unlocked');
-        } else {
-          localStorage.removeItem('vault_unlock_expiry');
-          setPinStatus('locked');
-        }
+        localStorage.removeItem('vault_unlock_expiry');
+        setPinStatus('locked');
       }
-    })();
+    }
   }, [user?.id]);
+
+  useEffect(() => { loadPinStatus(); }, [loadPinStatus]);
+
+  if (pinStatus === 'error') {
+    return (
+      <div className="min-h-full flex flex-col items-center justify-center gap-4 px-8 text-center">
+        <p className="text-sm font-light text-[color:var(--app-text-2)]">
+          Couldn&rsquo;t check your vault. Please try again.
+        </p>
+        <button
+          onClick={loadPinStatus}
+          className="px-5 py-2.5 rounded-xl bg-[#C9A962] text-[#000000] text-sm font-light"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   if (pinStatus === 'loading') {
     return (

@@ -293,24 +293,28 @@ export default function HomeOrganization() {
 
   const customIds = useMemo(() => new Set(customCategories.map(c => c.id)), [customCategories]);
 
-  // Curated bars first, then any legacy sections, then the user's own categories
-  // last — a custom category is never inserted among the curated ones.
+  // Only the 21 curated bars, then the user's own categories underneath — the
+  // section reads as curated-by-default, the way Checklists does.
+  //
+  // Sections from an older version of the app ('daily', 'kitchen', 'living', …)
+  // used to be listed too. They rendered as extra bars named after their slug
+  // and sat next to the real ones — "Kitchen" beside "Kitchen Organization" —
+  // which read as duplicates. They are hidden here rather than deleted, so the
+  // rows stay in the database and nothing is lost.
   const curatedSections = useMemo(() => {
     const withTasks = new Set(Object.keys(tasksBySection));
     const ordered = CATEGORY_ORDER.filter(id => withTasks.has(id));
-    const legacy = [...withTasks].filter(id => !CATEGORY_META[id] && !customIds.has(id));
-    return [...ordered, ...legacy].map(sectionId => {
+    return ordered.map(sectionId => {
       const meta = CATEGORY_META[sectionId];
-      const title = meta ? meta.name : sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
       return {
         id: sectionId,
-        title,
-        color_tag: meta ? meta.color : '#C9A962',
-        image_url: homeOrgImagesById[sectionId] || homeOrgImages[title] || null,
+        title: meta.name,
+        color_tag: meta.color,
+        image_url: homeOrgImagesById[sectionId] || homeOrgImages[meta.name] || null,
         isCustom: false,
       };
     });
-  }, [tasksBySection, customIds]);
+  }, [tasksBySection]);
 
   // The icon picker was dropped in favour of photos: a user's own image if they
   // uploaded one, the shared default artwork otherwise.

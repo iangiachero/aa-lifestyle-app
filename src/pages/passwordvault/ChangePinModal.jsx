@@ -71,8 +71,14 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
       setSaving(true);
       try {
         const hash = await hashPin(newPin);
-        const { error: dbError } = await supabase.from('users').update({ vault_pin_hash: hash }).eq('user_id', user.id);
-        if (dbError) { setError('Failed to save. Try again.'); setSaving(false); return; }
+        // Same guard as PinSetup: a no-op update reports success, so confirm the
+        // stored hash is really the new one before telling the user it changed.
+        const { data: saved, error: dbError } = await supabase
+          .from('users')
+          .upsert({ user_id: user.id, vault_pin_hash: hash }, { onConflict: 'user_id' })
+          .select('vault_pin_hash')
+          .maybeSingle();
+        if (dbError || saved?.vault_pin_hash !== hash) { setError('Failed to save. Try again.'); setSaving(false); return; }
         onChanged(hash);
       } finally {
         setSaving(false);

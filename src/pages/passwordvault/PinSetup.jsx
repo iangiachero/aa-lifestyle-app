@@ -76,11 +76,15 @@ export default function PinSetup({ onComplete }) {
     setSaving(true);
     try {
       const pinHash = await hashPin(pin);
-      const { error: dbError } = await supabase
+      // update() reports no error when it matches no row — a missing profile row
+      // or a policy filtering it out left the PIN silently unsaved. Upsert
+      // creates the row when needed, and returning it proves the write landed.
+      const { data: saved, error: dbError } = await supabase
         .from('users')
-        .update({ vault_pin_hash: pinHash })
-        .eq('user_id', user.id);
-      if (dbError) {
+        .upsert({ user_id: user.id, vault_pin_hash: pinHash }, { onConflict: 'user_id' })
+        .select('vault_pin_hash')
+        .maybeSingle();
+      if (dbError || saved?.vault_pin_hash !== pinHash) {
         setError('Failed to save PIN. Please try again.');
         setSaving(false);
         return;
