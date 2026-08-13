@@ -1,11 +1,12 @@
 ﻿import React, { useState, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
-import { Camera, ChevronRight, ChevronLeft, LogOut, X, User, Check, Sparkles, Calendar, Heart, GraduationCap, Briefcase, Sun, Clock, Moon, Download, RefreshCw } from 'lucide-react';
+import { Camera, ChevronRight, ChevronLeft, LogOut, X, User, Check, Sparkles, Calendar, Heart, GraduationCap, Briefcase, Sun, Clock, Moon, Download, RefreshCw, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { resetAndReseedLifestyle } from '../lib/seedLifestyleRoutines';
 import { useTheme } from '../hooks/useTheme';
+import DeleteAccountModal from './profile/DeleteAccountModal';
 
 const FOCUS_LABELS = {
   organize: { label: 'Organize', Icon: Sparkles },
@@ -43,6 +44,7 @@ export default function Profile() {
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(null);
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
 
   React.useEffect(() => {
     if (userProfile) {
@@ -187,6 +189,14 @@ export default function Profile() {
     // signOut() clears the auth state first, so the redirect has already
     // happened here. Wiping the cache only once we're off the authed pages
     // keeps a still-mounted page from re-rendering against empty queries.
+    await signOut();
+    navigate('/login', { replace: true });
+    queryClient.clear();
+  };
+
+  // The account is already gone server-side by the time this runs; signing out
+  // just clears the now-orphaned local session.
+  const handleAccountDeleted = async () => {
     await signOut();
     navigate('/login', { replace: true });
     queryClient.clear();
@@ -433,8 +443,20 @@ export default function Profile() {
             <span className="text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Sign out</span>
             <LogOut className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
+          <button onClick={() => setShowDeleteAccount(true)}
+            className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-70 border-t border-[rgba(201,169,98,0.15)]">
+            <span className="text-base text-[#EF4444]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Delete account</span>
+            <Trash2 className="w-5 h-5 text-[#EF4444]" strokeWidth={1.5} />
+          </button>
         </div>
       </div>
+
+      {showDeleteAccount && (
+        <DeleteAccountModal
+          onClose={() => setShowDeleteAccount(false)}
+          onDeleted={handleAccountDeleted}
+        />
+      )}
     </div>
   );
 } 
