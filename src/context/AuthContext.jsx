@@ -105,8 +105,15 @@ export function AuthProvider({ children }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    // Drop the local auth state *before* the network round trip. Waiting for
+    // supabase.auth.signOut() left a window where the tokens were already gone
+    // but React still held a session, so RequireAuth kept rendering the authed
+    // pages and their queries fired unauthenticated — which surfaced as the
+    // error boundary instead of the login screen.
+    setSession(null);
+    setUser(null);
     setUserProfile(null);
+    await supabase.auth.signOut();
   };
 
   const isPro = userProfile?.plan === 'pro';

@@ -184,9 +184,12 @@ export default function Profile() {
   };
 
   const handleSignOut = async () => {
+    // signOut() clears the auth state first, so the redirect has already
+    // happened here. Wiping the cache only once we're off the authed pages
+    // keeps a still-mounted page from re-rendering against empty queries.
     await signOut();
+    navigate('/login', { replace: true });
     queryClient.clear();
-    navigate('/login');
   };
 
   const pfpUrl = userProfile?.pfp_url;

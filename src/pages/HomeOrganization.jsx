@@ -36,6 +36,10 @@ const CATEGORY_META = {
 
 const CATEGORY_ORDER = Object.keys(CATEGORY_META);
 
+// "All" is the curated set, "Mine" the user's own — mirroring Checklists, where
+// the two never share a tab.
+const HOME_ORG_TABS = ['All', 'Mine'];
+
 
 // A missing image leaves a plain tile rather than a broken-image glyph.
 function CategoryThumb({ section }) {
@@ -59,6 +63,9 @@ export default function HomeOrganization() {
   const [showCreate, setShowCreate] = useState(false);
   const [createDefaultSection, setCreateDefaultSection] = useState('daily-reset-adhd');
   const [viewingCategoryId, setViewingCategoryId] = useState(null);
+  // Same two-tab split the Checklists page uses: the curated set never mixes
+  // with the user's own categories.
+  const [activeTab, setActiveTab] = useState('All');
   const queryClient = useQueryClient();
 
   const seeded = useRef(false);
@@ -208,6 +215,9 @@ export default function HomeOrganization() {
     onSuccess: (category) => {
       queryClient.invalidateQueries({ queryKey: ['homeOrgCategories'] });
       queryClient.invalidateQueries({ queryKey: ['organizationTasks'] });
+      // Switch to "Mine" too: closing the new category from the curated tab
+      // would otherwise leave it out of sight and read as nothing happening.
+      setActiveTab('Mine');
       // Jump straight into the new category so it's obvious it was created.
       if (category?.id) setViewingCategoryId(category.id);
     },
@@ -326,6 +336,11 @@ export default function HomeOrganization() {
     isCustom: true,
   })), [customCategories]);
 
+  const visibleSections = useMemo(
+    () => (activeTab === 'Mine' ? customSections : curatedSections),
+    [activeTab, curatedSections, customSections]
+  );
+
   const viewingCategory = useMemo(
     () => [...curatedSections, ...customSections].find(s => s.id === viewingCategoryId) || null,
     [curatedSections, customSections, viewingCategoryId]
@@ -378,34 +393,47 @@ export default function HomeOrganization() {
           </div>
         </div>
 
-        <div className="px-4 pt-6 pb-24">
+        {/* Category filter tabs — same control as the Checklists page */}
+        <div className="border-b border-[rgba(201,169,98,0.15)]">
+          <div className="flex gap-1 px-4 py-3 overflow-x-auto scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            {HOME_ORG_TABS.map(tab => {
+              const isActive = activeTab === tab;
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-light transition-all duration-200 ${
+                    isActive
+                      ? 'text-[#000000] shadow-sm'
+                      : 'text-[color:var(--app-text-2)] hover:text-[color:var(--app-text)] bg-[var(--app-wash-soft)] hover:bg-[color:var(--app-wash)]'
+                  }`}
+                  style={isActive ? { backgroundColor: '#C9A962' } : {}}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="px-4 pt-4 pb-24">
           {curatedSections.length === 0 && customSections.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <Home className="w-16 h-16 text-[color:var(--app-gold)] opacity-30 mb-4" strokeWidth={1} />
               <p className="text-[color:var(--app-text-2)] font-light text-base mb-1">Setting up your home organization...</p>
               <p className="text-[color:var(--app-text-3)] text-sm font-light">Your 21 categories are being loaded</p>
             </div>
+          ) : visibleSections.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <Home className="w-16 h-16 text-[color:var(--app-gold)] opacity-30 mb-4" strokeWidth={1} />
+              <p className="text-[color:var(--app-text-2)] font-light text-base mb-1">No categories of your own yet</p>
+              <p className="text-[color:var(--app-text-3)] text-sm font-light">Tap the + button to create a category</p>
+            </div>
           ) : (
-            <>
-              <div className="space-y-3">
-                {curatedSections.map(renderCard)}
-              </div>
-
-              {/* The user's own bars live in their own labelled block underneath */}
-              {customSections.length > 0 && (
-                <div className="mt-8">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-[11px] uppercase tracking-wider text-[color:var(--app-gold)] font-light">
-                      Your Categories
-                    </span>
-                    <div className="flex-1 h-px bg-[rgba(201,169,98,0.25)]" />
-                  </div>
-                  <div className="space-y-3">
-                    {customSections.map(renderCard)}
-                  </div>
-                </div>
-              )}
-            </>
+            <div className="space-y-3">
+              {visibleSections.map(renderCard)}
+            </div>
           )}
         </div>
       </div>
