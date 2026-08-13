@@ -16,6 +16,8 @@ const Profile = lazy(() => import('./pages/Profile'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Subscription = lazy(() => import('./pages/Subscription'));
 const OnboardingFlow = lazy(() => import('./pages/onboarding/index'));
+const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
+const Terms = lazy(() => import('./pages/legal/Terms'));
 const Login = lazy(() => import('./pages/Login'));
 const Splash = lazy(() => import('./pages/Splash'));
 const WelcomeScreen = lazy(() => import('./pages/WelcomeScreen'));
@@ -125,6 +127,10 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/login" element={<GuestOnly><Layout currentPageName="Login"><PageTransition><Login /></PageTransition></Layout></GuestOnly>} />
         <Route path="/splash" element={<Layout currentPageName="Splash"><PageTransition><Splash /></PageTransition></Layout>} />
+        {/* Public on purpose: App Store Connect needs URLs that open without an
+            account, and the review team reads them while signed out. */}
+        <Route path="/privacy" element={<Layout currentPageName="Privacy"><PageTransition><PrivacyPolicy /></PageTransition></Layout>} />
+        <Route path="/terms" element={<Layout currentPageName="Terms"><PageTransition><Terms /></PageTransition></Layout>} />
         <Route path="/welcome" element={<RequireAuth><WelcomeScreen /></RequireAuth>} />
         <Route path="/onboarding" element={<RequireAuth><Layout currentPageName="Onboarding"><PageTransition><OnboardingFlow /></PageTransition></Layout></RequireAuth>} />
 

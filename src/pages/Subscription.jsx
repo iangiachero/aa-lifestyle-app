@@ -1,9 +1,10 @@
 ﻿import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { ChevronLeft, Check, Lock, Crown, Loader2, AlertCircle, CheckCircle2, Star } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { STRIPE_PRODUCTS } from '../stripe-config';
+import { canUseWebCheckout } from '../lib/platform';
 
 const MONTHLY_PRICE_ID = STRIPE_PRODUCTS.pro.priceId;
 const YEARLY_PRICE_ID = STRIPE_PRODUCTS.proYearly.priceId;
@@ -320,17 +321,37 @@ export default function Subscription() {
                 ))}
               </div>
 
-              <button
-                onClick={() => handleUpgrade(activePlan?.priceId)}
-                disabled={loading}
-                className="w-full py-3.5 rounded-xl text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60 mt-1"
-                style={{ background: 'linear-gradient(135deg, #B8955A 0%, #C9A962 100%)', color: 'white', fontFamily: "'Cormorant Garamond', serif", fontSize: '16px' }}
-              >
-                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                Subscribe · {activePlan?.price}{activePlan?.period}
-              </button>
+              {canUseWebCheckout() ? (
+                <button
+                  onClick={() => handleUpgrade(activePlan?.priceId)}
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-xl text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60 mt-1"
+                  style={{ background: 'linear-gradient(135deg, #B8955A 0%, #C9A962 100%)', color: 'white', fontFamily: "'Cormorant Garamond', serif", fontSize: '16px' }}
+                >
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Subscribe · {activePlan?.price}{activePlan?.period}
+                </button>
+              ) : (
+                <p className="text-center text-xs text-[#8A7E72] px-2 py-3">
+                  In-App Purchase is not available in this build yet.
+                </p>
+              )}
 
               <p className="text-center text-xs text-[#8A7E72]">Cancel anytime. No commitments.</p>
+
+              {/* App Store guideline 3.1.2: the renewal terms and the links to
+                  Terms and Privacy Policy have to sit on the purchase screen
+                  itself, not only in the store listing. */}
+              <p className="text-center text-[11px] leading-relaxed text-[#8A7E72] px-2">
+                {activePlan?.name} plan — {activePlan?.price} per {activePlan?.id === 'yearly' ? 'year' : 'month'},
+                billed at confirmation of purchase. Your subscription renews automatically for the
+                same period unless you cancel at least 24 hours before it ends. Manage or cancel it
+                any time from this screen.
+              </p>
+              <div className="flex items-center justify-center gap-4 text-[11px]">
+                <Link to="/terms" className="underline text-[color:var(--app-gold)] opacity-80 hover:opacity-100">Terms of Use</Link>
+                <Link to="/privacy" className="underline text-[color:var(--app-gold)] opacity-80 hover:opacity-100">Privacy Policy</Link>
+              </div>
             </div>
           </>
         ) : (
