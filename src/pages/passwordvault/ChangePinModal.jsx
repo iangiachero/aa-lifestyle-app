@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Lock } from 'lucide-react';
 import { hashPin, verifyPin } from '../../utils/pinHash';
+import { generateVaultSalt, deriveVaultKey, encryptPassword, decryptPassword } from '../../utils/crypto';
+import { getVaultKey, setVaultKey } from '../../lib/vaultKey';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -70,15 +72,67 @@ export default function ChangePinModal({ pinHash, onClose, onChanged }) {
       if (confirmPin !== newPin) { setError('PINs do not match.'); setConfirmPin(''); triggerShake(); return; }
       setSaving(true);
       try {
+        // The PIN *is* the key material, so changing it re-keys the vault. Every
+        // entry has to be rewritten under the new key, and that has to happen
+        // before the new PIN is stored: if the rewrite fails after the hash
+        // changed, the user would unlock with a PIN whose key opens nothing.
+        const oldKey = getVaultKey();
+        const { data: rows, error: readError } = await supabase
+          .from('password_vault')
+          .select('id, encrypted_password')
+          .eq('user_id', user.id);
+        if (readError) { setError('Could not read your vault. Try again.'); setSaving(false); return; }
+
+        const newSalt = generateVaultSalt();
+        const newKey = await deriveVaultKey(newPin, newSalt);
+
+        const rewritten = [];
+        for (const row of rows || []) {
+          const plain = await decryptPassword(row.encrypted_password, { key: oldKey, userId: user.id });
+          // An entry we cannot read is left untouched rather than replaced by an
+          // empty one — but then the new key would not open it either, so stop.
+          if (!plain) { setError('Some entries could not be read. Your PIN was not changed.'); setSaving(false); return; }
+          rewritten.push({ id: row.id, before: row.encrypted_password, after: await encryptPassword(plain, newKey) });
+        }
+
+        const written = [];
+        for (const item of rewritten) {
+          const { error } = await supabase
+            .from('password_vault')
+            .update({ encrypted_password: item.after })
+            .eq('id', item.id)
+            .eq('user_id', user.id);
+          if (error) {
+            // Put back what we already changed, so the old PIN still opens
+            // everything and nothing is stranded under a key that was never saved.
+            for (const done of written) {
+              await supabase.from('password_vault').update({ encrypted_password: done.before }).eq('id', done.id).eq('user_id', user.id);
+            }
+            setError('Could not re-encrypt your vault. Your PIN was not changed.');
+            setSaving(false);
+            return;
+          }
+          written.push(item);
+        }
+
         const hash = await hashPin(newPin);
         // Same guard as PinSetup: a no-op update reports success, so confirm the
         // stored hash is really the new one before telling the user it changed.
         const { data: saved, error: dbError } = await supabase
           .from('users')
-          .upsert({ user_id: user.id, vault_pin_hash: hash }, { onConflict: 'user_id' })
-          .select('vault_pin_hash')
+          .upsert({ user_id: user.id, vault_pin_hash: hash, vault_key_salt: newSalt }, { onConflict: 'user_id' })
+          .select('vault_pin_hash, vault_key_salt')
           .maybeSingle();
-        if (dbError || saved?.vault_pin_hash !== hash) { setError('Failed to save. Try again.'); setSaving(false); return; }
+        if (dbError || saved?.vault_pin_hash !== hash || saved?.vault_key_salt !== newSalt) {
+          for (const done of written) {
+            await supabase.from('password_vault').update({ encrypted_password: done.before }).eq('id', done.id).eq('user_id', user.id);
+          }
+          setError('Failed to save. Try again.');
+          setSaving(false);
+          return;
+        }
+
+        setVaultKey(newKey);
         onChanged(hash);
       } finally {
         setSaving(false);

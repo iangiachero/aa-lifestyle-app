@@ -63,9 +63,11 @@ export default function PinVerify({ pinHash, onUnlock, onReset }) {
     try {
       const valid = await verifyPin(pin, pinHash);
       if (valid) {
-        // Keep vault unlocked for 24 hours so user doesn't re-enter PIN every session
+        // The PIN itself is the key material, so it has to be turned into a key
+        // here and handed over — this is the only moment the app ever sees it.
+        // The key lives in memory only, which is why a reload asks again.
         localStorage.setItem('vault_unlock_expiry', (Date.now() + 24 * 60 * 60 * 1000).toString());
-        onUnlock();
+        onUnlock(pin);
       } else {
         const next = attempts + 1;
         setAttempts(next);

@@ -4,7 +4,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useModal } from '../context/ModalContext';
-import { encryptPassword, decryptPassword } from '../utils/crypto';
+import { encryptPassword, decryptPassword, deriveVaultKey, generateVaultSalt, isLegacyEntry } from '../utils/crypto';
+import { setVaultKey, getVaultKey, clearVaultKey } from '../lib/vaultKey';
 import PinSetup from './passwordvault/PinSetup';
 import PinVerify from './passwordvault/PinVerify';
 import ChangePinModal from './passwordvault/ChangePinModal';
@@ -107,7 +108,7 @@ function VaultContent() {
   const togglePasswordVisible = useCallback(async (id, encryptedPassword) => {
     setVisiblePasswords((prev) => ({ ...prev, [id]: !prev[id] }));
     if (!decryptedPasswords[id]) {
-      const plain = await decryptPassword(encryptedPassword, user.id);
+      const plain = await decryptPassword(encryptedPassword, { key: getVaultKey(), userId: user.id });
       setDecryptedPasswords((prev) => ({ ...prev, [id]: plain }));
     }
   }, [decryptedPasswords, user?.id]);
@@ -115,7 +116,7 @@ function VaultContent() {
   const handleCopy = useCallback(async (entry) => {
     let plain = decryptedPasswords[entry.id];
     if (!plain) {
-      plain = await decryptPassword(entry.encrypted_password, user.id);
+      plain = await decryptPassword(entry.encrypted_password, { key: getVaultKey(), userId: user.id });
       setDecryptedPasswords((prev) => ({ ...prev, [entry.id]: plain }));
     }
     await navigator.clipboard.writeText(plain);
@@ -134,7 +135,7 @@ function VaultContent() {
   const openEdit = async (entry) => {
     let plain = decryptedPasswords[entry.id];
     if (!plain) {
-      plain = await decryptPassword(entry.encrypted_password, user.id);
+      plain = await decryptPassword(entry.encrypted_password, { key: getVaultKey(), userId: user.id });
       setDecryptedPasswords((prev) => ({ ...prev, [entry.id]: plain }));
     }
     setEditingEntry(entry);
@@ -162,7 +163,7 @@ function VaultContent() {
     if (!formData.site_name.trim() || !formData.username.trim() || !formData.password.trim()) return;
     setLoading(true);
     try {
-      const encrypted = await encryptPassword(formData.password, user.id);
+      const encrypted = await encryptPassword(formData.password, getVaultKey());
       const payload = {
         site_name: formData.site_name.trim(),
         username: formData.username.trim(),
@@ -615,13 +616,18 @@ export default function PasswordVault() {
   const { user } = useAuth();
   const [pinStatus, setPinStatus] = useState('loading');
   const [pinHash, setPinHash] = useState(null);
+  const [keySalt, setKeySalt] = useState(null);
+  const [migrating, setMigrating] = useState(false);
 
   const loadPinStatus = useCallback(async () => {
     if (!user?.id) return;
     setPinStatus('loading');
+    // select('*') rather than naming vault_key_salt: on a database where that
+    // column hasn't been added yet, naming it would fail the whole read and
+    // lock everyone out of their vault.
     const { data, error } = await supabase
       .from('users')
-      .select('vault_pin_hash')
+      .select('*')
       .eq('user_id', user.id)
       .maybeSingle();
 
@@ -636,18 +642,79 @@ export default function PasswordVault() {
 
     const hash = data?.vault_pin_hash || null;
     setPinHash(hash);
+    setKeySalt(data?.vault_key_salt || null);
     if (!hash) {
       setPinStatus('setup');
+      return;
+    }
+
+    // The key exists only in memory, so "still within the 24h window" is no
+    // longer enough — without the key there is nothing to decrypt with. After a
+    // reload the PIN has to be entered again. That is the point of the change.
+    const expiry = parseInt(localStorage.getItem('vault_unlock_expiry') || '0');
+    if (Date.now() < expiry && getVaultKey()) {
+      setPinStatus('unlocked');
     } else {
-      const expiry = parseInt(localStorage.getItem('vault_unlock_expiry') || '0');
-      if (Date.now() < expiry) {
-        setPinStatus('unlocked');
-      } else {
-        localStorage.removeItem('vault_unlock_expiry');
-        setPinStatus('locked');
-      }
+      localStorage.removeItem('vault_unlock_expiry');
+      clearVaultKey();
+      setPinStatus('locked');
     }
   }, [user?.id]);
+
+  /**
+   * Entries written under the old user-id-derived key are read with it once and
+   * rewritten under the PIN-derived one. An entry that fails to decrypt is left
+   * exactly as it is: overwriting it with an empty value would destroy a
+   * password to tidy up a format.
+   */
+  const migrateLegacyEntries = useCallback(async (key) => {
+    const { data: rows, error } = await supabase
+      .from('password_vault')
+      .select('id, encrypted_password')
+      .eq('user_id', user.id);
+    if (error || !rows?.length) return;
+
+    const legacy = rows.filter(r => isLegacyEntry(r.encrypted_password));
+    if (!legacy.length) return;
+
+    setMigrating(true);
+    try {
+      for (const row of legacy) {
+        const plain = await decryptPassword(row.encrypted_password, { userId: user.id });
+        if (!plain) continue;
+        const reEncrypted = await encryptPassword(plain, key);
+        await supabase
+          .from('password_vault')
+          .update({ encrypted_password: reEncrypted })
+          .eq('id', row.id)
+          .eq('user_id', user.id);
+      }
+    } finally {
+      setMigrating(false);
+    }
+  }, [user?.id]);
+
+  const handleUnlock = useCallback(async (pin) => {
+    let salt = keySalt;
+    if (!salt) {
+      // First unlock since the change: mint the salt this account will keep.
+      salt = generateVaultSalt();
+      const { error } = await supabase
+        .from('users')
+        .update({ vault_key_salt: salt })
+        .eq('user_id', user.id);
+      if (error) {
+        window.alert('Your vault needs the latest database update before it can be secured. Please try again later.');
+        return;
+      }
+      setKeySalt(salt);
+    }
+
+    const key = await deriveVaultKey(pin, salt);
+    setVaultKey(key);
+    await migrateLegacyEntries(key);
+    setPinStatus('unlocked');
+  }, [keySalt, user?.id, migrateLegacyEntries]);
 
   useEffect(() => { loadPinStatus(); }, [loadPinStatus]);
 
@@ -695,9 +762,18 @@ export default function PasswordVault() {
     return (
       <PinVerify
         pinHash={pinHash}
-        onUnlock={() => setPinStatus('unlocked')}
-        onReset={() => { setPinHash(null); setPinStatus('setup'); }}
+        onUnlock={handleUnlock}
+        onReset={() => { clearVaultKey(); setPinHash(null); setPinStatus('setup'); }}
       />
+    );
+  }
+
+  if (migrating) {
+    return (
+      <div className="min-h-full flex flex-col items-center justify-center gap-4 px-8 text-center">
+        <div className="w-8 h-8 border-2 border-[rgba(201,169,98,0.3)] border-t-[#C9A962] rounded-full animate-spin" />
+        <p className="text-sm font-light text-[color:var(--app-text-2)]">Securing your vault…</p>
+      </div>
     );
   }
 

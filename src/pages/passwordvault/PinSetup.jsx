@@ -2,6 +2,8 @@
 import { motion } from 'framer-motion';
 import { Lock, ChevronLeft } from 'lucide-react';
 import { hashPin } from '../../utils/pinHash';
+import { generateVaultSalt, deriveVaultKey } from '../../utils/crypto';
+import { setVaultKey } from '../../lib/vaultKey';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 
@@ -76,19 +78,32 @@ export default function PinSetup({ onComplete }) {
     setSaving(true);
     try {
       const pinHash = await hashPin(pin);
+      // Random per-account salt. The encryption key comes from the PIN and this
+      // salt, so neither of them can be reconstructed from the stored rows.
+      const salt = generateVaultSalt();
       // update() reports no error when it matches no row — a missing profile row
       // or a policy filtering it out left the PIN silently unsaved. Upsert
       // creates the row when needed, and returning it proves the write landed.
       const { data: saved, error: dbError } = await supabase
         .from('users')
-        .upsert({ user_id: user.id, vault_pin_hash: pinHash }, { onConflict: 'user_id' })
-        .select('vault_pin_hash')
+        .upsert({ user_id: user.id, vault_pin_hash: pinHash, vault_key_salt: salt }, { onConflict: 'user_id' })
+        .select('vault_pin_hash, vault_key_salt')
         .maybeSingle();
-      if (dbError || saved?.vault_pin_hash !== pinHash) {
+
+      if (dbError?.code === 'PGRST204' || /vault_key_salt/.test(dbError?.message || '')) {
+        // Better to refuse than to fall back to the old scheme, which stored
+        // passwords under a key anyone reading the table could rebuild.
+        setError('Your vault needs the latest database update. Please try again later.');
+        setSaving(false);
+        return;
+      }
+      if (dbError || saved?.vault_pin_hash !== pinHash || saved?.vault_key_salt !== salt) {
         setError('Failed to save PIN. Please try again.');
         setSaving(false);
         return;
       }
+
+      setVaultKey(await deriveVaultKey(pin, salt));
       sessionStorage.setItem('vault_unlocked', 'true');
       onComplete();
     } finally {
