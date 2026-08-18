@@ -111,10 +111,20 @@ without commission. Apple has appealed and the rules have moved more than once �
 verify the current guideline text before relying on it.
 
 ### 3. Signing
-Depends on the Apple Developer membership type, which is Ava's. If it is
-**Individual**, only she can hold signing certificates — App Store Connect users
-can be invited, but the developer portal cannot. If it is **Organization**, you
-can be added properly. Confirm which before planning the build.
+Confirmed: Ava's membership is **Individual**. That means:
+
+- **App Store Connect** (metadata, pricing, builds, TestFlight) — she can invite
+  you there normally, via Users and Access → App Manager.
+- **The developer portal** (signing certificates, provisioning profiles) —
+  stays accessible to her account only. There is no role that grants a second
+  person direct access to it on an Individual membership.
+
+Practical path: have Ava sign in to Xcode once on the machine you'll build from,
+with "Automatically manage signing" turned on. Xcode generates and installs the
+certificate through her account at that point, and after that you can rebuild
+from the same machine/keychain without her signing in again each time. Getting
+her to hand over raw `.p12` files and passwords works too but is more
+error-prone — prefer the Xcode path if she can spare ten minutes on a call.
 
 ### 4. Store listing
 App icons and splash screens (`@capacitor/assets` generates the set), screenshots
