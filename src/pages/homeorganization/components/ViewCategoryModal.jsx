@@ -369,20 +369,27 @@ export default function ViewCategoryModal({
                         {task.title}
                       </span>
 
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setEditingTaskId(task.id); setEditText(task.title); }}
-                        className="flex-shrink-0 text-[color:var(--app-gold)] opacity-60 hover:opacity-100 transition-colors"
-                        aria-label="Edit item"
-                      >
-                        <Pencil className="w-4 h-4" strokeWidth={1.5} />
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); onDelete(task); }}
-                        className="flex-shrink-0 text-[color:var(--app-wash-3)] hover:text-red-400 transition-colors"
-                        aria-label="Delete item"
-                      >
-                        <Trash2 className="w-4 h-4" strokeWidth={1.5} />
-                      </button>
+                      {/* Curated items stay a fixed reference list — only what the
+                          user personally added on top of it can be changed.
+                          Same rule Lifestyle.jsx applies to curated routines. */}
+                      {!task.is_curated && (
+                        <>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setEditingTaskId(task.id); setEditText(task.title); }}
+                            className="flex-shrink-0 text-[color:var(--app-gold)] opacity-60 hover:opacity-100 transition-colors"
+                            aria-label="Edit item"
+                          >
+                            <Pencil className="w-4 h-4" strokeWidth={1.5} />
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); onDelete(task); }}
+                            className="flex-shrink-0 text-[color:var(--app-wash-3)] hover:text-red-400 transition-colors"
+                            aria-label="Delete item"
+                          >
+                            <Trash2 className="w-4 h-4" strokeWidth={1.5} />
+                          </button>
+                        </>
+                      )}
                     </>
                   )}
                 </motion.div>
