@@ -31,7 +31,7 @@ function PinDots({ value, error }) {
   );
 }
 
-export default function PinSetup({ onComplete }) {
+export default function PinSetup({ onComplete, onExistingPin }) {
   const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [pin, setPin] = useState('');
@@ -77,6 +77,20 @@ export default function PinSetup({ onComplete }) {
     }
     setSaving(true);
     try {
+      // Last check before writing. If the gate reached this screen because the
+      // profile read came back empty rather than because the user is new, the
+      // hash is still there — and overwriting it would strand every entry
+      // already encrypted under the old PIN. Send them to Enter PIN instead.
+      const { data: existing } = await supabase
+        .from('users')
+        .select('vault_pin_hash')
+        .eq('user_id', user.id)
+        .limit(1);
+      if (existing?.[0]?.vault_pin_hash) {
+        onExistingPin?.(existing[0].vault_pin_hash);
+        return;
+      }
+
       const pinHash = await hashPin(pin);
       // Random per-account salt. The encryption key comes from the PIN and this
       // salt, so neither of them can be reconstructed from the stored rows.

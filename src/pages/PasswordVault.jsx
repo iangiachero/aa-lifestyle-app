@@ -622,27 +622,45 @@ export default function PasswordVault() {
   const loadPinStatus = useCallback(async () => {
     if (!user?.id) return;
     setPinStatus('loading');
-    // select('*') rather than naming vault_key_salt: on a database where that
-    // column hasn't been added yet, naming it would fail the whole read and
-    // lock everyone out of their vault.
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
+    /*
+      Getting this wrong sends a returning user to Create PIN, so the reasoning
+      matters.
 
-    // A failed read used to look exactly like "this user has no PIN", so a
-    // hiccup after signing in sent a returning user to Create PIN — and the
-    // PIN they set there never replaced the real one. Never offer setup unless
-    // we actually know there is no PIN.
-    if (error) {
+      maybeSingle() reports "no rows" as { data: null, error: null }, which is
+      indistinguishable from a genuinely new user — and an empty read happens
+      for reasons that have nothing to do with being new: straight after
+      signing in, or on a freshly installed web app, the request can reach
+      PostgREST before the session is attached, and row-level security then
+      returns zero rows rather than an error.
+
+      So the two cases are separated here. A row that exists with no hash is a
+      real new user. No row at all is "we could not tell", which is retried and
+      then reported — never treated as an invitation to overwrite a PIN.
+
+      select('*') rather than naming vault_key_salt: on a database where that
+      column hasn't been added yet, naming it would fail the read outright.
+      limit(1) rather than maybeSingle(): a duplicated profile row would
+      otherwise error the whole check out.
+    */
+    let row = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('user_id', user.id)
+        .limit(1);
+      if (!error && data?.length) { row = data[0]; break; }
+      if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 600));
+    }
+
+    if (!row) {
       setPinStatus('error');
       return;
     }
 
-    const hash = data?.vault_pin_hash || null;
+    const hash = row.vault_pin_hash || null;
     setPinHash(hash);
-    setKeySalt(data?.vault_key_salt || null);
+    setKeySalt(row.vault_key_salt || null);
     if (!hash) {
       setPinStatus('setup');
       return;
@@ -750,10 +768,11 @@ export default function PasswordVault() {
             .from('users')
             .select('vault_pin_hash')
             .eq('user_id', user.id)
-            .maybeSingle();
-          setPinHash(data?.vault_pin_hash || null);
+            .limit(1);
+          setPinHash(data?.[0]?.vault_pin_hash || null);
           setPinStatus('unlocked');
         }}
+        onExistingPin={(hash) => { setPinHash(hash); setPinStatus('locked'); }}
       />
     );
   }
