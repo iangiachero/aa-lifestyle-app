@@ -48,16 +48,19 @@ export default function PrivacyPolicy() {
 
       <Section heading="About the Password Vault">
         <p>
-          Vault entries are encrypted in your browser before being sent to us, and your PIN is
-          stored only as a one-way hash — we never see the PIN itself.
+          Vault entries are encrypted in your browser with a key derived from your PIN. We store
+          only a one-way hash of the PIN and a random salt, never the PIN itself, so we cannot
+          decrypt your entries — and neither could anyone who obtained a copy of our database.
         </p>
         <p>
-          You should know the limit of this protection: the encryption key is derived from
-          identifiers associated with your account, so it is not a zero-knowledge system.
-          Someone with administrative access to the database could in principle recover vault
-          contents. Treat the vault as a convenience for low-risk credentials, not as a
-          replacement for a dedicated password manager, and never store banking or government
-          credentials in it.
+          You should still know the limit. A PIN is short, so someone holding both our database
+          and serious computing power could try every possible PIN against your entries. Choose a
+          PIN you do not use anywhere else, and keep banking and government credentials in a
+          dedicated password manager instead.
+        </p>
+        <p>
+          Because we cannot decrypt the vault, we cannot recover it for you. If you forget your
+          PIN the only way back in is to reset the vault, which deletes everything stored in it.
         </p>
       </Section>
 

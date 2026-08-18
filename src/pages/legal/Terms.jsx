@@ -58,10 +58,16 @@ export default function Terms() {
 
       <Section heading="The Password Vault">
         <p>
-          The vault is a convenience feature, not a security product. It is not zero-knowledge:
-          see the Privacy Policy for what that means in practice. Do not store banking
-          credentials, government identifiers, or anything whose exposure would cause you
-          serious harm. We are not liable for loss arising from credentials kept in the vault.
+          Vault entries are encrypted with a key derived from your PIN, which we never store. We
+          therefore cannot read your entries and cannot recover them for you: if you forget your
+          PIN, the only way back in is to reset the vault, and that deletes everything in it.
+          Keep your own record of anything you cannot afford to lose.
+        </p>
+        <p>
+          A short PIN offers limited protection against a determined attacker. Use a dedicated
+          password manager for banking credentials, government identifiers, or anything whose
+          exposure would cause you serious harm. We are not liable for loss arising from
+          credentials kept in the vault.
         </p>
       </Section>
 
