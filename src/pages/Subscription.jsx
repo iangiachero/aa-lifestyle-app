@@ -4,7 +4,8 @@ import { ChevronLeft, Check, Lock, Crown, Loader2, AlertCircle, CheckCircle2, St
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { STRIPE_PRODUCTS } from '../stripe-config';
-import { canUseWebCheckout } from '../lib/platform';
+import { canUseWebCheckout, isNativeApp } from '../lib/platform';
+import { getOfferings, purchasePackage, restorePurchases, openNativeManageSubscriptions } from '../lib/iap';
 
 const MONTHLY_PRICE_ID = STRIPE_PRODUCTS.pro.priceId;
 const YEARLY_PRICE_ID = STRIPE_PRODUCTS.proYearly.priceId;
@@ -80,6 +81,15 @@ export default function Subscription() {
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('yearly');
+  const [nativePackages, setNativePackages] = useState([]);
+  const [restoring, setRestoring] = useState(false);
+
+  useEffect(() => {
+    if (!isNativeApp()) return;
+    getOfferings().then(setNativePackages).catch((err) => {
+      console.error('[Subscription] RevenueCat offerings:', err);
+    });
+  }, []);
 
   useEffect(() => {
     const success = searchParams.get('success');
@@ -149,7 +159,68 @@ export default function Subscription() {
     }
   };
 
+  // RevenueCat identifies the standard packages by packageType rather than a
+  // dashboard-chosen string, so this survives the offering being renamed.
+  const nativePackageFor = (planId) =>
+    nativePackages.find(p => p.packageType === (planId === 'yearly' ? 'ANNUAL' : 'MONTHLY'));
+
+  const handleNativeUpgrade = async (planId) => {
+    const pkg = nativePackageFor(planId);
+    if (!pkg) {
+      setError('This plan is not available for purchase yet. Please try again shortly.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const entitled = await purchasePackage(pkg);
+      if (entitled) {
+        // The App Store confirms the purchase instantly, but users.plan only
+        // flips once the RevenueCat webhook lands — usually seconds, not
+        // instant. Poll briefly rather than tell the user Pro is active before
+        // it actually is.
+        setSuccessMsg('Purchase successful — activating your Pro plan…');
+        for (let attempt = 0; attempt < 6; attempt++) {
+          await new Promise(r => setTimeout(r, 1500));
+          const profile = await refreshUserProfile();
+          if (profile?.plan === 'pro') {
+            setSuccessMsg('Purchase successful! Your Pro plan is now active.');
+            break;
+          }
+        }
+      }
+    } catch (err) {
+      // RevenueCat's Capacitor plugin resolves with userCancelled rather than
+      // throwing for a cancelled sheet — reaching the catch means a real error.
+      setError(err?.message || 'Purchase failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    setRestoring(true);
+    setError(null);
+    try {
+      const entitled = await restorePurchases();
+      if (entitled) {
+        await refreshUserProfile();
+        setSuccessMsg('Purchases restored — your Pro plan is active.');
+      } else {
+        setError('No active purchase was found for this Apple ID.');
+      }
+    } catch (err) {
+      setError(err?.message || 'Could not restore purchases. Please try again.');
+    } finally {
+      setRestoring(false);
+    }
+  };
+
   const handleManage = async () => {
+    if (isNativeApp()) {
+      openNativeManageSubscriptions();
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -331,10 +402,31 @@ export default function Subscription() {
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   Subscribe · {activePlan?.price}{activePlan?.period}
                 </button>
+              ) : nativePackageFor(selectedPlan) ? (
+                <button
+                  onClick={() => handleNativeUpgrade(selectedPlan)}
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-xl text-base transition-all flex items-center justify-center gap-2 disabled:opacity-60 mt-1"
+                  style={{ background: 'linear-gradient(135deg, #B8955A 0%, #C9A962 100%)', color: 'white', fontFamily: "'Cormorant Garamond', serif", fontSize: '16px' }}
+                >
+                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                  Subscribe · {nativePackageFor(selectedPlan)?.product?.priceString || activePlan?.price}{activePlan?.period}
+                </button>
               ) : (
                 <p className="text-center text-xs text-[#8A7E72] px-2 py-3">
-                  In-App Purchase is not available in this build yet.
+                  {isNativeApp() ? 'Loading available plans…' : 'In-App Purchase is not available in this build yet.'}
                 </p>
+              )}
+
+              {isNativeApp() && (
+                <button
+                  onClick={handleRestore}
+                  disabled={restoring}
+                  className="w-full py-2 text-xs text-center transition-opacity disabled:opacity-60"
+                  style={{ color: 'var(--app-gold)' }}
+                >
+                  {restoring ? 'Restoring…' : 'Restore Purchases'}
+                </button>
               )}
 
               <p className="text-center text-xs text-[#8A7E72]">Cancel anytime. No commitments.</p>

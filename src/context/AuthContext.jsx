@@ -1,6 +1,7 @@
 // src/context/AuthContext.jsx
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { configureRevenueCat, logOutRevenueCat } from '../lib/iap';
 
 const AuthContext = createContext(null);
 
@@ -60,6 +61,7 @@ export function AuthProvider({ children }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserProfile(session.user.id, session.user).finally(() => setLoading(false));
+        configureRevenueCat(session.user.id); // no-op on the web build
       } else {
         setLoading(false);
       }
@@ -70,6 +72,7 @@ export function AuthProvider({ children }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         (async () => { await fetchUserProfile(session.user.id, session.user); })();
+        configureRevenueCat(session.user.id);
       } else {
         setUserProfile(null);
       }
@@ -113,6 +116,7 @@ export function AuthProvider({ children }) {
     setSession(null);
     setUser(null);
     setUserProfile(null);
+    await logOutRevenueCat(); // no-op on the web build
     await supabase.auth.signOut();
   };
 

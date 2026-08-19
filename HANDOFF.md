@@ -69,10 +69,12 @@ student dashboard, habits, workouts, shop, password vault, Stripe subscriptions
 - in-app account deletion — the edge function still needs deploying
 - Privacy Policy and Terms at `/privacy` and `/terms` — placeholders unfilled
 - vault key derived from the PIN instead of the user id
+- RevenueCat integration (see 4.2) — code is written and builds, but cannot be
+  exercised until Capacitor's iOS platform exists and the dashboard side is
+  configured. Nothing here has run against a real purchase.
 
 **Not started:**
-- Capacitor / iOS project
-- In-App Purchase
+- Capacitor / iOS project itself (`npx cap add ios`)
 - service worker update prompt — `src/hooks/usePwaUpdate.ts` exists but is
   imported nowhere, so users never get told a new version is available
 
@@ -91,24 +93,57 @@ because CocoaPods cannot run.
 Note `webDir: 'dist'` with `server.url` commented out — the app bundles the
 built assets, so the iOS build does not load from Vercel.
 
-### 2. In-App Purchase — the hard blocker
-Guideline 3.1.1: a subscription unlocking in-app content must use IAP. The
-Stripe checkout is already hidden in native builds via `canUseWebCheckout()` in
-`src/lib/platform.js`, but nothing replaces it yet, and an app that gates
-features with no way to buy them is rejected just as fast.
+### 2. In-App Purchase
 
-Suggested: `@revenuecat/purchases-capacitor`. It validates receipts server-side
-and its webhooks can update `users.plan`, so Apple and Stripe end up writing to
-the same field. Decide precedence when an account has both.
+The client and server code for RevenueCat is written — what's left is
+dashboard configuration and testing on a real device, neither of which can be
+done from a text editor.
 
-Also required by 3.1.2, and missing: a **Restore Purchases** button. The price,
-period, renewal terms and the two legal links are already on the subscription
-screen.
+**Written, builds, never run against a real purchase:**
+- `src/lib/iap.js` — thin wrapper over `@revenuecat/purchases-capacitor`
+  (configure, getOfferings, purchasePackage, restorePurchases,
+  hasActiveEntitlement, logOut). No-ops on the web build.
+- `src/pages/Subscription.jsx` — on native, shows a real purchase button wired
+  to RevenueCat instead of the old "not available" placeholder, plus a
+  **Restore Purchases** button (required by 3.1.2, was missing entirely).
+  "Manage Plan" for a native Pro user opens Apple's subscriptions page instead
+  of the Stripe billing portal, since Stripe has no idea an App Store purchase
+  exists.
+- `src/context/AuthContext.jsx` — calls `configureRevenueCat(user.id)` on
+  sign-in and `logOutRevenueCat()` on sign-out, using the Supabase user id as
+  RevenueCat's `appUserID`. This is what lets the webhook update `users.plan`
+  by `user_id` directly with no separate customer-mapping table.
+- `supabase/functions/revenuecat-webhook/index.ts` — same philosophy as
+  `stripe-webhook`: rather than branching on which of RevenueCat's ~20 event
+  types arrived, every event triggers a fresh read of the subscriber's
+  entitlement state from RevenueCat's API and writes that. Self-heals if an
+  event is ever missed. Verified against RevenueCat's published API surface
+  (github.com/RevenueCat/purchases-capacitor) as of 2026-08-19, not against a
+  live account — there is no sandbox to test against without the dashboard
+  setup below.
 
-US-only nuance worth checking before you design this: since the April 2025
+**Still needed, all dashboard/manual work:**
+1. Create a RevenueCat account, add this app, get the iOS **public** SDK key →
+   `VITE_REVENUECAT_IOS_API_KEY` in `.env`.
+2. In App Store Connect, create the subscription products (monthly/yearly)
+   under an entitlement named exactly `pro` — the webhook checks for that
+   name.
+3. In RevenueCat, set a webhook pointing at
+   `{SUPABASE_URL}/functions/v1/revenuecat-webhook`, with an
+   Authorization-header secret of your choosing — set the same string as
+   `REVENUECAT_WEBHOOK_SECRET` via `supabase secrets set`.
+4. Get RevenueCat's **secret** API key → `REVENUECAT_SECRET_API_KEY` via
+   `supabase secrets set` (server-side only, never in `.env`/the client).
+5. Deploy: `npx supabase functions deploy revenuecat-webhook`.
+6. Decide precedence for an account that somehow has both a Stripe and an App
+   Store subscription — not handled, shouldn't come up often, but pick a rule.
+7. Test a real purchase in the sandbox once step 1 of section 4 (Capacitor)
+   is done and there's an actual iOS build to run it in.
+
+US-only nuance worth checking before relying on it: since the April 2025
 *Epic v. Apple* injunction, US-storefront apps may link out to external purchase
 without commission. Apple has appealed and the rules have moved more than once —
-verify the current guideline text before relying on it.
+verify the current guideline text rather than assuming this still holds.
 
 ### 3. Signing
 Confirmed: Ava's membership is **Individual**. That means:
