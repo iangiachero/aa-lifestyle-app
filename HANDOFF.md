@@ -3,6 +3,13 @@
 Read this before touching anything. A few of the traps below will cost real
 user data or real money if you hit them blind.
 
+Two related documents in this same repo root:
+- `PRE_SUBMISSION_CHECKLIST.md` — Ava's gate before Apple submission. Nothing
+  gets submitted until every applicable item there is checked and confirmed
+  against the real build, not assumed from the web version working.
+- `APP_STORE_LISTING.md` — the approved app name and description, verbatim,
+  for whoever fills in App Store Connect.
+
 ---
 
 ## 1. Read this first: four things that will bite you

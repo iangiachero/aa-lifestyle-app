@@ -4,17 +4,14 @@
   Everything here is a placeholder until you replace it.
 */
 
-// e.g. "Ava Smith, sole trader, Austin TX" or the registered company name.
-export const LEGAL_ENTITY = '[LEGAL ENTITY — replace before submission]';
+export const LEGAL_ENTITY = 'Ava Amad';
 
-// Must be an address someone actually reads: Apple and users both write to it.
-export const CONTACT_EMAIL = '[support@yourdomain.com — replace before submission]';
+export const CONTACT_EMAIL = 'allaccess.lifestylee@gmail.com';
 
-// e.g. "the State of Texas, United States".
-export const GOVERNING_LAW = '[JURISDICTION — replace before submission]';
+export const GOVERNING_LAW = 'the State of Missouri, United States';
 
 // Bump this whenever the wording changes materially.
-export const LAST_UPDATED = '14 August 2026';
+export const LAST_UPDATED = '19 August 2026';
 
 // Mirrors the prices in Subscription.jsx; guideline 3.1.2 wants them stated
 // next to the renewal terms, not only on the plan cards.
