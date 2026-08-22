@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import {
   ShoppingBag, Plus, Check, X, ChevronDown, ChevronRight,
-  ChevronLeft, Home, Sparkles, Shirt, Laptop, Dumbbell, Gift, CreditCard, Tag
+  ChevronLeft, Home, Sparkles, Shirt, Laptop, Dumbbell, Gift, CreditCard, Tag, Pencil
 } from 'lucide-react';
 import CustomSelect from '../components/ui/CustomSelect';
 
@@ -27,6 +27,7 @@ export default function Shop() {
 
   const [showDialog, setShowDialog] = useState(false);
   const [newItem, setNewItem] = useState(EMPTY_FORM);
+  const [editingItem, setEditingItem] = useState(null);
   const [collapsedCategories, setCollapsedCategories] = useState(
     Object.fromEntries(SHOP_BLOCKS.map(b => [b.id, true]))
   );
@@ -102,14 +103,38 @@ export default function Shop() {
 
   /* ── Handlers ── */
   const handleAddBlock = (block) => {
+    setEditingItem(null);
     setNewItem({ ...EMPTY_FORM, category: block.id });
     setShowDialog(true);
   };
 
+  const handleEditItem = (item) => {
+    setEditingItem(item);
+    setNewItem({
+      name: item.name || '',
+      category: item.category || 'home',
+      link: item.link || '',
+      notes: item.notes || '',
+      priority: item.priority || 'medium',
+    });
+    setShowDialog(true);
+  };
+
+  const closeDialog = () => {
+    setShowDialog(false);
+    setEditingItem(null);
+    setNewItem(EMPTY_FORM);
+  };
+
   const handleAdd = () => {
     if (!newItem.name.trim()) return;
-    insertMutation.mutate({ ...newItem, name: newItem.name.trim() });
+    if (editingItem) {
+      updateMutation.mutate({ id: editingItem.id, updates: { ...newItem, name: newItem.name.trim() } });
+    } else {
+      insertMutation.mutate({ ...newItem, name: newItem.name.trim() });
+    }
     setNewItem(EMPTY_FORM);
+    setEditingItem(null);
     setShowDialog(false);
   };
 
@@ -249,7 +274,10 @@ export default function Shop() {
                           </div>
                         </div>
 
-                        <button onClick={() => deleteItem(item.id)} style={{ color: ui.muted }} className="flex-shrink-0 mt-0.5">
+                        <button onClick={() => handleEditItem(item)} style={{ color: ui.muted }} className="flex-shrink-0 mt-0.5 opacity-70 hover:opacity-100 transition-opacity" aria-label="Edit item">
+                          <Pencil className="w-4 h-4" strokeWidth={1.5} />
+                        </button>
+                        <button onClick={() => deleteItem(item.id)} style={{ color: ui.muted }} className="flex-shrink-0 mt-0.5" aria-label="Delete item">
                           <X className="w-4 h-4" strokeWidth={1.5} />
                         </button>
                       </div>
@@ -283,15 +311,15 @@ export default function Shop() {
       {showDialog && (
         <div className="fixed inset-0 flex items-end z-[99999]"
           style={{ backgroundColor: 'rgba(0,0,0,0.55)' }}
-          onClick={() => setShowDialog(false)}>
+          onClick={closeDialog}>
           <div className="w-full rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto border-t-2 relative scrollbar-hide"
             style={{ backgroundColor: ui.panel2, borderColor: ui.border }}
             onClick={e => e.stopPropagation()}>
-            <button onClick={() => setShowDialog(false)}
+            <button onClick={closeDialog}
               className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full">
               <X className="w-5 h-5" style={{ color: 'var(--app-gold)' }} />
             </button>
-            <h2 className="text-xl font-light mb-6" style={{ color: 'var(--app-gold)' }}>Add Shop Item</h2>
+            <h2 className="text-xl font-light mb-6" style={{ color: 'var(--app-gold)' }}>{editingItem ? 'Edit Shop Item' : 'Add Shop Item'}</h2>
 
             <div className="space-y-4 pb-32">
               <div>
@@ -345,15 +373,17 @@ export default function Shop() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setShowDialog(false)}
+                <button onClick={closeDialog}
                   className="flex-1 py-3 rounded-full text-sm"
                   style={{ backgroundColor: ui.panel, border: `1px solid ${ui.border}`, color: ui.muted }}>
                   Cancel
                 </button>
-                <button onClick={handleAdd} disabled={!newItem.name.trim() || insertMutation.isPending}
+                <button onClick={handleAdd} disabled={!newItem.name.trim() || insertMutation.isPending || updateMutation.isPending}
                   className="flex-1 py-3 rounded-full text-sm font-medium disabled:opacity-50"
                   style={{ backgroundColor: ui.gold, color: ui.bg }}>
-                  {insertMutation.isPending ? 'Adding...' : 'Add to Shop'}
+                  {editingItem
+                    ? (updateMutation.isPending ? 'Saving...' : 'Save Changes')
+                    : (insertMutation.isPending ? 'Adding...' : 'Add to Shop')}
                 </button>
               </div>
             </div>
