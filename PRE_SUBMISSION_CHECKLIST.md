@@ -93,11 +93,44 @@ a real build · ⛔ not started · — needs a TestFlight build to even attempt
 - ⛔ Bundle ID, certificates, subscription products, banking/tax info — not started
 
 ## 14. Encryption & Export Compliance
-- ⛔ Not answered yet. Factual starting point for whoever does this: the app
-  uses HTTPS/TLS (standard, usually exempt) and AES-GCM for the Password
-  Vault (implemented via the browser's Web Crypto API, not a custom cipher).
-  That's normally within Apple's standard exemptions, but confirm against
-  Apple's current export compliance questions rather than assume.
+
+**Facts about what the app actually uses** (verified in code, 2026-08-19):
+- HTTPS/TLS for all network traffic (Supabase, Stripe, RevenueCat) — this
+  alone is exempt; Apple treats OS-level HTTPS as not requiring documentation.
+- **Password Vault**: AES-256-GCM, via the browser/WebView's built-in Web
+  Crypto API (`crypto.subtle`) — not a custom or third-party crypto library.
+  Key is derived from the user's PIN with PBKDF2 (600,000 iterations,
+  SHA-256), per account, never transmitted or stored.
+- PIN itself: stored only as a SHA-256 hash, never in plain text.
+- No VPN, no custom messaging/DRM, no encryption libraries beyond the
+  browser's standard API.
+
+**Why this isn't a simple "select exempt and move on," checked 2026-08-19:**
+Apple's own guidance treats "HTTPS-only" apps as cleanly exempt, but
+specifically lists **on-device password vaults** as an example of something
+that typically does *not* qualify for that simplest exemption — regardless of
+using a standard algorithm like AES. That points toward answering "Yes, uses
+encryption" and likely **not** the simplest exemption category in App Store
+Connect's questionnaire (`ITSAppUsesNonExemptEncryption` probably `YES`, not
+`NO`).
+
+In practice this usually still resolves to a fast, self-service path — most
+apps using only standard, publicly available algorithms (AES, SHA — exactly
+what this app uses, nothing proprietary) qualify for the U.S. **License
+Exception ENC / mass-market** self-classification, which for a small app
+commonly does *not* require an actual filing with the Bureau of Industry and
+Security, just answering the questionnaire accurately. But that determination
+depends on specifics (distribution countries, whether a CCATS/self-classification
+report has ever been filed for this app before) that are a legal judgment call,
+not a coding one.
+
+⛔ **Recommendation: don't guess through Apple's actual questionnaire from this
+document.** Walk through App Store Connect's real export compliance flow when
+the app record exists (it asks the determining questions directly), and if
+anything is ambiguous, a five-minute check with someone who handles export
+compliance is cheaper than guessing wrong on a legal filing.
+
+Sources checked: [ITSAppUsesNonExemptEncryption, decoded](https://orbitkit.io/blog/app-store-export-compliance-encryption/), [Apple Developer Forums](https://developer.apple.com/forums/thread/120252)
 
 ## 15. Final Visual QA
 - ✅ True on web
