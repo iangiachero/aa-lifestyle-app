@@ -40,7 +40,31 @@ a real build · ⛔ not started · — needs a TestFlight build to even attempt
   expired/canceled handling — depends on section 1 being finished first
 
 ## 4. Full App Functionality Testing
-- ✅ Every listed feature exists and works on the web build today
+- ✅ Every route loads cleanly on web (2026-08-19 pass, logged into a real
+  account): Dashboard, Calendar, Tasks, Checklists, Meal Plan, Grocery,
+  Workout, Lifestyle, Student, Home Organization, Notes, Shop, Vault,
+  Profile, Subscription — zero console errors across all of them
+- ✅ Recurring calendar events, specifically checked because Ava flagged this
+  exact behavior: created a weekly event, deleted a single occurrence
+  (removed from that day on both Calendar and the Home dashboard, later
+  occurrences untouched), then deleted the whole series (fully gone,
+  confirmed against the database — zero leftover rows)
+- ✅ Adding recipe ingredients to the Grocery List — verified all 6
+  ingredients land correctly, grouped under "From Recipes" with the source
+  recipe attributed
+- ✅ Notes subject-title field, autosave, and persistence after reload
+- 🔧 **Found and fixed**: Shop items had no edit capability at all — add and
+  delete worked, editing did not exist in the code. Now fixed (Pencil button
+  per item, reuses the add dialog pre-filled). Verified live: opens
+  pre-filled, saves, survives a reload.
+- ✅ Male/female workout sections are gated by the user's onboarding gender
+  (`Fitness.jsx`), not a missing toggle — confirmed in code, working as
+  designed
+- — everything else on Ava's list under this section (male/female switching,
+  curated vs. custom workouts in depth, assignment tracker completion beyond
+  what was already tested earlier, exhaustive click-through of every
+  sub-item) has not been individually re-verified in this pass; spot-checked
+  the highest-risk ones rather than every line
 - — needs the identical pass repeated inside the native/TestFlight build; web
   working is not proof the Capacitor wrapper behaves the same (webview quirks,
   keyboard handling, safe areas)
