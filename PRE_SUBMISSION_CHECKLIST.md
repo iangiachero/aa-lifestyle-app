@@ -27,10 +27,14 @@ a real build · ⛔ not started · — needs a TestFlight build to even attempt
   expiration, renewal, restore, logout/login retention, no loopholes)
 
 ## 2. Account Creation, Login & Deletion
-- 🔶 Delete Account exists in-app (`supabase/functions/delete-account`) —
-  **written but not deployed**; run `npx supabase functions deploy delete-account`
-- 🔶 Deletion order cancels Stripe first, then data, then the login, so a failure
-  midway can't strand a billable account or orphaned data — not yet tested end to end
+- ✅ Delete Account deployed and verified end to end on web (2026-08-23):
+  data wiped, stripe_customers row removed, auth login actually gone —
+  confirmed by the access token itself returning 403 user_not_found
+  afterward, not just a client-side success message. Took several rounds to
+  get right; see the commit history on `supabase/functions/delete-account`
+  for the two real bugs found (a stripe_customers row with no CASCADE that
+  the fix initially missed, then a filter that made the fix's own delete
+  call unreachable for already-touched accounts).
 - — account creation/login/logout/password reset/reinstall-and-relogin: these work
   on web today but need re-verification in the native build specifically
 
