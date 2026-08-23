@@ -79,45 +79,48 @@ function isMissingSchema(error: { code?: string; message?: string } | null) {
 }
 
 async function cancelStripeSubscriptions(userId: string, report: string[]) {
-  if (!stripe) {
-    report.push('stripe: no secret key configured, skipped');
-    return;
-  }
+  // Bug found live, via the raw Postgres error (GoTrue's admin API hides it):
+  // this function used to read the customer_id filtered on `deleted_at IS
+  // NULL`, then returned early — before its own delete call — whenever that
+  // came back empty. An account whose row had already been soft-deleted by an
+  // *older* version of this function (back when it only set deleted_at
+  // instead of deleting) always looks empty under that filter, so the delete
+  // at the bottom never ran and the row sat there forever, still referenced
+  // and still blocking the final account deletion. Finding an active
+  // customer to cancel Stripe subscriptions for, and removing the row, are
+  // two separate jobs now — the second must not depend on the first.
   const { data: customer } = await supabase
     .from('stripe_customers')
     .select('customer_id')
     .eq('user_id', userId)
-    .is('deleted_at', null)
     .maybeSingle();
 
   const customerId = customer?.customer_id;
-  if (!customerId) {
+
+  if (stripe && customerId) {
+    const subs = await stripe.subscriptions.list({ customer: customerId, status: 'all', limit: 100 });
+    for (const sub of subs.data) {
+      if (sub.status === 'canceled' || sub.status === 'incomplete_expired') continue;
+      // Cancel immediately rather than at period end: the account is going
+      // away now, so leaving it billable until the renewal date would be wrong.
+      await stripe.subscriptions.cancel(sub.id);
+      report.push(`stripe: cancelled ${sub.id}`);
+    }
+  } else if (!stripe) {
+    report.push('stripe: no secret key configured, subscription cancellation skipped');
+  } else {
     report.push('stripe: no customer, nothing to cancel');
-    return;
   }
 
-  const subs = await stripe.subscriptions.list({ customer: customerId, status: 'all', limit: 100 });
-  for (const sub of subs.data) {
-    if (sub.status === 'canceled' || sub.status === 'incomplete_expired') continue;
-    // Cancel immediately rather than at period end: the account is going away
-    // now, so leaving it billable until the renewal date would be wrong.
-    await stripe.subscriptions.cancel(sub.id);
-    report.push(`stripe: cancelled ${sub.id}`);
-  }
-
-  // stripe_customers.user_id references auth.users(id) with no ON DELETE
-  // CASCADE (checked against the live schema). An earlier version of this
-  // function only soft-deleted this row (set deleted_at) to keep billing
-  // history — which left the row in place and silently blocked the
-  // auth.admin.deleteUser() call below with a foreign-key violation, so
-  // deletion always completed the data wipe but never the login itself.
-  // stripe_subscriptions/stripe_orders key off customer_id as plain text, not
-  // a real foreign key to this table, so removing it doesn't cascade into
-  // them or break their history.
-  await supabase
+  // Unconditional: runs whether or not a customer/subscription was found
+  // above. stripe_subscriptions/stripe_orders key off customer_id as plain
+  // text, not a real foreign key into this table, so removing it doesn't
+  // cascade into them or break that history.
+  const { error: deleteCustomerError } = await supabase
     .from('stripe_customers')
     .delete()
     .eq('user_id', userId);
+  if (deleteCustomerError) report.push(`stripe_customers: ${deleteCustomerError.message}`);
 }
 
 async function deleteStorage(userId: string, report: string[]) {
