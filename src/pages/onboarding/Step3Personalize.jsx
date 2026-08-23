@@ -17,7 +17,7 @@ function TileButton({ label, selected, onClick }) {
         fontFamily: "'Inter', sans-serif",
         fontSize: '15px',
         fontWeight: 500,
-        color: selected ? '#e2ba8b' : 'rgba(226,186,139,0.7)',
+        color: selected ? 'var(--app-gold-light)' : 'rgba(226,186,139,0.7)',
       }}>
         {label}
       </span>

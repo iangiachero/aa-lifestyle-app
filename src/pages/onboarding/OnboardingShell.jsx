@@ -1,8 +1,9 @@
 ﻿import React from 'react';
 
-const GOLD = '#C9A962';
-const GOLD_DIM = 'rgba(201,169,98,0.25)';
-
+// Was a raw #C9A962 and a black-to-brown-to-black gradient — neither followed
+// the theme variables the rest of the app uses, so onboarding looked visibly
+// off next to every other screen (flat solid --app-bg) and silently ignored
+// the Light/Dark choice made in Step4 since nothing here read the theme.
 export function OnboardingShell({ children, step, totalSteps, footer }) {
   return (
     <div
@@ -10,7 +11,7 @@ export function OnboardingShell({ children, step, totalSteps, footer }) {
         minHeight: '100dvh',
         display: 'flex',
         flexDirection: 'column',
-        background: 'linear-gradient(to bottom, #000000, #1e1a16, #000000)',
+        background: 'var(--app-bg)',
         fontFamily: "'Inter', sans-serif",
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
@@ -35,7 +36,7 @@ export function OnboardingShell({ children, step, totalSteps, footer }) {
                 width: i === step ? '24px' : '8px',
                 height: '8px',
                 borderRadius: '9999px',
-                background: i === step ? GOLD : GOLD_DIM,
+                background: i === step ? 'var(--app-gold)' : 'rgba(201,169,98,0.25)',
                 transition: 'all 0.3s ease',
               }}
             />
@@ -66,7 +67,7 @@ export function OnboardingShell({ children, step, totalSteps, footer }) {
             position: 'sticky',
             bottom: 0,
             width: '100%',
-            background: 'linear-gradient(to top, #000000 70%, transparent)',
+            background: 'linear-gradient(to top, var(--app-bg) 70%, transparent)',
             paddingTop: '24px',
             paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))',
             zIndex: 10,
@@ -97,8 +98,8 @@ export function GoldButton({ onClick, children, disabled, outline }) {
         style={{
           fontFamily: "'Cormorant Garamond', Georgia, serif",
           fontSize: '17px',
-          border: `1.5px solid ${disabled ? GOLD_DIM : 'rgba(201,169,98,0.5)'}`,
-          color: disabled ? GOLD_DIM : GOLD,
+          border: `1.5px solid ${disabled ? 'rgba(201,169,98,0.25)' : 'rgba(201,169,98,0.5)'}`,
+          color: disabled ? 'rgba(201,169,98,0.25)' : 'var(--app-gold)',
           background: 'transparent',
           cursor: disabled ? 'not-allowed' : 'pointer',
           opacity: disabled ? 0.5 : 1,

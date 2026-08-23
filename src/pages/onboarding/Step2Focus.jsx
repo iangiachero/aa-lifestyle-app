@@ -68,12 +68,12 @@ export default function Step2Focus({ onNext, onBack, data, onChange }) {
                     border: isSelected ? 'none' : '1.5px solid rgba(201,169,98,0.2)',
                   }}
                 >
-                  <Icon size={18} style={{ color: isSelected ? 'white' : '#C9A962' }} />
+                  <Icon size={18} style={{ color: isSelected ? 'white' : 'var(--app-gold)' }} />
                 </div>
                 <div className="flex-1">
                   <p
                     className="font-medium text-sm"
-                    style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? '#e2ba8b' : 'rgba(226,186,139,0.8)' }}
+                    style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? 'var(--app-gold-light)' : 'rgba(226,186,139,0.8)' }}
                   >
                     {label}
                   </p>
