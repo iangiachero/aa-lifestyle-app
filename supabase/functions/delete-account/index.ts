@@ -105,11 +105,18 @@ async function cancelStripeSubscriptions(userId: string, report: string[]) {
     report.push(`stripe: cancelled ${sub.id}`);
   }
 
-  // Billing records are kept but detached, so accounting history survives while
-  // the row no longer points at a live account.
+  // stripe_customers.user_id references auth.users(id) with no ON DELETE
+  // CASCADE (checked against the live schema). An earlier version of this
+  // function only soft-deleted this row (set deleted_at) to keep billing
+  // history — which left the row in place and silently blocked the
+  // auth.admin.deleteUser() call below with a foreign-key violation, so
+  // deletion always completed the data wipe but never the login itself.
+  // stripe_subscriptions/stripe_orders key off customer_id as plain text, not
+  // a real foreign key to this table, so removing it doesn't cascade into
+  // them or break their history.
   await supabase
     .from('stripe_customers')
-    .update({ deleted_at: new Date().toISOString() })
+    .delete()
     .eq('user_id', userId);
 }
 
