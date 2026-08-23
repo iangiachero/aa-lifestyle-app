@@ -164,8 +164,17 @@ Deno.serve(async (req: Request) => {
 
     const { error: deleteUserError } = await supabase.auth.admin.deleteUser(user.id);
     if (deleteUserError) {
-      console.error('[delete-account] auth user:', deleteUserError.message);
-      return json({ error: 'Your data was removed but the login could not be deleted. Please contact support.', report }, 500);
+      // GoTrue's .message is a deliberately generic "Database error deleting
+      // user" — it hides the real Postgres exception on purpose. Logging the
+      // whole error object surfaces whatever extra fields the SDK actually
+      // carries (status, code, cause), which is the only way to see the real
+      // cause from here rather than digging through the Postgres log stream.
+      console.error('[delete-account] auth user FULL ERROR:', JSON.stringify(deleteUserError, Object.getOwnPropertyNames(deleteUserError)));
+      return json({
+        error: 'Your data was removed but the login could not be deleted. Please contact support.',
+        report,
+        debug: JSON.parse(JSON.stringify(deleteUserError, Object.getOwnPropertyNames(deleteUserError))),
+      }, 500);
     }
 
     console.log(`[delete-account] completed for ${user.id}`, report);
