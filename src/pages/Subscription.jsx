@@ -334,7 +334,11 @@ export default function Subscription() {
                     onClick={() => setSelectedPlan(plan.id)}
                     className="rounded-2xl p-4 cursor-pointer transition-all relative"
                     style={{
-                      background: selectedPlan === plan.id ? 'rgba(0,0,0,0.9)' : 'rgba(0,0,0,0.5)',
+                      // Was a hardcoded black (rgba(0,0,0,...)) regardless of
+                      // theme — fine in dark mode, but stood out as a jarring
+                      // black card in light mode next to the Free/Pro cards
+                      // above and below, which already use this same variable.
+                      background: 'var(--app-surface)',
                       border: selectedPlan === plan.id ? '1.5px solid rgba(201,169,98,0.6)' : '1px solid rgba(201,169,98,0.18)',
                       boxShadow: selectedPlan === plan.id ? '0 0 18px rgba(201,169,98,0.1)' : 'none',
                     }}
