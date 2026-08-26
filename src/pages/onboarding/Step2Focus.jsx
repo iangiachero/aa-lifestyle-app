@@ -36,7 +36,7 @@ export default function Step2Focus({ onNext, onBack, data, onChange }) {
           >
             What's your focus?
           </h2>
-          <p className="text-sm" style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.5)' }}>
+          <p className="text-sm" style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-2)' }}>
             We'll customize your experience
           </p>
         </div>
@@ -73,13 +73,13 @@ export default function Step2Focus({ onNext, onBack, data, onChange }) {
                 <div className="flex-1">
                   <p
                     className="font-medium text-sm"
-                    style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? 'var(--app-gold-light)' : 'rgba(226,186,139,0.8)' }}
+                    style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? 'var(--app-gold-light)' : 'var(--app-text-2)' }}
                   >
                     {label}
                   </p>
                   <p
                     className="text-xs mt-0.5"
-                    style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.4)' }}
+                    style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-3)' }}
                   >
                     {desc}
                   </p>

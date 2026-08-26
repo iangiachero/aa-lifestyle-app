@@ -57,7 +57,7 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
           >
             Your schedule
           </h2>
-          <p className="text-sm" style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.5)' }}>
+          <p className="text-sm" style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-2)' }}>
             When are you most productive?
           </p>
         </div>
@@ -92,13 +92,13 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
                 <div className="flex-1">
                   <p
                     className="font-medium text-sm"
-                    style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? 'var(--app-gold-light)' : 'rgba(226,186,139,0.8)' }}
+                    style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? 'var(--app-gold-light)' : 'var(--app-text-2)' }}
                   >
                     {label}
                   </p>
                   <p
                     className="text-xs mt-0.5"
-                    style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.4)' }}
+                    style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-3)' }}
                   >
                     {desc}
                   </p>
@@ -111,7 +111,7 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
 
         <p
           className="text-xs font-medium uppercase tracking-widest mb-2"
-          style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.5)' }}
+          style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-2)' }}
         >
           Timezone
         </p>
@@ -124,7 +124,7 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
 
         <p
           className="text-xs font-medium uppercase tracking-widest mb-2 mt-6"
-          style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.5)' }}
+          style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-2)' }}
         >
           Appearance
         </p>
@@ -145,10 +145,10 @@ export default function Step4Schedule({ onSubmit, onBack, data, onChange, loadin
                   border: isSelected ? '1.5px solid rgba(201,169,98,0.5)' : '1.5px solid rgba(201,169,98,0.12)',
                 }}
               >
-                <Icon size={16} style={{ color: isSelected ? 'var(--app-gold)' : 'rgba(226,186,139,0.6)' }} />
+                <Icon size={16} style={{ color: isSelected ? 'var(--app-gold)' : 'var(--app-text-2)' }} />
                 <span
                   className="text-sm font-medium"
-                  style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? 'var(--app-gold-light)' : 'rgba(226,186,139,0.7)' }}
+                  style={{ fontFamily: "'Inter', sans-serif", color: isSelected ? 'var(--app-gold-light)' : 'var(--app-text-2)' }}
                 >
                   {label}
                 </span>

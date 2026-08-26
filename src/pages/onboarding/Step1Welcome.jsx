@@ -59,7 +59,7 @@ export default function Step1Welcome({ onNext }) {
               </div>
               <span
                 className="text-sm"
-                style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.7)' }}
+                style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-2)' }}
               >
                 {f}
               </span>

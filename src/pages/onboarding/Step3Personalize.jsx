@@ -17,7 +17,7 @@ function TileButton({ label, selected, onClick }) {
         fontFamily: "'Inter', sans-serif",
         fontSize: '15px',
         fontWeight: 500,
-        color: selected ? 'var(--app-gold-light)' : 'rgba(226,186,139,0.7)',
+        color: selected ? 'var(--app-gold-light)' : 'var(--app-text-2)',
       }}>
         {label}
       </span>
@@ -68,7 +68,7 @@ export default function Step3Personalize({ onNext, onBack, data, onChange }) {
           </h2>
           <p
             className="text-sm text-center"
-            style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.5)' }}
+            style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-2)' }}
           >
             This helps us curate content tailored to you
           </p>
@@ -83,7 +83,7 @@ export default function Step3Personalize({ onNext, onBack, data, onChange }) {
 
         <p
           className="text-sm text-center mb-4"
-          style={{ fontFamily: "'Inter', sans-serif", color: 'rgba(226,186,139,0.6)' }}
+          style={{ fontFamily: "'Inter', sans-serif", color: 'var(--app-text-2)' }}
         >
           Are you a student?
         </p>
