@@ -15,6 +15,7 @@ const Lifestyle = lazy(() => import('./pages/Lifestyle'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Subscription = lazy(() => import('./pages/Subscription'));
+const NotificationSettings = lazy(() => import('./pages/NotificationSettings'));
 const OnboardingFlow = lazy(() => import('./pages/onboarding/index'));
 const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'));
 const Terms = lazy(() => import('./pages/legal/Terms'));
@@ -141,6 +142,7 @@ function AnimatedRoutes() {
         <Route path="/profile" element={<RequireAuth><Layout currentPageName="Profile"><PageTransition><Profile /></PageTransition></Layout></RequireAuth>} />
         <Route path="/settings" element={<RequireAuth><Layout currentPageName="Settings"><PageTransition><Settings /></PageTransition></Layout></RequireAuth>} />
         <Route path="/subscription" element={<RequireAuth><Layout currentPageName="Subscription"><PageTransition><Subscription /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/notification-settings" element={<RequireAuth><Layout currentPageName="NotificationSettings"><PageTransition><NotificationSettings /></PageTransition></Layout></RequireAuth>} />
         <Route path="/habits" element={<RequireAuth><Layout currentPageName="Habits"><PageTransition><Habits /></PageTransition></Layout></RequireAuth>} />
         <Route path="/sleep" element={<RequireAuth><Layout currentPageName="Sleep"><PageTransition><Sleep /></PageTransition></Layout></RequireAuth>} />
         <Route path="/birthdays" element={<RequireAuth><Layout currentPageName="Birthdays"><PageTransition><Birthdays /></PageTransition></Layout></RequireAuth>} />

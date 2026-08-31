@@ -1,5 +1,40 @@
 # Notifications — spec for the iOS build
 
+## Status (2026-08-24)
+
+**Built today, without Capacitor being installed as a native platform:**
+- `notification_preferences` table + `lifestyle_routines`/`home_org_categories`
+  reminder-time columns (migration `20260824120000_add_notification_support.sql`)
+- `src/lib/notifications.js` — thin wrapper over `@capacitor/local-notifications`
+  (schedule/cancel/permissions), no-ops on web via `isNativeApp()`. API verified
+  against the installed plugin's own type definitions, not assumed.
+- `src/lib/notificationRoutes.js` — maps a tapped notification's payload to an
+  app route
+- `src/pages/NotificationSettings.jsx` — the actual preferences screen (toggle
+  per category + timing controls), reachable from Profile → Notifications.
+  This part is fully real and usable on web today, independent of Capacitor —
+  it reads and writes `notification_preferences` directly.
+- Build passes. Could not click through it live — no test account signed in
+  at the time (the only one available had just been deleted as part of the
+  account-deletion testing earlier the same session) — so this has had a
+  careful manual code review against patterns already proven elsewhere in
+  this codebase (PasswordVault, HomeOrganization), but not a real click-through.
+
+**Known gap found while building this, worth knowing before scoping the rest:**
+none of the app's routes accept an item id (no `/calendar/:eventId`), so
+`notificationRoutes.js` can only route to the right *section* today, not
+auto-open the specific event/task/item within it. Getting a tap to land on the
+exact item needs each destination page to read an id from the query string on
+mount and open that item's modal — a small addition per page, not built yet.
+
+**Still not started, all genuinely need Capacitor to exist first:**
+- The actual scheduling triggers — hooking `notifications.js` into every
+  create/edit/delete path for events, tasks, assignments, meals, routines and
+  checklist categories, per the preferences this screen now stores
+- The permission-request moment/UI polish in the native flow
+- Per-page id-reading for true item-level deep links (see gap above)
+- The morning overview's daily content refresh
+
 Ava's request (2026-08-24), reproduced in full so nothing gets lost in translation:
 
 > I'd like the notifications to feel clean, personalized, and premium rather
