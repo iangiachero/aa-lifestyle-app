@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { configureRevenueCat, logOutRevenueCat } from '../lib/iap';
+import { registerPush, unregisterPush } from '../lib/push';
 
 const AuthContext = createContext(null);
 
@@ -62,6 +63,7 @@ export function AuthProvider({ children }) {
       if (session?.user) {
         fetchUserProfile(session.user.id, session.user).finally(() => setLoading(false));
         configureRevenueCat(session.user.id); // no-op on the web build
+        registerPush(session.user.id); // no-op on the web build
       } else {
         setLoading(false);
       }
@@ -73,6 +75,7 @@ export function AuthProvider({ children }) {
       if (session?.user) {
         (async () => { await fetchUserProfile(session.user.id, session.user); })();
         configureRevenueCat(session.user.id);
+        registerPush(session.user.id);
       } else {
         setUserProfile(null);
       }
@@ -117,6 +120,7 @@ export function AuthProvider({ children }) {
     setUser(null);
     setUserProfile(null);
     await logOutRevenueCat(); // no-op on the web build
+    await unregisterPush();   // before signOut — the row delete needs the session
     await supabase.auth.signOut();
   };
 
