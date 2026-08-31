@@ -9,6 +9,8 @@ Two related documents in this same repo root:
   against the real build, not assumed from the web version working.
 - `APP_STORE_LISTING.md` — the approved app name and description, verbatim,
   for whoever fills in App Store Connect.
+- `NOTIFICATIONS_SPEC.md` — Ava's notifications request, scoped for after
+  Capacitor exists. Not started; read it before scoping that work.
 
 ---
 
