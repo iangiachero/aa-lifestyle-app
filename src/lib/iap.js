@@ -85,6 +85,26 @@ function isEntitled(customerInfo) {
 }
 
 /**
+ * Whether the signed-in App Store account is on the US storefront. Since the
+ * May 2025 Epic v. Apple order, US-storefront apps may link out to an external
+ * web checkout — but ONLY the US storefront, so showing the link to anyone
+ * else is a rejection. Storefront comes from StoreKit via RevenueCat, not from
+ * device locale, which is what App Review actually checks. Fails closed: any
+ * doubt (web build, not configured, API error) means "not US" and no link.
+ */
+export async function isUSAppStoreStorefront() {
+  const Purchases = await getPurchasesSDK();
+  if (!Purchases || !configured) return false;
+  try {
+    const storefront = await Purchases.getStorefront();
+    const code = storefront?.countryCode ?? storefront?.storefront?.countryCode;
+    return code === 'USA' || code === 'US';
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Stripe's billing portal has no idea an App Store purchase exists, so native
  * Pro users need a different place to manage or cancel. RevenueCat's Capacitor
  * plugin has no direct "open subscription management" call — verified against

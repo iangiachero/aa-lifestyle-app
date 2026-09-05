@@ -5,7 +5,12 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { STRIPE_PRODUCTS } from '../stripe-config';
 import { canUseWebCheckout, isNativeApp } from '../lib/platform';
-import { getOfferings, purchasePackage, restorePurchases, openNativeManageSubscriptions } from '../lib/iap';
+import { getOfferings, purchasePackage, restorePurchases, openNativeManageSubscriptions, isUSAppStoreStorefront } from '../lib/iap';
+
+// The native build's window origin is capacitor://localhost, which Stripe
+// can't redirect back to — the US web-checkout link lands on the hosted web
+// app instead, where the normal ?success/?cancelled handling already lives.
+const WEB_APP_ORIGIN = 'https://aa-lifestyle-app.vercel.app';
 
 const MONTHLY_PRICE_ID = STRIPE_PRODUCTS.pro.priceId;
 const YEARLY_PRICE_ID = STRIPE_PRODUCTS.proYearly.priceId;
@@ -83,12 +88,15 @@ export default function Subscription() {
   const [selectedPlan, setSelectedPlan] = useState('yearly');
   const [nativePackages, setNativePackages] = useState([]);
   const [restoring, setRestoring] = useState(false);
+  const [usStorefront, setUsStorefront] = useState(false);
 
   useEffect(() => {
     if (!isNativeApp()) return;
     getOfferings().then(setNativePackages).catch((err) => {
       console.error('[Subscription] RevenueCat offerings:', err);
     });
+    // Guideline 3.1.1(a): external-purchase links are US storefront only.
+    isUSAppStoreStorefront().then(setUsStorefront).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -153,6 +161,48 @@ export default function Subscription() {
       }
 
       window.location.href = data.url;
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.');
+      setLoading(false);
+    }
+  };
+
+  // US-storefront link-out (Epic v. Apple, guideline 3.1.1(a)): same checkout
+  // session as the web flow, but opened in external Safari — never in an
+  // in-app view, which would read as an in-app non-IAP purchase — and with the
+  // return URLs pointed at the hosted web app.
+  const handleUSWebCheckout = async (priceId) => {
+    if (!priceId || loading) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const { data: { session: authSession } } = await supabase.auth.getSession();
+      if (!authSession?.access_token) {
+        setError('Session expired. Please sign in again.');
+        setLoading(false);
+        return;
+      }
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/stripe-checkout`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authSession.access_token}`,
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify({
+            price_id: priceId,
+            success_url: `${WEB_APP_ORIGIN}/subscription?success=true`,
+            cancel_url: `${WEB_APP_ORIGIN}/subscription?cancelled=true`,
+            mode: 'subscription',
+          }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'Failed to create checkout session');
+      window.open(data.url, '_system');
+      setLoading(false);
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
       setLoading(false);
@@ -420,6 +470,27 @@ export default function Subscription() {
                 <p className="text-center text-xs text-[#8A7E72] px-2 py-3">
                   {isNativeApp() ? 'Loading available plans…' : 'In-App Purchase is not available in this build yet.'}
                 </p>
+              )}
+
+              {/* Shown ONLY alongside a working IAP button (never instead of
+                  it — that's the Cal AI mistake) and ONLY on the US App Store
+                  storefront, per the post-Epic guideline 3.1.1(a). */}
+              {isNativeApp() && usStorefront && nativePackageFor(selectedPlan) && (
+                <div className="pt-1">
+                  <button
+                    onClick={() => handleUSWebCheckout(activePlan?.priceId)}
+                    disabled={loading}
+                    className="w-full py-2 text-xs text-center underline transition-opacity disabled:opacity-60"
+                    style={{ color: 'var(--app-gold)' }}
+                  >
+                    Or subscribe on our website · {activePlan?.price}{activePlan?.period}
+                  </button>
+                  <p className="text-center text-[10px] leading-relaxed text-[#8A7E72] px-4">
+                    Opens in your browser. Website purchases are processed by us, not
+                    Apple, and are managed on our website instead of your App Store
+                    account.
+                  </p>
+                </div>
               )}
 
               {isNativeApp() && (
