@@ -1,3 +1,4 @@
+import { Purchases } from '@revenuecat/purchases-capacitor';
 import { isNativeApp } from './platform';
 
 /*
@@ -12,10 +13,13 @@ const ENTITLEMENT_ID = 'pro';
 
 let configured = false;
 
-async function getPurchasesSDK() {
-  if (!isNativeApp()) return null;
-  const { Purchases } = await import('@revenuecat/purchases-capacitor');
-  return Purchases;
+// Static import, and the result must never be awaited — see the long note on
+// getPushSDK in push.js. registerPlugin returns a Proxy that answers `then`
+// with a function, so awaiting it makes the runtime treat it as a thenable and
+// dispatch a native "then" call that never settles. Every call site below
+// takes it synchronously.
+function getPurchasesSDK() {
+  return isNativeApp() ? Purchases : null;
 }
 
 /**
@@ -26,7 +30,7 @@ async function getPurchasesSDK() {
  * own identifier.
  */
 export async function configureRevenueCat(supabaseUserId) {
-  const Purchases = await getPurchasesSDK();
+  const Purchases = getPurchasesSDK();
   if (!Purchases || configured) return;
 
   const apiKey = import.meta.env.VITE_REVENUECAT_IOS_API_KEY;
@@ -42,7 +46,7 @@ export async function configureRevenueCat(supabaseUserId) {
 /** Called on sign-out so a second account on the same device never inherits
  *  the previous user's RevenueCat identity or entitlement state. */
 export async function logOutRevenueCat() {
-  const Purchases = await getPurchasesSDK();
+  const Purchases = getPurchasesSDK();
   if (!Purchases || !configured) return;
   try {
     await Purchases.logOut();
@@ -53,28 +57,28 @@ export async function logOutRevenueCat() {
 
 /** Returns the current offering's packages, or [] on web / before configure(). */
 export async function getOfferings() {
-  const Purchases = await getPurchasesSDK();
+  const Purchases = getPurchasesSDK();
   if (!Purchases) return [];
   const offerings = await Purchases.getOfferings();
   return offerings.current?.availablePackages ?? [];
 }
 
 export async function purchasePackage(pkg) {
-  const Purchases = await getPurchasesSDK();
+  const Purchases = getPurchasesSDK();
   if (!Purchases) throw new Error('In-App Purchase is only available in the iOS app.');
   const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
   return isEntitled(customerInfo);
 }
 
 export async function restorePurchases() {
-  const Purchases = await getPurchasesSDK();
+  const Purchases = getPurchasesSDK();
   if (!Purchases) throw new Error('In-App Purchase is only available in the iOS app.');
   const { customerInfo } = await Purchases.restorePurchases();
   return isEntitled(customerInfo);
 }
 
 export async function hasActiveEntitlement() {
-  const Purchases = await getPurchasesSDK();
+  const Purchases = getPurchasesSDK();
   if (!Purchases) return false;
   const { customerInfo } = await Purchases.getCustomerInfo();
   return isEntitled(customerInfo);
@@ -93,7 +97,7 @@ function isEntitled(customerInfo) {
  * doubt (web build, not configured, API error) means "not US" and no link.
  */
 export async function isUSAppStoreStorefront() {
-  const Purchases = await getPurchasesSDK();
+  const Purchases = getPurchasesSDK();
   if (!Purchases || !configured) return false;
   try {
     const storefront = await Purchases.getStorefront();
