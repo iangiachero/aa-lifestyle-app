@@ -18,6 +18,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.49.1';
 
 const webhookSecret = Deno.env.get('REVENUECAT_WEBHOOK_SECRET')!;
 const revenueCatApiKey = Deno.env.get('REVENUECAT_SECRET_API_KEY')!;
+const revenueCatProjectId = Deno.env.get('REVENUECAT_PROJECT_ID')!;
 const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
 const ENTITLEMENT_ID = 'pro';
@@ -63,19 +64,32 @@ Deno.serve(async (req) => {
 
 async function syncPlanFromRevenueCat(userId: string, eventType: string) {
   try {
-    const res = await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(userId)}`, {
-      headers: { Authorization: `Bearer ${revenueCatApiKey}` },
-    });
+    // v2's active_entitlements, not v1's /subscribers: v1 rejects v2-era secret
+    // keys outright (403), and v2 only ever returns entitlements that are
+    // active right now, so there is no expiry arithmetic to get wrong.
+    const res = await fetch(
+      `https://api.revenuecat.com/v2/projects/${revenueCatProjectId}` +
+      `/customers/${encodeURIComponent(userId)}/active_entitlements?expand=items.entitlement`,
+      { headers: { Authorization: `Bearer ${revenueCatApiKey}` } },
+    );
 
-    if (!res.ok) {
-      console.error(`[revenuecat-webhook] subscriber fetch failed for ${userId}: ${res.status}`);
+    // A customer RevenueCat has never seen is a 404, which is a real answer —
+    // no active entitlement — not a failure to look up. Anything else is a
+    // lookup we can't trust, so leave the current plan alone rather than
+    // downgrading a paying user on a transient API error.
+    if (!res.ok && res.status !== 404) {
+      console.error(`[revenuecat-webhook] entitlement fetch failed for ${userId}: ${res.status}`);
       return;
     }
 
-    const data = await res.json();
-    const entitlement = data?.subscriber?.entitlements?.[ENTITLEMENT_ID];
-    const expiresAt = entitlement?.expires_date ? new Date(entitlement.expires_date).getTime() : null;
-    const isActive = !!entitlement && (expiresAt === null || expiresAt > Date.now());
+    const data = res.status === 404 ? { items: [] } : await res.json();
+    const items = Array.isArray(data?.items) ? data.items : [];
+    // The id field has carried both the lookup key and the internal entl_ id
+    // across API revisions; match on either, plus the expanded object.
+    const isActive = items.some((item: Record<string, unknown>) => {
+      const expanded = item?.entitlement as Record<string, unknown> | undefined;
+      return expanded?.lookup_key === ENTITLEMENT_ID || item?.entitlement_id === ENTITLEMENT_ID;
+    });
     const plan = isActive ? 'pro' : 'free';
 
     const { error } = await supabase.from('users').update({ plan }).eq('user_id', userId);
