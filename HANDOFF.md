@@ -73,17 +73,28 @@ student dashboard, habits, workouts, shop, password vault, Stripe subscriptions
 (checkout, billing portal, webhook).
 
 **Done in code, not yet live:**
-- in-app account deletion — the edge function still needs deploying
 - Privacy Policy and Terms at `/privacy` and `/terms` — placeholders unfilled
 - vault key derived from the PIN instead of the user id
-- RevenueCat integration (see 4.2) — code is written and builds, but cannot be
-  exercised until Capacitor's iOS platform exists and the dashboard side is
-  configured. Nothing here has run against a real purchase.
+
+**Done since, and verified on a real device (2026-09-09):**
+- Capacitor iOS + Android projects, icons and splash screens
+- Push notifications, end to end: `device_tokens` / `push_log` tables, client
+  registration in `src/lib/push.js`, and the `send-push` edge function on a
+  15-minute pg_cron schedule. Reminders: calendar events 30 minutes ahead,
+  birthdays and a task digest at 9am local, student work due tomorrow at 5pm
+  local — all in each user's own timezone from `users.timezone`.
+- RevenueCat: App Store app, `pro_monthly` / `pro_yearly`, the `pro`
+  entitlement, the default offering, and a webhook covering both sandbox and
+  production. Still unexercised against a real *purchase* — that needs a
+  sandbox tester and a TestFlight build.
+- App Store Connect: app record, both subscriptions with US pricing, listing
+  copy, category, age rating, privacy URL.
 
 **Not started:**
-- Capacitor / iOS project itself (`npx cap add ios`)
 - service worker update prompt — `src/hooks/usePwaUpdate.ts` exists but is
   imported nowhere, so users never get told a new version is available
+- Android beyond the generated project: no Firebase, so `send-push` skips
+  android tokens by design until `FCM_SERVICE_ACCOUNT` is set
 
 ---
 
@@ -222,3 +233,38 @@ retry; only "row exists, field is null" means the user genuinely lacks it.
   use `upsert` and read the value back — both PIN screens do this.
 - iOS keyboard handling is centralised in `index.css` via `--kb-height` and
   `body.keyboard-open`. Don't add per-screen workarounds.
+- **Never `await` a Capacitor plugin object.** `registerPlugin()` returns a
+  Proxy that answers every property access with a method, `then` included, so
+  the runtime mistakes it for a thenable and dispatches a native call to a
+  method named "then" that no plugin implements. It never settles — the call
+  hangs with no error, no rejection and no log. This silently broke both push
+  registration and RevenueCat for months. Take plugin objects synchronously;
+  see the note on `getPushSDK` in `src/lib/push.js`.
+- Import Capacitor plugins statically, not via `import()`. Keeps them out of
+  lazy chunks, which is one less thing to debug under the `capacitor://` scheme.
+
+---
+
+## 7. Push notifications
+
+`send-push` runs every 15 minutes (pg_cron job `send-push-every-15-min`, which
+calls the function with the `PUSH_CRON_SECRET` header). Each run walks the users
+who have a row in `device_tokens`, converts to their local wall clock via
+`users.timezone`, and sends whatever matches.
+
+Timing is deliberately compared in **local wall-clock time**, because that is
+how the app stores `events.start_time` and the student due times — an event at
+`19:58` means 7:58pm where the user is, not UTC. A test that ignores this looks
+like a bug in the sender and isn't.
+
+`push_log` is the de-dup: the sender INSERTs `(user_id, kind, ref_id, sent_on)`
+before sending and skips on conflict, so overlapping or retried cron runs cannot
+double-notify. Tokens APNs reports as dead (410 / BadDeviceToken) are deleted.
+
+Secrets live in Supabase (`supabase secrets list`): `APNS_KEY_ID`,
+`APNS_TEAM_ID`, `APNS_TOPIC`, `APNS_PRIVATE_KEY`, `APNS_ENV`, `PUSH_CRON_SECRET`.
+
+**`APNS_ENV` is currently `sandbox`**, which is right for builds run from Xcode.
+TestFlight and App Store builds talk to production APNs — set
+`supabase secrets set APNS_ENV=production` before uploading a build, or every
+send comes back `BadDeviceToken`.
