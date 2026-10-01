@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { resetAndReseedLifestyle } from '../lib/seedLifestyleRoutines';
 import { useTheme } from '../hooks/useTheme';
 import DeleteAccountModal from './profile/DeleteAccountModal';
+import { isNativeApp } from '../lib/platform';
 
 const FOCUS_LABELS = {
   organize: { label: 'Organize', Icon: Sparkles },
@@ -416,15 +417,17 @@ export default function Profile() {
             </div>
             <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
-          <button onClick={() => navigate('/pwa-tutorial')}
-            className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-70"
-            style={{ borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
-            <div className="flex items-center gap-2.5">
-              <Download className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
-              <span className="text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>How to Install App</span>
-            </div>
-            <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
-          </button>
+          {!isNativeApp() && (
+            <button onClick={() => navigate('/pwa-tutorial')}
+              className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-70"
+              style={{ borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
+              <div className="flex items-center gap-2.5">
+                <Download className="w-4 h-4 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+                <span className="text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>How to Install App</span>
+              </div>
+              <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
+            </button>
+          )}
           <button
             onClick={handleCheckUpdates}
             disabled={updateStatus !== null}

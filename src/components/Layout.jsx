@@ -7,13 +7,17 @@ import PWAInstallBanner from './PWAInstallBanner';
 import { useAuth } from '../context/AuthContext';
 import { useModal } from '../context/ModalContext';
 import { usePWAInstallBanner } from '../hooks/usePWAInstallBanner';
+import { isNativeApp } from '../lib/platform';
 
 export default function Layout({ children, currentPageName }) {
   const { userProfile } = useAuth();
   const { isAnyModalOpen } = useModal();
   const { showBanner } = usePWAInstallBanner();
+  // The native iOS app counts as standalone: WKWebView never matches
+  // display-mode: standalone, which left native pages with no top safe-area
+  // padding (content under the notch) and showed the PWA install banner.
   const [isStandalone, setIsStandalone] = useState(() =>
-    window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+    isNativeApp() || window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
   );
   const mainRef = useRef(null);
 
@@ -43,7 +47,7 @@ export default function Layout({ children, currentPageName }) {
 
   useEffect(() => {
     const mq = window.matchMedia('(display-mode: standalone)');
-    const handler = (e) => setIsStandalone(e.matches || window.navigator.standalone === true);
+    const handler = (e) => setIsStandalone(isNativeApp() || e.matches || window.navigator.standalone === true);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
   }, []);
