@@ -9,6 +9,8 @@ import { useTheme } from '../hooks/useTheme';
 import DeleteAccountModal from './profile/DeleteAccountModal';
 import { isNativeApp } from '../lib/platform';
 
+const NOTIFICATION_SETTINGS_ENABLED = false;
+
 const FOCUS_LABELS = {
   organize: { label: 'Organize', Icon: Sparkles },
   routine: { label: 'Routine', Icon: Calendar },
@@ -408,6 +410,13 @@ export default function Profile() {
             <span className="text-base text-[color:var(--app-gold)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Manage Subscription</span>
             <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
+          {/* Hidden until the preferences actually drive notifications. Today
+              nothing reads notification_preferences (push reminders ignore it;
+              local scheduling isn't built), and its table isn't in the live
+              database yet, so toggles would snap back to off. A settings
+              screen that changes nothing is an App Review 2.1 risk. Re-enable
+              once one system owns reminders and reads these preferences. */}
+          {NOTIFICATION_SETTINGS_ENABLED && (
           <button onClick={() => navigate('/notification-settings')}
             className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-70"
             style={{ borderBottom: '1px solid rgba(201,169,98,0.15)' }}>
@@ -417,6 +426,7 @@ export default function Profile() {
             </div>
             <ChevronRight className="w-5 h-5 text-[color:var(--app-gold)]" strokeWidth={1.5} />
           </button>
+          )}
           {!isNativeApp() && (
             <button onClick={() => navigate('/pwa-tutorial')}
               className="w-full flex items-center justify-between px-5 py-4 transition-opacity hover:opacity-70"
