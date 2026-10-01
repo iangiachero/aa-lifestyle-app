@@ -136,31 +136,31 @@ function AnimatedRoutes() {
         <Route path="/onboarding" element={<RequireAuth><Layout currentPageName="Onboarding"><PageTransition><OnboardingFlow /></PageTransition></Layout></RequireAuth>} />
 
         <Route path="/" element={<RequireAuth><Layout currentPageName="Home"><PageTransition><Home /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/calendar" element={<RequireAuth><Layout currentPageName="CalendarPage"><PageTransition><CalendarPage /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/calendar" element={<RequireAuth><RequirePro><Layout currentPageName="CalendarPage"><PageTransition><CalendarPage /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/tasks" element={<RequireAuth><Layout currentPageName="Tasks"><PageTransition><Tasks /></PageTransition></Layout></RequireAuth>} />
         <Route path="/lifestyle" element={<RequireAuth><RequirePro><Layout currentPageName="Lifestyle"><PageTransition><Lifestyle /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/profile" element={<RequireAuth><Layout currentPageName="Profile"><PageTransition><Profile /></PageTransition></Layout></RequireAuth>} />
         <Route path="/settings" element={<RequireAuth><Layout currentPageName="Settings"><PageTransition><Settings /></PageTransition></Layout></RequireAuth>} />
         <Route path="/subscription" element={<RequireAuth><Layout currentPageName="Subscription"><PageTransition><Subscription /></PageTransition></Layout></RequireAuth>} />
         <Route path="/notification-settings" element={<RequireAuth><Layout currentPageName="NotificationSettings"><PageTransition><NotificationSettings /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/habits" element={<RequireAuth><Layout currentPageName="Habits"><PageTransition><Habits /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/sleep" element={<RequireAuth><Layout currentPageName="Sleep"><PageTransition><Sleep /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/birthdays" element={<RequireAuth><Layout currentPageName="Birthdays"><PageTransition><Birthdays /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/goals" element={<RequireAuth><Layout currentPageName="Goals"><PageTransition><Goals /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/journal" element={<RequireAuth><Layout currentPageName="Journal"><PageTransition><Journal /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/finance" element={<RequireAuth><Layout currentPageName="Finance"><PageTransition><Finance /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/habits" element={<RequireAuth><RequirePro><Layout currentPageName="Habits"><PageTransition><Habits /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/sleep" element={<RequireAuth><RequirePro><Layout currentPageName="Sleep"><PageTransition><Sleep /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/birthdays" element={<RequireAuth><RequirePro><Layout currentPageName="Birthdays"><PageTransition><Birthdays /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/goals" element={<RequireAuth><RequirePro><Layout currentPageName="Goals"><PageTransition><Goals /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/journal" element={<RequireAuth><RequirePro><Layout currentPageName="Journal"><PageTransition><Journal /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/finance" element={<RequireAuth><RequirePro><Layout currentPageName="Finance"><PageTransition><Finance /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/workout" element={<RequireAuth><RequirePro><Layout currentPageName="Fitness"><PageTransition><Fitness /></PageTransition></Layout></RequirePro></RequireAuth>} />
-        <Route path="/nutrition" element={<RequireAuth><Layout currentPageName="Nutrition"><PageTransition><Nutrition /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/reading" element={<RequireAuth><Layout currentPageName="Reading"><PageTransition><Reading /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/travel" element={<RequireAuth><Layout currentPageName="Travel"><PageTransition><Travel /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/projects" element={<RequireAuth><Layout currentPageName="Projects"><PageTransition><Projects /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/nutrition" element={<RequireAuth><RequirePro><Layout currentPageName="Nutrition"><PageTransition><Nutrition /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/reading" element={<RequireAuth><RequirePro><Layout currentPageName="Reading"><PageTransition><Reading /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/travel" element={<RequireAuth><RequirePro><Layout currentPageName="Travel"><PageTransition><Travel /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/projects" element={<RequireAuth><RequirePro><Layout currentPageName="Projects"><PageTransition><Projects /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/notes" element={<RequireAuth><Layout currentPageName="Notes"><PageTransition><Notes /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/contacts" element={<RequireAuth><Layout currentPageName="Contacts"><PageTransition><Contacts /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/reminders" element={<RequireAuth><Layout currentPageName="Reminders"><PageTransition><Reminders /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/shopping" element={<RequireAuth><Layout currentPageName="Shopping"><PageTransition><Shopping /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/contacts" element={<RequireAuth><RequirePro><Layout currentPageName="Contacts"><PageTransition><Contacts /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/reminders" element={<RequireAuth><RequirePro><Layout currentPageName="Reminders"><PageTransition><Reminders /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/shopping" element={<RequireAuth><RequirePro><Layout currentPageName="Shopping"><PageTransition><Shopping /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/shop" element={<RequireAuth><RequirePro><Layout currentPageName="Shop"><PageTransition><Shop /></PageTransition></Layout></RequirePro></RequireAuth>} />
-        <Route path="/grocery" element={<RequireAuth><Layout currentPageName="GroceryList"><PageTransition><GroceryList /></PageTransition></Layout></RequireAuth>} />
-        <Route path="/routines" element={<RequireAuth><Layout currentPageName="Routines"><PageTransition><Routines /></PageTransition></Layout></RequireAuth>} />
+        <Route path="/grocery" element={<RequireAuth><RequirePro><Layout currentPageName="GroceryList"><PageTransition><GroceryList /></PageTransition></Layout></RequirePro></RequireAuth>} />
+        <Route path="/routines" element={<RequireAuth><RequirePro><Layout currentPageName="Routines"><PageTransition><Routines /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/student" element={<RequireAuth><RequirePro><Layout currentPageName="Student"><PageTransition><Student /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/meals" element={<RequireAuth><RequirePro><Layout currentPageName="MealPlanning"><PageTransition><MealPlanning /></PageTransition></Layout></RequirePro></RequireAuth>} />
         <Route path="/checklists" element={<RequireAuth><RequirePro><Layout currentPageName="Checklists"><PageTransition><Checklists /></PageTransition></Layout></RequirePro></RequireAuth>} />

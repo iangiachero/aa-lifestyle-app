@@ -1,4 +1,5 @@
 import React from 'react';
+import { Lock } from 'lucide-react';
 import TodaySchedule from '../../components/home/TodaySchedule';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
@@ -6,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function ScheduleCard() {
-  const { user } = useAuth();
+  const { user, isPro } = useAuth();
   const navigate = useNavigate();
 
   const { data: events, isLoading } = useQuery({
@@ -22,7 +23,7 @@ export default function ScheduleCard() {
       if (error) return [];
       return data || [];
     },
-    enabled: !!user?.id,
+    enabled: !!user?.id && isPro,
   });
 
   const CARD_STYLE = {
@@ -39,6 +40,24 @@ export default function ScheduleCard() {
   };
 
   const cardClasses = `${CARD_STYLE.background} ${CARD_STYLE.radius} ${CARD_STYLE.padding} ${CARD_STYLE.border} ${CARD_STYLE.glow} cursor-pointer transition-all duration-200 hover:brightness-105 active:scale-[0.99]`;
+
+  // Calendar & Events is Pro-only; free users who created events back when it
+  // was free must not keep viewing/editing them from the dashboard either.
+  if (!isPro) {
+    return (
+      <div className={cardClasses} onClick={() => navigate('/subscription')}>
+        <h2 className={`${CARD_STYLE.titleSize} ${CARD_STYLE.titleWeight} ${CARD_STYLE.titleColor} ${CARD_STYLE.titleSpacing} ${CARD_STYLE.titleUnderline}`}>
+          Schedule
+        </h2>
+        <div className="flex items-center gap-3 py-1">
+          <Lock className="w-4 h-4 text-[color:var(--app-gold)] flex-shrink-0" strokeWidth={1.5} />
+          <p className="text-sm text-[color:var(--app-text-2)]">
+            Calendar &amp; Events are part of Pro. Tap to upgrade.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
