@@ -68,12 +68,26 @@ function getMondayFirstWeeks(selectedDate) {
   return weeks;
 }
 
+const VIEW_MODE_KEY = 'calendarViewMode';
+
 export default function CalendarIndex() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState('monthly');
+  const [viewMode, setViewMode] = useState(() => {
+    try {
+      const stored = localStorage.getItem(VIEW_MODE_KEY);
+      if (['monthly', 'weekly', 'daily'].includes(stored)) return stored;
+    } catch {}
+    return 'monthly';
+  });
+  // Only the explicit header choice is remembered; tapping a day in week view
+  // drills into daily without changing what the calendar opens on next time.
+  const chooseViewMode = (mode) => {
+    setViewMode(mode);
+    try { localStorage.setItem(VIEW_MODE_KEY, mode); } catch {}
+  };
   const [showEventModal, setShowEventModal] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [eventData, setEventData] = useState(DEFAULT_EVENT);
@@ -623,7 +637,7 @@ export default function CalendarIndex() {
           selectedDate={selectedDate}
           viewMode={viewMode}
           weekDates={weekDates}
-          onViewModeChange={setViewMode}
+          onViewModeChange={chooseViewMode}
           onQuickAdd={handleQuickAdd}
           birthdays={birthdays}
           onAddBirthday={(payload) => createBirthdayMutation.mutateAsync(payload)}
