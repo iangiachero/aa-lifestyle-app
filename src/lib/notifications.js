@@ -1,3 +1,4 @@
+import { LocalNotifications } from '@capacitor/local-notifications';
 import { isNativeApp } from './platform';
 
 /*
@@ -14,10 +15,14 @@ import { isNativeApp } from './platform';
   that a deep-link payload travels in `extra`.
 */
 
-async function getPlugin() {
-  if (!isNativeApp()) return null;
-  const { LocalNotifications } = await import('@capacitor/local-notifications');
-  return LocalNotifications;
+// Static import and a synchronous getter, both deliberate (HANDOFF.md,
+// Conventions; see also push.js). registerPlugin() returns a Proxy that answers
+// every property, including `then`, so it looks like a thenable. Returning it
+// from an async function or awaiting it makes the runtime call proxy.then(),
+// a native method no plugin implements, and the promise never settles. Call
+// sites must use the result without `await`.
+function getPlugin() {
+  return isNativeApp() ? LocalNotifications : null;
 }
 
 /**
@@ -37,14 +42,14 @@ export function stableNotificationId(key) {
 }
 
 export async function requestNotificationPermission() {
-  const plugin = await getPlugin();
+  const plugin = getPlugin();
   if (!plugin) return false;
   const status = await plugin.requestPermissions();
   return status.display === 'granted';
 }
 
 export async function hasNotificationPermission() {
-  const plugin = await getPlugin();
+  const plugin = getPlugin();
   if (!plugin) return false;
   const status = await plugin.checkPermissions();
   return status.display === 'granted';
@@ -56,7 +61,7 @@ export async function hasNotificationPermission() {
  * payload, e.g. { type: 'event', id: eventUuid }.
  */
 export async function scheduleAt({ key, title, body, at, extra }) {
-  const plugin = await getPlugin();
+  const plugin = getPlugin();
   if (!plugin) return null;
   const id = stableNotificationId(key);
   await plugin.schedule({
@@ -72,7 +77,7 @@ export async function scheduleAt({ key, title, body, at, extra }) {
  * use scheduleDaily below).
  */
 export async function scheduleWeekly({ key, title, body, weekday, hour, minute, extra }) {
-  const plugin = await getPlugin();
+  const plugin = getPlugin();
   if (!plugin) return null;
   const id = stableNotificationId(key);
   await plugin.schedule({
@@ -86,7 +91,7 @@ export async function scheduleWeekly({ key, title, body, weekday, hour, minute, 
 
 /** Repeats every day at a fixed time — morning overview, evening reminder. */
 export async function scheduleDaily({ key, title, body, hour, minute, extra }) {
-  const plugin = await getPlugin();
+  const plugin = getPlugin();
   if (!plugin) return null;
   const id = stableNotificationId(key);
   await plugin.schedule({
@@ -99,13 +104,13 @@ export async function scheduleDaily({ key, title, body, hour, minute, extra }) {
 }
 
 export async function cancelByKey(key) {
-  const plugin = await getPlugin();
+  const plugin = getPlugin();
   if (!plugin) return;
   await plugin.cancel({ notifications: [{ id: stableNotificationId(key) }] });
 }
 
 export async function cancelByKeys(keys) {
-  const plugin = await getPlugin();
+  const plugin = getPlugin();
   if (!plugin || !keys.length) return;
   await plugin.cancel({ notifications: keys.map((key) => ({ id: stableNotificationId(key) })) });
 }
@@ -117,7 +122,7 @@ export async function cancelByKeys(keys) {
  * app route.
  */
 export async function onNotificationTapped(onOpen) {
-  const plugin = await getPlugin();
+  const plugin = getPlugin();
   if (!plugin) return () => {};
   const handle = await plugin.addListener('localNotificationActionPerformed', (action) => {
     onOpen(action.notification.extra);
