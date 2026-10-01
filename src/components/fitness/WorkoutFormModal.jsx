@@ -4,6 +4,11 @@ import { X, Plus, Trash2, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import CustomSelect from '../ui/CustomSelect';
 import { useModal } from '../../context/ModalContext';
 
+// Keep '' while the field is being edited so it can be cleared; coercing to 0
+// on every keystroke left a stuck "0" the user had to type around.
+const numericInput = (raw) => (raw === '' ? '' : parseInt(raw, 10) || 0);
+const toInt = (v) => parseInt(v, 10) || 0;
+
 export default function WorkoutFormModal({
   isOpen,
   onClose,
@@ -77,7 +82,11 @@ export default function WorkoutFormModal({
       const ex = formData.exercises[i];
       if (!ex.name.trim() || !ex.reps.trim()) { alert(`Please complete all fields for exercise ${i + 1}`); return; }
     }
-    onSave(formData);
+    onSave({
+      ...formData,
+      duration: toInt(formData.duration),
+      exercises: formData.exercises.map(ex => ({ ...ex, sets: toInt(ex.sets), rest_seconds: toInt(ex.rest_seconds) })),
+    });
   };
 
   if (!isOpen) return null;
@@ -111,7 +120,7 @@ export default function WorkoutFormModal({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm text-[color:var(--app-gold)] mb-2">Duration (min)</label>
-                <input type="number" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) || 0 })}
+                <input type="number" value={formData.duration} onChange={(e) => setFormData({ ...formData, duration: numericInput(e.target.value) })}
                   min="5" max="180"
                   className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] focus:outline-none focus:border-[#C9A962]" />
               </div>
@@ -187,7 +196,7 @@ export default function WorkoutFormModal({
                       <div className="grid grid-cols-3 gap-2">
                         <div>
                           <label className="block text-xs text-[color:var(--app-text-2)] mb-1">Sets</label>
-                          <input type="number" value={exercise.sets} onChange={(e) => handleExerciseChange(index, 'sets', parseInt(e.target.value) || 0)}
+                          <input type="number" value={exercise.sets} onChange={(e) => handleExerciseChange(index, 'sets', numericInput(e.target.value))}
                             min="1" max="10"
                             className="w-full px-3 py-2 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-lg text-[color:var(--app-text)] text-sm focus:outline-none focus:border-[#C9A962]" />
                         </div>
@@ -199,7 +208,7 @@ export default function WorkoutFormModal({
                         </div>
                         <div>
                           <label className="block text-xs text-[color:var(--app-text-2)] mb-1">Rest (s)</label>
-                          <input type="number" value={exercise.rest_seconds} onChange={(e) => handleExerciseChange(index, 'rest_seconds', parseInt(e.target.value) || 0)}
+                          <input type="number" value={exercise.rest_seconds} onChange={(e) => handleExerciseChange(index, 'rest_seconds', numericInput(e.target.value))}
                             min="0" max="300"
                             className="w-full px-3 py-2 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.2)] rounded-lg text-[color:var(--app-text)] text-sm focus:outline-none focus:border-[#C9A962]" />
                         </div>
