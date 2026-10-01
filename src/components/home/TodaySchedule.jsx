@@ -36,6 +36,17 @@ const REPEAT_OPTIONS = [
   { value: 'yearly', label: 'Yearly' },
 ];
 
+// iOS gives date inputs an intrinsic width that ignores w-full; without this
+// (same fix as the Calendar's EventModal) the Date field renders wider than
+// every other field in the sheet.
+const DATE_INPUT_STYLE = {
+  colorScheme: 'dark',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  maxWidth: '100%',
+  boxSizing: 'border-box',
+};
+
 export default function TodaySchedule({ events }) {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -134,13 +145,14 @@ export default function TodaySchedule({ events }) {
           const currentExceptions = baseEvent.recurrence_exceptions || [];
           const originalDate = editingEvent.originalDate;
           if (!currentExceptions.includes(originalDate)) {
-            await supabase
+            const { error } = await supabase
               .from('events')
               .update({ recurrence_exceptions: [...currentExceptions, originalDate] })
               .eq('id', editingEvent.baseEventId);
+            if (error) throw error;
           }
         }
-        await supabase.from('events').insert({
+        const { error } = await supabase.from('events').insert({
           title: eventData.title,
           date: eventData.date,
           start_time: eventData.start_time || null,
@@ -151,12 +163,19 @@ export default function TodaySchedule({ events }) {
           notes: eventData.notes,
           user_id: user.id,
         });
+        if (error) throw error;
       } else {
-        await supabase
+        // Same rule as the Calendar's EventModal: a multi-day event can't end
+        // before it starts, and an end equal to the start is stored as null.
+        const endDate = editingEvent.end_date && editingEvent.end_date > eventData.date
+          ? editingEvent.end_date
+          : null;
+        const { error } = await supabase
           .from('events')
           .update({
             title: eventData.title,
             date: eventData.date,
+            end_date: endDate,
             start_time: eventData.start_time || null,
             end_time: eventData.end_time || null,
             category: eventData.category,
@@ -167,10 +186,14 @@ export default function TodaySchedule({ events }) {
           })
           .eq('id', editingEvent.id)
           .eq('user_id', user.id);
+        if (error) throw error;
       }
       queryClient.invalidateQueries({ queryKey: ['events', user?.id] });
       setEditingEvent(null);
       setEventData({});
+    } catch (err) {
+      console.error('[TodaySchedule] save event:', err);
+      alert('Could not save the event. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -467,13 +490,15 @@ export default function TodaySchedule({ events }) {
 
                 <div>
                   <label className="text-xs text-[color:var(--app-text-2)] uppercase mb-2 block tracking-wider">Date</label>
-                  <input
-                    type="date"
-                    value={eventData.date || ''}
-                    onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
-                    className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] focus:border-[#C9A962] focus:outline-none font-light"
-                    style={{ colorScheme: 'dark' }}
-                  />
+                  <div className="w-full rounded-xl overflow-hidden border border-[rgba(201,169,98,0.3)] bg-[color:var(--app-bg)] focus-within:border-[#C9A962]">
+                    <input
+                      type="date"
+                      value={eventData.date || ''}
+                      onChange={(e) => setEventData({ ...eventData, date: e.target.value })}
+                      className="w-full px-4 py-3 bg-transparent text-[color:var(--app-text)] focus:outline-none font-light"
+                      style={DATE_INPUT_STYLE}
+                    />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -527,14 +552,16 @@ export default function TodaySchedule({ events }) {
                       End Repeat Date
                       <span className="ml-1 normal-case text-[color:var(--app-text-3)]">(optional)</span>
                     </label>
-                    <input
-                      type="date"
-                      value={eventData.recurrence_end_date || ''}
-                      min={eventData.date}
-                      onChange={(e) => setEventData({ ...eventData, recurrence_end_date: e.target.value })}
-                      className="w-full px-4 py-3 bg-[color:var(--app-bg)] border border-[rgba(201,169,98,0.3)] rounded-xl text-[color:var(--app-text)] focus:border-[#C9A962] focus:outline-none font-light"
-                      style={{ colorScheme: 'dark' }}
-                    />
+                    <div className="w-full rounded-xl overflow-hidden border border-[rgba(201,169,98,0.3)] bg-[color:var(--app-bg)] focus-within:border-[#C9A962]">
+                      <input
+                        type="date"
+                        value={eventData.recurrence_end_date || ''}
+                        min={eventData.date}
+                        onChange={(e) => setEventData({ ...eventData, recurrence_end_date: e.target.value })}
+                        className="w-full px-4 py-3 bg-transparent text-[color:var(--app-text)] focus:outline-none font-light"
+                        style={DATE_INPUT_STYLE}
+                      />
+                    </div>
                     <div className="mt-1.5 flex items-center gap-1.5">
                       <Repeat className="w-3 h-3 flex-shrink-0 text-[color:var(--app-text-3)]" strokeWidth={1.5} />
                       <p className="text-xs font-light text-[color:var(--app-text-3)]">
