@@ -7,6 +7,7 @@
  * This hook is safe to use in both web (PWA) and native builds.
  */
 import { useEffect } from 'react';
+import { syncStatusBar } from '../lib/statusBar';
 
 declare global {
   interface Window {
@@ -28,6 +29,8 @@ export function useCapacitor() {
       const platform = window.Capacitor?.getPlatform?.() ?? 'unknown';
       document.body.classList.add('capacitor-native');
       document.documentElement.classList.add('capacitor-native');
+
+      syncStatusBar(document.documentElement.classList.contains('light') ? 'light' : 'dark');
 
       if (platform === 'ios') {
         document.body.classList.add('capacitor-ios');

@@ -15,6 +15,23 @@ const WEB_APP_ORIGIN = 'https://aa-lifestyle-app.vercel.app';
 const MONTHLY_PRICE_ID = STRIPE_PRODUCTS.pro.priceId;
 const YEARLY_PRICE_ID = STRIPE_PRODUCTS.proYearly.priceId;
 
+// Pro-exclusive features shared between the plan cards and the comparison
+// table below, so the two can't drift out of sync with each other. Only list
+// features a user can actually reach: advertising placeholder pages in a
+// subscription is an App Store rejection risk.
+const PRO_FEATURES = [
+  'Calendar & Events',
+  'Birthday Tracker',
+  'Grocery Lists',
+  'Checklists',
+  'Custom Workout Routines',
+  'Full Meal Planning & Recipes',
+  'Home Organization Checklists',
+  'Lifestyle Section (Self-Care Routines)',
+  'Student Dashboard',
+  'Shop',
+];
+
 const PLANS = [
   {
     id: 'monthly',
@@ -24,15 +41,7 @@ const PLANS = [
     priceId: MONTHLY_PRICE_ID,
     savings: null,
     popular: false,
-    features: [
-      'Password Vault (PIN-protected)',
-      'Full Meal Planning & Recipes',
-      'Home Organization Checklists',
-      'Custom Workout Routines',
-      'Lifestyle Section (Self-Care Routines)',
-      'Student Dashboard',
-      'Shop',
-    ],
+    features: PRO_FEATURES,
   },
   {
     id: 'yearly',
@@ -42,40 +51,15 @@ const PLANS = [
     priceId: YEARLY_PRICE_ID,
     savings: 'Save $6/year',
     popular: true,
-    features: [
-      'Password Vault (PIN-protected)',
-      'Full Meal Planning & Recipes',
-      'Home Organization Checklists',
-      'Custom Workout Routines',
-      'Lifestyle Section (Self-Care Routines)',
-      'Student Dashboard',
-      'Shop',
-    ],
+    features: PRO_FEATURES,
   },
 ];
 
-const FREE_FEATURES = [
-  'Home Dashboard',
-  'Calendar & Events',
-  'Tasks & Checklists',
-  'Notes',
-  'Basic Grocery Lists',
-];
+const FREE_FEATURES = ['Home Dashboard', 'Tasks', 'Notes', 'Password Vault'];
 
 const ALL_FEATURES = [
-  { label: 'Home Dashboard', free: true, pro: true },
-  { label: 'Calendar & Events', free: true, pro: true },
-  { label: 'Tasks', free: true, pro: true },
-  { label: 'Checklists', free: false, pro: true },
-  { label: 'Notes', free: true, pro: true },
-  { label: 'Basic Grocery Lists', free: true, pro: true },
-  { label: 'Shop', free: false, pro: true },
-  { label: 'Password Vault (PIN-protected)', free: false, pro: true },
-  { label: 'Full Meal Planning & Recipes', free: false, pro: true },
-  { label: 'Home Organization Checklists', free: false, pro: true },
-  { label: 'Custom Workout Routines', free: false, pro: true },
-  { label: 'Lifestyle Section (Self-Care Routines)', free: false, pro: true },
-  { label: 'Student Dashboard', free: false, pro: true },
+  ...FREE_FEATURES.map(label => ({ label, free: true })),
+  ...PRO_FEATURES.map(label => ({ label, free: false })),
 ];
 
 export default function Subscription() {

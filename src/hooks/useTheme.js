@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { syncStatusBar } from '../lib/statusBar';
 
 const THEME_KEY = 'app_theme';
 
@@ -16,6 +17,7 @@ export function useTheme() {
     } catch (e) {}
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', next === 'light' ? '#FDFCF9' : '#000000');
+    syncStatusBar(next);
     setThemeState(next);
   }, []);
 

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UI, getBirthdayCountdown, calculateAge, getAgeOrdinal } from '../constants';
 import BirthdayDatePicker from './BirthdayDatePicker';
+import { useModal } from '../../../context/ModalContext';
 
 const VIEW_MODES = [
   { id: 'monthly', label: 'Monthly' },
@@ -60,6 +61,15 @@ function LeftDrawer({ open, onClose, onQuickAdd, birthdays, onAddBirthday, onDel
   const [bdForm, setBdForm] = useState({ name: '', birth_date: '' });
   const [bdSaving, setBdSaving] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const { openModal, closeModal } = useModal();
+
+  // Registering as a modal hides the bottom nav, which otherwise covers the
+  // end of the Birthday Tracker list so it can't be scrolled into view.
+  useEffect(() => {
+    if (!open) return;
+    openModal();
+    return () => closeModal();
+  }, [open, openModal, closeModal]);
 
   useEffect(() => {
     if (open) {
@@ -118,8 +128,11 @@ function LeftDrawer({ open, onClose, onQuickAdd, birthdays, onAddBirthday, onDel
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="flex items-center justify-between px-5 pt-10 pb-4"
-              style={{ borderBottom: `1px solid rgba(201,169,98,0.16)` }}
+              className="flex items-center justify-between px-5 pb-4"
+              style={{
+                borderBottom: `1px solid rgba(201,169,98,0.16)`,
+                paddingTop: 'max(2.5rem, calc(env(safe-area-inset-top, 0px) + 0.75rem))',
+              }}
             >
               <div className="flex items-center gap-3">
                 <div
@@ -158,7 +171,7 @@ function LeftDrawer({ open, onClose, onQuickAdd, birthdays, onAddBirthday, onDel
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto scrollbar-hide" style={{ paddingBottom: 32 }}>
+            <div className="flex-1 overflow-y-auto scrollbar-hide" style={{ paddingBottom: 'calc(32px + env(safe-area-inset-bottom, 0px))' }}>
               <div className="px-5 pt-5 pb-4">
                 <p
                   className="text-xs uppercase tracking-widest mb-4"
