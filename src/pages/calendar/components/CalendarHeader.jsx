@@ -323,15 +323,10 @@ function LeftDrawer({ open, onClose, onQuickAdd, birthdays, onAddBirthday, onDel
                     </p>
                   </div>
                 ) : (
-                  <div
-                    className="birthday-list flex flex-col gap-2"
-                    style={{
-                      maxHeight: 460,
-                      overflowY: 'auto',
-                      scrollBehavior: 'smooth',
-                      paddingRight: 4,
-                    }}
-                  >
+                  // No inner scroll area: nested inside the drawer's own scroller,
+                  // a capped list swallowed the swipe on iOS and its last entries
+                  // sat below the fold, unreachable. The drawer scrolls as one.
+                  <div className="birthday-list flex flex-col gap-2">
                     {[...birthdays]
                       .sort((a, b) => {
                         const today = new Date();
