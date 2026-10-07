@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchUserProfile(session.user.id, session.user).finally(() => setLoading(false));
-        configureRevenueCat(session.user.id); // no-op on the web build
+        configureRevenueCat(session.user.id).catch((err) => console.error('[iap] identify:', err)); // no-op on the web build
         registerPush(session.user.id); // no-op on the web build
       } else {
         setLoading(false);
@@ -74,7 +74,7 @@ export function AuthProvider({ children }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         (async () => { await fetchUserProfile(session.user.id, session.user); })();
-        configureRevenueCat(session.user.id);
+        configureRevenueCat(session.user.id).catch((err) => console.error('[iap] identify:', err));
         registerPush(session.user.id);
       } else {
         setUserProfile(null);

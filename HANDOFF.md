@@ -133,6 +133,13 @@ done from a text editor.
   sign-in and `logOutRevenueCat()` on sign-out, using the Supabase user id as
   RevenueCat's `appUserID`. This is what lets the webhook update `users.plan`
   by `user_id` directly with no separate customer-mapping table.
+  `Purchases.configure()` runs once per launch; later account switches go
+  through `Purchases.logIn()`. Re-running configure after a sign-out left the
+  SDK on an anonymous id, so the next account's purchase unlocked nothing.
+- `supabase/functions/revenuecat-sync/index.ts` — the app calls this right
+  after a purchase/restore (and when the Subscription screen sees an Apple
+  entitlement without Pro), so Pro never depends on the webhook arriving.
+  Shares its logic with the webhook via `supabase/functions/_shared/revenuecat.ts`.
 - `supabase/functions/revenuecat-webhook/index.ts` — same philosophy as
   `stripe-webhook`: rather than branching on which of RevenueCat's ~20 event
   types arrived, every event triggers a fresh read of the subscriber's
@@ -154,9 +161,11 @@ done from a text editor.
    `REVENUECAT_WEBHOOK_SECRET` via `supabase secrets set`.
 4. Get RevenueCat's **secret** API key → `REVENUECAT_SECRET_API_KEY` via
    `supabase secrets set` (server-side only, never in `.env`/the client).
-5. Deploy: `npx supabase functions deploy revenuecat-webhook`.
-6. Decide precedence for an account that somehow has both a Stripe and an App
-   Store subscription — not handled, shouldn't come up often, but pick a rule.
+5. Deploy: `npx supabase functions deploy revenuecat-webhook revenuecat-sync`.
+6. Precedence when an account has both a Stripe and an App Store
+   subscription: Pro wins. The RevenueCat side keeps Pro while a Stripe
+   subscription is active (`_shared/revenuecat.ts`); `stripe-webhook` does not
+   yet check the App Store side.
 7. Test a real purchase in the sandbox once step 1 of section 4 (Capacitor)
    is done and there's an actual iOS build to run it in.
 

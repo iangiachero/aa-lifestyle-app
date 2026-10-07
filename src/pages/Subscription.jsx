@@ -5,7 +5,11 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { STRIPE_PRODUCTS } from '../stripe-config';
 import { canUseWebCheckout, isNativeApp } from '../lib/platform';
-import { getOfferings, purchasePackage, restorePurchases, openNativeManageSubscriptions, isUSAppStoreStorefront } from '../lib/iap';
+import { getOfferings, purchasePackage, restorePurchases, openNativeManageSubscriptions, isUSAppStoreStorefront, hasActiveEntitlement, syncPlanWithServer } from '../lib/iap';
+import { openExternal } from '../lib/openExternal';
+
+// Stripe statuses where the user still has a website subscription to manage.
+const WEB_SUBSCRIPTION_STATUSES = ['active', 'trialing', 'past_due', 'unpaid'];
 
 // The native build's window origin is capacitor://localhost, which Stripe
 // can't redirect back to — the US web-checkout link lands on the hosted web
@@ -73,6 +77,23 @@ export default function Subscription() {
   const [nativePackages, setNativePackages] = useState([]);
   const [restoring, setRestoring] = useState(false);
   const [usStorefront, setUsStorefront] = useState(false);
+  const [hasWebSubscription, setHasWebSubscription] = useState(false);
+
+  // Reads the entitlement straight from RevenueCat on the server and writes
+  // users.plan, instead of waiting on the webhook, which can be late or never
+  // arrive (App Store transfers between accounts carry no app_user_id).
+  const activatePro = async () => {
+    const { data: { session: s } } = await supabase.auth.getSession();
+    if (s?.access_token) {
+      try {
+        await syncPlanWithServer(s.access_token);
+      } catch (err) {
+        console.error('[Subscription] plan sync:', err);
+      }
+    }
+    const profile = await refreshUserProfile();
+    return profile?.plan === 'pro';
+  };
 
   useEffect(() => {
     if (!isNativeApp()) return;
@@ -81,6 +102,23 @@ export default function Subscription() {
     });
     // Guideline 3.1.1(a): external-purchase links are US storefront only.
     isUSAppStoreStorefront().then(setUsStorefront).catch(() => {});
+
+    // Website subscribers don't appear in Apple's subscriptions page, so
+    // Manage Plan has to send them to the Stripe portal instead.
+    supabase
+      .from('stripe_user_subscriptions')
+      .select('subscription_status')
+      .maybeSingle()
+      .then(({ data }) => setHasWebSubscription(WEB_SUBSCRIPTION_STATUSES.includes(data?.subscription_status)))
+      .catch(() => {});
+
+    // Heals accounts that paid in the App Store but never got Pro.
+    if (!isPro) {
+      hasActiveEntitlement()
+        .then((entitled) => (entitled ? activatePro() : false))
+        .then((active) => { if (active) setSuccessMsg('Your Pro plan is now active.'); })
+        .catch((err) => console.error('[Subscription] entitlement check:', err));
+    }
   }, []);
 
   useEffect(() => {
@@ -185,7 +223,7 @@ export default function Subscription() {
       );
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error || 'Failed to create checkout session');
-      window.open(data.url, '_system');
+      await openExternal(data.url);
       setLoading(false);
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
@@ -207,20 +245,21 @@ export default function Subscription() {
     setLoading(true);
     setError(null);
     try {
-      const entitled = await purchasePackage(pkg);
+      const entitled = await purchasePackage(pkg, session?.user?.id);
       if (entitled) {
-        // The App Store confirms the purchase instantly, but users.plan only
-        // flips once the RevenueCat webhook lands — usually seconds, not
-        // instant. Poll briefly rather than tell the user Pro is active before
-        // it actually is.
+        // RevenueCat can take a moment to reflect a fresh purchase, so retry
+        // the server sync briefly before telling the user anything.
         setSuccessMsg('Purchase successful — activating your Pro plan…');
-        for (let attempt = 0; attempt < 6; attempt++) {
-          await new Promise(r => setTimeout(r, 1500));
-          const profile = await refreshUserProfile();
-          if (profile?.plan === 'pro') {
-            setSuccessMsg('Purchase successful! Your Pro plan is now active.');
-            break;
-          }
+        let active = false;
+        for (let attempt = 0; attempt < 4 && !active; attempt++) {
+          if (attempt > 0) await new Promise(r => setTimeout(r, 2000));
+          active = await activatePro();
+        }
+        if (active) {
+          setSuccessMsg('Purchase successful! Your Pro plan is now active.');
+        } else {
+          setSuccessMsg(null);
+          setError('Your purchase went through, but Pro is still activating. Tap "Restore Purchases" in a minute.');
         }
       }
     } catch (err) {
@@ -236,10 +275,13 @@ export default function Subscription() {
     setRestoring(true);
     setError(null);
     try {
-      const entitled = await restorePurchases();
+      const entitled = await restorePurchases(session?.user?.id);
       if (entitled) {
-        await refreshUserProfile();
-        setSuccessMsg('Purchases restored — your Pro plan is active.');
+        if (await activatePro()) {
+          setSuccessMsg('Purchases restored — your Pro plan is active.');
+        } else {
+          setError('Your purchase was found, but Pro could not be activated yet. Please try again in a minute.');
+        }
       } else {
         setError('No active purchase was found for this Apple ID.');
       }
@@ -251,7 +293,8 @@ export default function Subscription() {
   };
 
   const handleManage = async () => {
-    if (isNativeApp()) {
+    const native = isNativeApp();
+    if (native && !hasWebSubscription) {
       openNativeManageSubscriptions();
       return;
     }
@@ -259,7 +302,9 @@ export default function Subscription() {
     setError(null);
 
     try {
-      const origin = window.location.origin;
+      // capacitor://localhost can't be a Stripe return URL; come back to the
+      // hosted web app instead, as the US checkout link does.
+      const origin = native ? WEB_APP_ORIGIN : window.location.origin;
       const { data: { session: authSession }, error: sessionError } = await supabase.auth.getSession();
 
       if (sessionError || !authSession?.access_token) {
@@ -289,7 +334,12 @@ export default function Subscription() {
         throw new Error(data.error || 'Failed to open billing portal');
       }
 
-      window.location.href = data.url;
+      if (native) {
+        await openExternal(data.url);
+        setLoading(false);
+      } else {
+        window.location.href = data.url;
+      }
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
       setLoading(false);
@@ -535,6 +585,11 @@ export default function Subscription() {
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 Manage Plan
               </button>
+              {isNativeApp() && hasWebSubscription && (
+                <p className="text-center text-[11px] text-[#8A7E72] mt-2">
+                  You subscribed on our website, so your plan is managed there and won't appear in your App Store subscriptions.
+                </p>
+              )}
             </div>
           </div>
         )}
