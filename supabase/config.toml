@@ -1,0 +1,26 @@
+# Only the per-function gateway JWT setting is configured here. Without this
+# file, `supabase functions deploy` turns JWT verification ON for every
+# function, which silently breaks anything not called with a Supabase user
+# token: the gateway rejects the request before the function code runs.
+# Values mirror what is live (checked 2026-10-08).
+project_id = "yxuiwdhbtphanuzusxks"
+
+# Called by third parties / cron with their own credentials, not a user JWT.
+[functions.stripe-webhook]
+verify_jwt = false          # Stripe-Signature header
+[functions.revenuecat-webhook]
+verify_jwt = false          # Authorization: Bearer REVENUECAT_WEBHOOK_SECRET
+[functions.send-push]
+verify_jwt = false          # x-cron-secret header from pg_cron
+
+# Live with verification off; the functions authenticate the caller themselves.
+[functions.stripe-checkout]
+verify_jwt = false
+[functions.stripe-portal]
+verify_jwt = false
+
+# Called by signed-in users with their Supabase access token.
+[functions.delete-account]
+verify_jwt = true
+[functions.revenuecat-sync]
+verify_jwt = true

@@ -162,6 +162,10 @@ done from a text editor.
 4. Get RevenueCat's **secret** API key → `REVENUECAT_SECRET_API_KEY` via
    `supabase secrets set` (server-side only, never in `.env`/the client).
 5. Deploy: `npx supabase functions deploy revenuecat-webhook revenuecat-sync`.
+   `supabase/config.toml` pins `verify_jwt = false` for the webhook. Without it
+   the CLI turns JWT verification on, the gateway rejects RevenueCat's calls
+   (they carry the webhook secret, not a Supabase token) before the function
+   runs, and purchases silently stop unlocking Pro. Keep that file.
 6. Precedence when an account has both a Stripe and an App Store
    subscription: Pro wins. The RevenueCat side keeps Pro while a Stripe
    subscription is active (`_shared/revenuecat.ts`); `stripe-webhook` does not
