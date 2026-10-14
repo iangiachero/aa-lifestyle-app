@@ -215,6 +215,34 @@ async function deliver(userId: string, tokens: DeviceToken[], kind: string, refI
   return sent;
 }
 
+// Profile → Notifications writes one notification_preferences row per
+// category. No row means ON: these reminders went to everyone before the
+// settings existed, so shipping the settings must not silently stop them. If
+// the table is missing, everything stays on, as before.
+type Pref = { enabled: boolean; config: Record<string, unknown> };
+async function loadPreferences(userIds: string[]) {
+  const { data } = await supabase
+    .from('notification_preferences')
+    .select('user_id, category, enabled, config')
+    .in('user_id', userIds);
+  const byUser = new Map<string, Map<string, Pref>>();
+  for (const r of data ?? []) {
+    if (!byUser.has(r.user_id)) byUser.set(r.user_id, new Map());
+    byUser.get(r.user_id)!.set(r.category, { enabled: r.enabled !== false, config: r.config ?? {} });
+  }
+  return byUser;
+}
+
+const EVENT_OFFSETS = [10, 30, 60, 1440];
+const CRON_INTERVAL_MINUTES = 15;
+
+// The reminder window for events. Never narrower than the cron interval, or a
+// "10 min before" event starting between two runs would be skipped entirely.
+function eventReminderWindow(pref: Pref | undefined) {
+  const offset = Number(pref?.config?.offset_minutes);
+  return Math.max(EVENT_OFFSETS.includes(offset) ? offset : 30, CRON_INTERVAL_MINUTES);
+}
+
 function fmtTime(t: string) {
   const [h, m] = t.split(':').map(Number);
   const ampm = h >= 12 ? 'PM' : 'AM';
@@ -244,35 +272,47 @@ Deno.serve(async (req) => {
     .select('user_id, timezone')
     .in('user_id', [...byUser.keys()]);
   const tzByUser = new Map((profiles ?? []).map((p) => [p.user_id, p.timezone]));
+  const prefsByUser = await loadPreferences([...byUser.keys()]);
 
   let totalSent = 0;
 
   for (const [userId, tokens] of byUser) {
     const now = localNow(tzByUser.get(userId) ?? null);
+    const prefs = prefsByUser.get(userId);
+    const isOn = (category: string) => prefs?.get(category)?.enabled ?? true;
 
-    // --- event reminders: starts within the next 30 minutes ---------------
+    // --- event reminders: within the user's chosen reminder time ----------
     // v1 covers non-recurring events; recurring ones fire only on their
     // stored date. Expanding recurrence server-side mirrors
     // src/utils/recurrence.js and is a deliberate follow-up.
-    const { data: events } = await supabase
-      .from('events')
-      .select('id, title, start_time')
-      .eq('user_id', userId)
-      .eq('date', now.date);
-    for (const ev of events ?? []) {
-      const [h, m] = ev.start_time.split(':').map(Number);
-      const startMin = h * 60 + m;
-      const delta = startMin - now.minutesOfDay;
-      if (delta >= 0 && delta < 30) {
-        totalSent += await deliver(
-          userId, tokens, 'event_reminder', ev.id, now.date,
-          'Upcoming event', `${ev.title} at ${fmtTime(ev.start_time)}`,
-        );
+    if (isOn('calendar')) {
+      const window = eventReminderWindow(prefs?.get('calendar'));
+      const { data: events } = await supabase
+        .from('events')
+        .select('id, title, date, start_time')
+        .eq('user_id', userId)
+        .in('date', [now.date, now.tomorrow]);
+      for (const ev of events ?? []) {
+        // All-day events have no start time. Reading one used to throw and
+        // abort the whole run, so every user after it got nothing.
+        if (!ev.start_time) continue;
+        const [h, m] = ev.start_time.split(':').map(Number);
+        const startMin = (ev.date === now.date ? 0 : 24 * 60) + h * 60 + m;
+        const delta = startMin - now.minutesOfDay;
+        if (delta >= 0 && delta < window) {
+          // Keyed on the event's own date: a "1 day before" reminder goes out
+          // the day before and must not repeat on the day itself.
+          const when = ev.date === now.date ? 'at' : 'tomorrow at';
+          totalSent += await deliver(
+            userId, tokens, 'event_reminder', ev.id, ev.date,
+            'Upcoming event', `${ev.title} ${when} ${fmtTime(ev.start_time)}`,
+          );
+        }
       }
     }
 
     // --- 9am local: birthdays + task digest -------------------------------
-    if (now.hour === 9) {
+    if (now.hour === 9 && isOn('birthdays')) {
       const { data: bdays } = await supabase
         .from('birthdays')
         .select('id, name, birth_date')
@@ -285,7 +325,9 @@ Deno.serve(async (req) => {
           );
         }
       }
+    }
 
+    if (now.hour === 9 && isOn('tasks')) {
       const { count } = await supabase
         .from('tasks')
         .select('id', { count: 'exact', head: true })
@@ -302,7 +344,7 @@ Deno.serve(async (req) => {
     }
 
     // --- 5pm local: student work due tomorrow -----------------------------
-    if (now.hour === 17) {
+    if (now.hour === 17 && isOn('school')) {
       const [{ count: assignments }, { count: exams }] = await Promise.all([
         supabase.from('student_assignments')
           .select('id', { count: 'exact', head: true })

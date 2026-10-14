@@ -272,6 +272,17 @@ how the app stores `events.start_time` and the student due times — an event at
 `19:58` means 7:58pm where the user is, not UTC. A test that ignores this looks
 like a bug in the sender and isn't.
 
+**User settings.** Profile → Notifications writes one `notification_preferences`
+row per category (`calendar`, `birthdays`, `tasks`, `school`), and `send-push`
+reads them before sending. No row means ON, because these reminders went to
+everyone before the settings existed. `calendar.config.offset_minutes` (10, 30,
+60 or 1440) sets how early event reminders go out; event reminders are de-duped
+on the event's date, so a "1 day before" reminder doesn't repeat on the day.
+The table comes from `supabase/migrations/20260824120000_add_notification_support.sql`
+(idempotent, additive only). Apply it before shipping a build that shows the
+settings, or every toggle fails to save. Only list categories `send-push`
+actually sends: a toggle that controls nothing is an App Review 2.1 risk.
+
 `push_log` is the de-dup: the sender INSERTs `(user_id, kind, ref_id, sent_on)`
 before sending and skips on conflict, so overlapping or retried cron runs cannot
 double-notify. Tokens APNs reports as dead (410 / BadDeviceToken) are deleted.

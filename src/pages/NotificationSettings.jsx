@@ -1,20 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ChevronLeft, Bell, Calendar, CheckSquare, GraduationCap, UtensilsCrossed, Heart, Home, Sun, Moon } from 'lucide-react';
+import { ChevronLeft, Bell, Calendar, CheckSquare, GraduationCap, Cake } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { requestNotificationPermission, hasNotificationPermission } from '../lib/notifications';
 import { isNativeApp } from '../lib/platform';
 
 /*
-  Preferences only — this screen reads and writes notification_preferences,
-  it does not itself schedule anything. The per-feature scheduling logic
-  (turning "calendar reminders, 30 minutes before" into an actual scheduled
-  notification whenever an event is created/edited) is the native-dependent
-  work described in NOTIFICATIONS_SPEC.md, not built yet. On the web build
-  this screen is fully functional as a preferences form; it just has nothing
-  to schedule against until Capacitor exists.
+  One card per reminder the send-push edge function actually sends, and it
+  reads these rows before sending. A category with no row counts as ON: push
+  reminders were already going to everyone, so turning the settings on must
+  not silently stop them. Never list a category send-push doesn't send — a
+  toggle that controls nothing is an App Review 2.1 risk.
 */
 
 const CATEGORIES = [
@@ -24,39 +22,16 @@ const CATEGORIES = [
     control: 'offset',
   },
   {
+    key: 'birthdays', label: 'Birthdays', Icon: Cake,
+    description: 'On the morning of each birthday in your Birthday Tracker',
+  },
+  {
     key: 'tasks', label: 'Tasks', Icon: CheckSquare,
-    description: "Priorities coming up or due — not ongoing tasks",
-    control: 'time',
+    description: 'Each morning, how many tasks are due that day',
   },
   {
     key: 'school', label: 'School', Icon: GraduationCap,
-    description: 'Assignments, exams and projects — a few days before and the day due',
-    control: 'daysBefore',
-  },
-  {
-    key: 'meals', label: 'Meal Plan', Icon: UtensilsCrossed,
-    description: 'Optional reminders for planned meals or prep',
-    control: 'time',
-  },
-  {
-    key: 'lifestyle', label: 'Lifestyle & Routines', Icon: Heart,
-    description: 'For routines you choose to schedule',
-    control: 'none',
-  },
-  {
-    key: 'home_organization', label: 'Home Organization', Icon: Home,
-    description: 'For scheduled cleaning and checklist categories',
-    control: 'none',
-  },
-  {
-    key: 'morning_overview', label: 'Morning Overview', Icon: Sun,
-    description: "Today's events, priorities, tasks and deadlines in one notification",
-    control: 'time',
-  },
-  {
-    key: 'evening_reminder', label: 'Evening Reminder', Icon: Moon,
-    description: 'Review unfinished tasks and prep for tomorrow',
-    control: 'time',
+    description: 'The evening before assignments and exams are due',
   },
 ];
 
@@ -69,13 +44,6 @@ const OFFSET_OPTIONS = [
 
 const DEFAULT_CONFIG = {
   calendar: { offset_minutes: 30 },
-  tasks: { time: '09:00' },
-  school: { days_before: [3], time: '09:00' },
-  meals: { time: '17:00' },
-  lifestyle: {},
-  home_organization: {},
-  morning_overview: { time: '07:30' },
-  evening_reminder: { time: '21:00' },
 };
 
 export default function NotificationSettings() {
@@ -84,6 +52,7 @@ export default function NotificationSettings() {
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(null);
   const [permissionState, setPermissionState] = useState('unknown');
+  const [saveError, setSaveError] = useState(null);
 
   useEffect(() => {
     if (!isNativeApp()) return;
@@ -109,15 +78,17 @@ export default function NotificationSettings() {
   const upsertPref = useCallback(async (category, updates) => {
     if (!user?.id) return;
     setSaving(category);
+    setSaveError(null);
     const existing = prefsByCategory[category];
     const payload = {
       user_id: user.id,
       category,
-      enabled: existing?.enabled ?? false,
+      enabled: existing?.enabled ?? true,
       config: existing?.config ?? DEFAULT_CONFIG[category] ?? {},
       ...updates,
     };
-    await supabase.from('notification_preferences').upsert(payload, { onConflict: 'user_id,category' });
+    const { error } = await supabase.from('notification_preferences').upsert(payload, { onConflict: 'user_id,category' });
+    if (error) setSaveError('Could not save your notification settings. Please try again.');
     await queryClient.invalidateQueries({ queryKey: ['notificationPreferences', user.id] });
     setSaving(null);
   }, [user?.id, prefsByCategory, queryClient]);
@@ -162,7 +133,7 @@ export default function NotificationSettings() {
 
         {CATEGORIES.map(({ key, label, Icon, description, control }) => {
           const pref = prefsByCategory[key];
-          const enabled = pref?.enabled ?? false;
+          const enabled = pref?.enabled ?? true;
           const config = pref?.config ?? DEFAULT_CONFIG[key] ?? {};
 
           return (
@@ -211,64 +182,13 @@ export default function NotificationSettings() {
                   ))}
                 </div>
               )}
-
-              {enabled && control === 'time' && (
-                <div className="mt-3">
-                  <input
-                    type="time"
-                    value={config.time || '09:00'}
-                    onChange={(e) => setConfig(key, { ...config, time: e.target.value })}
-                    className="px-3 py-2 rounded-lg text-sm"
-                    style={{ background: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.3)', color: 'var(--app-text)' }}
-                  />
-                </div>
-              )}
-
-              {enabled && control === 'daysBefore' && (
-                <div className="flex flex-wrap gap-2 mt-3 items-center">
-                  {[3, 1, 0].map((d) => {
-                    const active = (config.days_before || []).includes(d);
-                    return (
-                      <button
-                        key={d}
-                        onClick={() => {
-                          const current = config.days_before || [];
-                          const next = active ? current.filter((x) => x !== d) : [...current, d];
-                          setConfig(key, { ...config, days_before: next });
-                        }}
-                        className="px-3 py-1.5 rounded-full text-xs transition-all"
-                        style={{
-                          background: active ? 'rgba(201,169,98,0.15)' : 'transparent',
-                          border: `1px solid ${active ? 'rgba(201,169,98,0.5)' : 'rgba(201,169,98,0.2)'}`,
-                          color: active ? 'var(--app-gold)' : 'var(--app-text-2)',
-                        }}
-                      >
-                        {d === 0 ? 'Day of' : `${d} day${d > 1 ? 's' : ''} before`}
-                      </button>
-                    );
-                  })}
-                  <input
-                    type="time"
-                    value={config.time || '09:00'}
-                    onChange={(e) => setConfig(key, { ...config, time: e.target.value })}
-                    className="px-3 py-2 rounded-lg text-sm"
-                    style={{ background: 'var(--app-bg)', border: '1px solid rgba(201,169,98,0.3)', color: 'var(--app-text)' }}
-                  />
-                </div>
-              )}
-
-              {enabled && control === 'none' && (
-                <p className="text-[11px] mt-2" style={{ color: 'var(--app-text-3)' }}>
-                  Set the day and time from each routine or category itself.
-                </p>
-              )}
             </div>
           );
         })}
 
-        <p className="text-center text-xs pt-2" style={{ color: 'var(--app-text-3)' }}>
-          Tapping a notification takes you straight to what it's about.
-        </p>
+        {saveError && (
+          <p className="text-center text-xs pt-2 text-red-400">{saveError}</p>
+        )}
       </div>
     </div>
   );
