@@ -7,6 +7,7 @@ import PWAInstallBanner from './PWAInstallBanner';
 import { useAuth } from '../context/AuthContext';
 import { useModal } from '../context/ModalContext';
 import { usePWAInstallBanner } from '../hooks/usePWAInstallBanner';
+import { Keyboard } from '@capacitor/keyboard';
 import { isNativeApp } from '../lib/platform';
 
 export default function Layout({ children, currentPageName }) {
@@ -61,6 +62,44 @@ export default function Layout({ children, currentPageName }) {
   // pinned to the top so the caret stays aligned with its field.
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   useEffect(() => {
+    // In the native app Capacitor's Keyboard plugin owns resizing, and the
+    // visualViewport measurement below doesn't see the keyboard reliably: the
+    // Create Workout sheet stayed behind it, and the re-measure on every tap
+    // could clear keyboard state mid-typing. The plugin's own events report
+    // the real height, so native uses those exclusively.
+    if (isNativeApp()) {
+      const setNativeKeyboard = (kb) => {
+        const open = kb > 80;
+        document.documentElement.style.setProperty('--kb-height', `${open ? kb : 0}px`);
+        document.body.classList.toggle('keyboard-open', open);
+        setKeyboardOpen(open);
+        if (open && window.scrollY !== 0) window.scrollTo(0, 0);
+      };
+      const onNativeFocusIn = (e) => {
+        const el = e.target;
+        if (!el || !el.matches?.('input, textarea, [contenteditable="true"]')) return;
+        setTimeout(() => {
+          try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch {}
+        }, 320);
+      };
+      document.addEventListener('focusin', onNativeFocusIn);
+
+      // addListener returns a real promise (not the plugin proxy), so .then is safe.
+      let disposed = false;
+      const handles = [];
+      const keep = (h) => (disposed ? h.remove() : handles.push(h));
+      Keyboard.addListener('keyboardWillShow', (info) => setNativeKeyboard(info?.keyboardHeight ?? 0)).then(keep).catch(() => {});
+      Keyboard.addListener('keyboardWillHide', () => setNativeKeyboard(0)).then(keep).catch(() => {});
+
+      return () => {
+        disposed = true;
+        handles.forEach((h) => h.remove());
+        document.removeEventListener('focusin', onNativeFocusIn);
+        document.body.classList.remove('keyboard-open');
+        document.documentElement.style.removeProperty('--kb-height');
+      };
+    }
+
     const vv = window.visualViewport;
     if (!vv) return;
     let raf = 0;
