@@ -1,6 +1,5 @@
 import type { SupabaseClient } from 'npm:@supabase/supabase-js@2.49.1';
 
-const ENTITLEMENT_ID = 'pro';
 const STRIPE_ACTIVE_STATUSES = ['active', 'trialing'];
 
 export function isAnonymousRevenueCatId(id: string) {
@@ -28,7 +27,7 @@ export async function syncPlanFromRevenueCat(
   // active right now, so there is no expiry arithmetic to get wrong.
   const res = await fetch(
     `https://api.revenuecat.com/v2/projects/${projectId}` +
-    `/customers/${encodeURIComponent(userId)}/active_entitlements?expand=items.entitlement`,
+    `/customers/${encodeURIComponent(userId)}/active_entitlements`,
     { headers: { Authorization: `Bearer ${apiKey}` } },
   );
 
@@ -41,24 +40,32 @@ export async function syncPlanFromRevenueCat(
 
   const data = res.status === 404 ? { items: [] } : await res.json();
   const items = Array.isArray(data?.items) ? data.items : [];
-  // The id field has carried both the lookup key and the internal entl_ id
-  // across API revisions; match on either, plus the expanded object.
-  const appStoreActive = items.some((item: Record<string, unknown>) => {
-    const expanded = item?.entitlement as Record<string, unknown> | undefined;
-    return expanded?.lookup_key === ENTITLEMENT_ID || item?.entitlement_id === ENTITLEMENT_ID;
-  });
+  // Any active entitlement means Pro: 'pro' is the app's only entitlement.
+  // Matching on the name never worked: this endpoint identifies entitlements
+  // by RevenueCat's internal id (entl...), not by the 'pro' lookup key, so
+  // every paid purchase was read as "no entitlement" and Pro never unlocked.
+  // Resolving the name would need a second call and a key with project-config
+  // access; if a second entitlement is ever added, do that instead.
+  const appStoreActive = items.length > 0;
 
   // users.plan is shared with stripe-webhook. An App Store lapse must not take
   // Pro away from someone still paying on the website (e.g. a web subscriber
   // who also restored an Apple purchase onto the same account).
   const plan = appStoreActive || await hasActiveStripeSubscription(supabase, userId) ? 'pro' : 'free';
 
-  const { error } = await supabase.from('users').update({ plan }).eq('user_id', userId);
-  if (error) {
-    console.error(`[revenuecat] failed to update plan for ${userId}:`, error.message);
+  // update() reports success even when it matches no row; read the row back
+  // so a missing user surfaces as a failure instead of a silent no-op.
+  const { data: updated, error } = await supabase
+    .from('users')
+    .update({ plan })
+    .eq('user_id', userId)
+    .select('user_id');
+  if (error || !updated?.length) {
+    console.error(`[revenuecat] failed to update plan for ${userId}:`, error?.message ?? 'no users row');
     return null;
   }
-  console.info(`[revenuecat] ${reason}: plan set to '${plan}' for user ${userId}`);
+  const ids = items.map((i: Record<string, unknown>) => i?.entitlement_id).join(',') || 'none';
+  console.info(`[revenuecat] ${reason}: plan set to '${plan}' for user ${userId} (active: ${ids})`);
   return plan;
 }
 
