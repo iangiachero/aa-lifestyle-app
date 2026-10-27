@@ -29,8 +29,12 @@ const RECIPE_CATEGORY_ICONS = {
   'Comfort Food':  'mdi:pot-mix',
   'Meal Prep':     'mdi:food-variant',
 };
-const SUPABASE_MEAL_BASE = 'https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos';
-const getWeeklyMealImage = (day, mealType) => `${SUPABASE_MEAL_BASE}/week-${day}-${mealType}.jpg`;
+// Meal photos ship with the app as small WebP thumbnails, named by recipe id.
+// They used to be full-size JPEGs (~300 KB, 1400 px) streamed from Supabase
+// Storage into ~90 px tiles: on iOS a long list of them left tiles blank
+// (dropped decodes, slow loads, Storage answering 429 while scrolling).
+const MEAL_PHOTO_BASE = '/meal-photos';
+const getWeeklyMealImage = (day, mealType) => `${MEAL_PHOTO_BASE}/week-${day}-${mealType}.webp`;
 const EMPTY_FORM = { name: '', time: '', notes: '', ingredients: '' };
 const EMPTY_RECIPE_FORM = { title: '', category: 'Breakfast', time: '', calories: '', servings: '1', difficulty: 'easy', ingredients: '', image_url: '' };
 
@@ -890,38 +894,6 @@ export default function MealPlanning() {
   );
 }
 
-/**
- * Which meal-photos/cr-<n>.jpg belongs to curated recipe cr-<n>.
- *
- * The photos were shot against an earlier version of CURATED_RECIPES. The list
- * was then edited — one recipe dropped, four inserted, two swapped near the end
- * — but the files kept their original numbers, so from cr-89 onwards a recipe
- * was showing somebody else's dish (cr-192 "Tuna Stuffed Avocado" rendered a
- * French onion soup). The drift is not a single offset, so this table was built
- * by checking all 104 affected photos against the list.
- *
- * The four recipes that never had a photo taken (cr-99..101 and cr-131) point
- * at files numbered from 196 up: their own numbers were already taken by the
- * original shoot, which is offset from the list. A file that isn't there yet
- * simply falls back to the category icon.
- */
-function curatedPhotoNumber(n) {
-  if (!n) return null;
-  if (n <= 88) return n;          // still aligned
-  if (n <= 98) return n + 1;      // a recipe was removed before cr-89
-  if (n === 99) return 196;       // added later, shot separately
-  if (n === 100) return 197;
-  if (n === 101) return 198;
-  if (n <= 130) return n - 2;
-  if (n === 131) return 199;      // added later, shot separately
-  if (n <= 182) return n - 3;
-  if (n === 183) return 181;      // 183 and 184 were shot in swapped order
-  if (n === 184) return 180;
-  if (n <= 191) return n - 3;
-  if (n === 192) return 191;
-  return n;                       // 193-195 have correctly named files
-}
-
 function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit, difficultyColors }) {
   const [expanded, setExpanded] = useState(false);
   const [imgError, setImgError] = useState(false);
@@ -929,9 +901,7 @@ function RecipeCard({ recipe, onAddToMealPlan, onAddToGrocery, onDelete, onEdit,
   const extra = recipe.ingredients.length - 4;
   const hasInstructions = recipe.instructions && recipe.instructions.length > 0;
   const categoryIcon = RECIPE_CATEGORY_ICONS[recipe.category] || 'mdi:silverware-variant';
-  const recipeNum = recipe.id?.startsWith('cr-') ? parseInt(recipe.id.replace('cr-', ''), 10) : null;
-  const photoNum = curatedPhotoNumber(recipeNum);
-  const curatedPhotoUrl = photoNum ? `https://yxuiwdhbtphanuzusxks.supabase.co/storage/v1/object/public/meal-photos/cr-${photoNum}.jpg` : null;
+  const curatedPhotoUrl = recipe.id?.startsWith('cr-') ? `${MEAL_PHOTO_BASE}/recipe-${recipe.id.slice(3)}.webp` : null;
   // Custom recipes may have an uploaded image_url
   const customPhotoUrl = recipe.is_custom && recipe.image_url ? recipe.image_url : null;
   const photoUrl = customPhotoUrl || curatedPhotoUrl;

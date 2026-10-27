@@ -9,7 +9,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'prompt',
       injectRegister: null,
-      includeAssets: ['**/*'],
+      // Meal photos (~9 MB) load on demand on the web instead of being
+      // precached on install; the native app bundles them anyway.
+      includeAssets: ['**/*', '!meal-photos/**'],
       manifest: {
         name: 'AA Lifestyle',
         short_name: 'AA Lifestyle',
@@ -38,6 +40,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff,woff2}'],
+        globIgnores: ['**/meal-photos/**'],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,

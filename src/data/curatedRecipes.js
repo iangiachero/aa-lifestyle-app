@@ -1011,16 +1011,6 @@ export const CURATED_RECIPES = [
 
   // --- DINNER (cr-100 to cr-113) ---
   {
-    id: 'cr-100',
-    title: 'Honey Lime Chicken Wrap',
-    category: 'Dinner',
-    calories: 480,
-    time: '25m',
-    servings: 2,
-    difficulty: 'easy',
-    ingredients: ['1 chicken breast', '2 flour wraps', '1/2 avocado (sliced)', 'Lettuce', '1 tbsp honey', 'Juice of 1/2 lime', '1 tbsp olive oil', 'Salt & pepper'],
-  },
-  {
     id: 'cr-101',
     title: 'Garlic Shrimp Orzo Bowl',
     category: 'Dinner',
@@ -1323,16 +1313,6 @@ export const CURATED_RECIPES = [
     servings: 1,
     difficulty: 'easy',
     ingredients: ['1 frozen banana', '1 scoop vanilla protein powder', 'Splash of milk', 'Optional: peanut butter or cocoa powder'],
-  },
-  {
-    id: 'cr-131',
-    title: 'Protein Banana Bread',
-    category: 'Desserts',
-    calories: 200,
-    time: '35m',
-    servings: 8,
-    difficulty: 'easy',
-    ingredients: ['2 ripe bananas (mashed)', '2 eggs', '1 scoop protein powder', '1/2 cup oat flour', '1 tsp baking powder', '1 tsp cinnamon'],
   },
   {
     id: 'cr-132',
