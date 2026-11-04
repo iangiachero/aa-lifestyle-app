@@ -258,6 +258,10 @@ export default function Lifestyle() {
                   transition={{ delay: idx * 0.04 }}
                   onClick={() => setSelectedModuleId(module.id)}
                   className="relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 aspect-square border border-[rgba(201,169,98,0.35)]"
+                  // Backdrop while the photo loads: without it a slow image left
+                  // only the text scrim on the page colour, a grey card that
+                  // looked broken (Ava's Nails card).
+                  style={{ background: CARD_GRADIENTS[module.gradient_index % CARD_GRADIENTS.length] }}
                 >
                   {module.image_url ? (
                     <>
