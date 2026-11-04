@@ -75,11 +75,29 @@ export default function Layout({ children, currentPageName }) {
         setKeyboardOpen(open);
         if (open && window.scrollY !== 0) window.scrollTo(0, 0);
       };
+      // Center the field inside its own scroll container only. scrollIntoView
+      // also scrolls the document when the container can't move far enough
+      // (a field at the top of a sheet), and on iOS that drags any sticky
+      // header in a fixed sheet down over the form. The app shell is fixed,
+      // so the document itself should never be scrolled.
+      const centerInScroller = (el) => {
+        let box = el.parentElement;
+        while (box && box !== document.body) {
+          const oy = getComputedStyle(box).overflowY;
+          if ((oy === 'auto' || oy === 'scroll') && box.scrollHeight > box.clientHeight) break;
+          box = box.parentElement;
+        }
+        if (!box || box === document.body) return;
+        const b = box.getBoundingClientRect();
+        const r = el.getBoundingClientRect();
+        box.scrollBy({ top: (r.top + r.height / 2) - (b.top + b.height / 2), behavior: 'smooth' });
+      };
       const onNativeFocusIn = (e) => {
         const el = e.target;
         if (!el || !el.matches?.('input, textarea, [contenteditable="true"]')) return;
         setTimeout(() => {
-          try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch {}
+          try { centerInScroller(el); } catch {}
+          if (window.scrollY !== 0) window.scrollTo(0, 0);
         }, 320);
       };
       document.addEventListener('focusin', onNativeFocusIn);
@@ -90,6 +108,11 @@ export default function Layout({ children, currentPageName }) {
       const keep = (h) => (disposed ? h.remove() : handles.push(h));
       Keyboard.addListener('keyboardWillShow', (info) => setNativeKeyboard(info?.keyboardHeight ?? 0)).then(keep).catch(() => {});
       Keyboard.addListener('keyboardWillHide', () => setNativeKeyboard(0)).then(keep).catch(() => {});
+      // iOS scrolls the page to reveal the focused field once the keyboard is
+      // up; undo it, since nothing in the fixed app shell needs the page moved.
+      Keyboard.addListener('keyboardDidShow', () => {
+        if (window.scrollY !== 0) window.scrollTo(0, 0);
+      }).then(keep).catch(() => {});
 
       return () => {
         disposed = true;

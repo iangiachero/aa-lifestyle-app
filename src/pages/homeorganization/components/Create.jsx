@@ -12,7 +12,7 @@ import { DEFAULT_CATEGORY_IMAGE } from '../../../data/homeOrgImages';
 const STYLE = {
   overlay: 'fixed inset-0 bg-black/60 z-[100] flex items-end',
   sheet: 'w-full bg-[color:var(--app-bg)] rounded-t-[2rem] border-t border-[rgba(201,169,98,0.25)] max-h-[90dvh] flex flex-col',
-  header: 'sticky top-0 bg-[color:var(--app-bg)] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
+  header: 'flex-shrink-0 bg-[color:var(--app-bg)] px-6 pt-5 pb-4 flex items-center justify-between border-b border-[rgba(201,169,98,0.15)]',
   title: 'text-xl text-[color:var(--app-gold)] font-light',
   subtitle: 'text-xs text-[color:var(--app-text-2)] mt-0.5',
   label: 'text-xs text-[color:var(--app-text-2)] font-light uppercase tracking-wider mb-2 block',
