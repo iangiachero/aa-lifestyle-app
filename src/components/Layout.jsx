@@ -113,6 +113,9 @@ export default function Layout({ children, currentPageName }) {
       Keyboard.addListener('keyboardDidShow', () => {
         if (window.scrollY !== 0) window.scrollTo(0, 0);
       }).then(keep).catch(() => {});
+      Keyboard.addListener('keyboardDidHide', () => {
+        if (window.scrollY !== 0) window.scrollTo(0, 0);
+      }).then(keep).catch(() => {});
 
       return () => {
         disposed = true;

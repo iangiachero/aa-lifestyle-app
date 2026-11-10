@@ -165,8 +165,12 @@ body.keyboard-open .fixed.overflow-y-auto {
     -webkit-touch-callout: none;
   }
 
-  /* Safe area padding for Capacitor status bar */
-  .capacitor-ios {
+  /* Safe area padding for Capacitor status bar, for pages that scroll the
+     document (login, onboarding). Body only: on <html> too it was applied
+     twice. Not in app-mode, whose fixed shell pads itself (Layout.jsx);
+     there it only made the document taller than the screen, i.e. scrollable
+     by the keyboard. */
+  body.capacitor-ios:not(.app-mode) {
     padding-top: env(safe-area-inset-top, 0px);
   }
 }
